@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workout Timer — Active</title>
+  <style>
+    /*
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     *  DESIGN TOKENS — 4-Point Grid System
+     *  Spacing:   4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64
+     *  Type scale: 11 · 12 · 14 · 16 · 20 · 24 · 80 (px)
+     *  Radius:    8 · 12 · 16 · 24 · 28
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:            #0d0d0f;
+      --surface:       #1a1a1f;
+      --surface-2:     #222228;
+      --surface-card:  #16161b;
+      --border:        #2e2e36;
+      --text:          #f0f0f5;
+      --text-sub:      #a0a0b4;
+      --text-muted:    #6b6b80;
+      --accent:        #ff3b5c;          /* Hold red */
+      --accent-hover:  #e8293f;
+      --accent-glow:   rgba(255, 59, 92, 0.40);
+      --accent-dim:    rgba(255, 59, 92, 0.12);
+      --ring-track:    #2a1a1e;
+      --yellow:        #f5a623;          /* Rest yellow */
+      --yellow-glow:   rgba(245, 166, 35, 0.35);
+      --green:         #4caf50;
+
+      --sp-1:  4px;  --sp-2:  8px;  --sp-3:  12px; --sp-4:  16px;
+      --sp-5:  20px; --sp-6:  24px; --sp-8:  32px; --sp-10: 40px;
+      --sp-12: 48px; --sp-16: 64px;
+
+      --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px; --r-2xl: 28px;
+
+      --text-xs:   0.6875rem; /* 11px */
+      --text-sm:   0.75rem;   /* 12px */
+      --text-base: 0.875rem;  /* 14px */
+      --text-md:   1rem;      /* 16px */
+      --text-lg:   1.25rem;   /* 20px */
+      --text-xl:   1.5rem;    /* 24px */
+      --text-hero: 5rem;      /* 80px */
+
+      --transition: 0.16s ease;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                   'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: var(--sp-8) var(--sp-4) var(--sp-12);
+    }
+
+    /* ── Card ───────────────────────────────────────────────────── */
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border-radius: var(--r-xl);
+      padding: var(--sp-6) var(--sp-6) var(--sp-8);
+      box-shadow:
+        0 2px  4px  rgba(0,0,0,0.30),
+        0 8px  24px rgba(0,0,0,0.40),
+        0 24px 64px rgba(0,0,0,0.50),
+        0 0    0 1px var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--sp-6);
+    }
+
+    /* ── Top Nav ────────────────────────────────────────────────── */
+    .topnav {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+    }
+
+    .nav-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .nav-btn:hover { background: var(--border); border-color: var(--text-muted); }
+
+    .nav-btn svg {
+      width: 18px; height: 18px;
+      stroke: var(--text-muted); fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      transition: stroke var(--transition);
+    }
+
+    .nav-btn:hover svg { stroke: var(--text); }
+
+    /* ── Progress Bar (Dynamic Exercises) ───────────────────────── */
+    .progress-bar {
+      flex: 1;
+      display: flex;
+      gap: var(--sp-1);
+      align-items: center;
+    }
+
+    .progress-seg {
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--border);
+      transition: background 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-seg.done { background: var(--accent); }
+
+    .progress-seg.active::after {
+      content: '';
+      position: absolute;
+      inset-block: 0; left: 0;
+      width: var(--fill, 0%);
+      background: var(--accent);
+      border-radius: inherit;
+      transition: width 0.3s linear;
+    }
+
+    /* ── Exercise Label ─────────────────────────────────────────── */
+    .exercise-label {
+      text-align: center;
+      font-size: var(--text-base);
+      color: var(--text-sub);
+      font-weight: 500;
+      letter-spacing: 0.1px;
+    }
+
+    /* ── Ring ───────────────────────────────────────────────────── */
+    .ring-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Ambient glow behind ring */
+    .ring-glow {
+      position: absolute;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: background 0.3s ease;
+    }
+
+    .ring-wrapper.holding .ring-glow {
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    }
+
+    .ring-wrapper.resting .ring-glow {
+      background: radial-gradient(circle, var(--yellow-glow) 0%, transparent 70%);
+    }
+
+    .ring-svg {
+      width: 280px;
+      height: 280px;
+      transform: rotate(-90deg); /* 12 o'clock top origin */
+      overflow: visible;
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: var(--ring-track);
+      stroke-width: 12;
+      stroke-linecap: round;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 678.584; /* 2 * PI * 108 */
+      stroke-dashoffset: 678.584; /* starts empty */
+      filter: url(#glow);
+      transition: stroke 0.25s ease;
+    }
+
+    /* Hold mode = Red */
+    .ring-wrapper.holding .ring-progress {
+      stroke: var(--accent);
+      filter: url(#glow);
+    }
+
+    /* Rest mode = Yellow */
+    .ring-wrapper.resting .ring-progress {
+      stroke: var(--yellow);
+      filter: url(#glow-yellow);
+    }
+
+    /* Ring Center: STRICTLY rep count */
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .ring-number {
+      font-size: var(--text-hero);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2px;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .ring-number.pop {
+      transform: scale(1.18);
+    }
+
+    .ring-of {
+      font-size: var(--text-base);
+      color: var(--text-sub);
+      font-weight: 600;
+      margin-top: var(--sp-1);
+      letter-spacing: 0.2px;
+    }
+
+    /* ── Set Info ───────────────────────────────────────────────── */
+    .set-info {
+      text-align: center;
+      font-size: var(--text-base);
+      color: var(--text-sub);
+    }
+
+    .set-info strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── Controls ───────────────────────────────────────────────── */
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--sp-8);
+      padding: var(--sp-2) 0;
+    }
+
+    .ctrl-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    .ctrl-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--text-sub);
+      transition:
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition),
+        transform 0.1s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--border);
+      color: var(--text);
+      border-color: var(--text-muted);
+    }
+
+    .ctrl-btn:active { transform: scale(0.94); }
+
+    .ctrl-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ctrl-btn.stop {
+      color: var(--accent);
+      border-color: rgba(255, 59, 92, 0.3);
+      background: rgba(255, 59, 92, 0.08);
+    }
+
+    .ctrl-btn.stop:hover {
+      background: rgba(255, 59, 92, 0.18);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .ctrl-btn.stop svg {
+      fill: currentColor;
+      stroke: none;
+    }
+
+    /* Pause / Play central button */
+    .pause-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: #fff;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition:
+        background var(--transition),
+        box-shadow var(--transition),
+        transform 0.1s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .pause-btn:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 6px 24px rgba(255, 59, 92, 0.55);
+    }
+
+    .pause-btn:active { transform: scale(0.95); }
+
+    .pause-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: #fff;
+      stroke: none;
+    }
+
+    .ctrl-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ── Voice Feedback Toast ───────────────────────────────────── */
+    .voice-toast {
+      position: absolute;
+      top: 56px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: rgba(26, 26, 31, 0.95);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      padding: var(--sp-1) var(--sp-4);
+      border-radius: 999px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 12px var(--accent-glow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 100;
+      white-space: nowrap;
+    }
+
+    .voice-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── STOP POPUP MODAL ───────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: var(--sp-4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.24s ease;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 380px;
+      background: #1c1c22;
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: var(--sp-6) var(--sp-6) var(--sp-6);
+      text-align: center;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      transform: scale(0.94);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-badge-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(255, 59, 92, 0.14);
+      border: 1px solid rgba(255, 59, 92, 0.3);
+      display: grid;
+      place-items: center;
+      margin: 0 auto var(--sp-3);
+    }
+
+    .modal-badge-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--accent);
+    }
+
+    .modal-title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--sp-1);
+    }
+
+    .modal-desc {
+      font-size: var(--text-sm);
+      color: var(--text-sub);
+      line-height: 1.4;
+      margin-bottom: var(--sp-6);
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .modal-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-2);
+      width: 100%;
+      padding: var(--sp-3) var(--sp-4);
+      border-radius: var(--r-md);
+      font-size: var(--text-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      border: none;
+    }
+
+    .modal-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .modal-btn.primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .modal-btn.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .modal-btn.secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .modal-btn.secondary:hover {
+      background: var(--border);
+    }
+
+    .modal-btn.cancel {
+      background: transparent;
+      color: var(--text-muted);
+      margin-top: var(--sp-1);
+      font-size: var(--text-sm);
+    }
+
+    .modal-btn.cancel:hover {
+      color: var(--text);
+    }
+
+    /* ── SLIDE-OVER BOTTOM SHEET ────────────────────────────────── */
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.70);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 990;
+    }
+
+    .sheet-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sheet-panel {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 100%);
+      width: 100%;
+      max-width: 480px;
+      background: #18181e;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--r-2xl) var(--r-2xl) 0 0;
+      padding: var(--sp-4) var(--sp-6) var(--sp-10);
+      text-align: center;
+      box-shadow: 0 -8px 36px rgba(0, 0, 0, 0.75), 0 -1px 0 rgba(255, 255, 255, 0.1);
+      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 995;
+    }
+
+    .sheet-overlay.active .sheet-panel {
+      transform: translate(-50%, 0);
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--border);
+      margin: 0 auto var(--sp-5);
+    }
+
+    .sheet-icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(255, 59, 92, 0.15);
+      border: 1px solid rgba(255, 59, 92, 0.35);
+      display: grid;
+      place-items: center;
+      margin: 0 auto var(--sp-4);
+    }
+
+    .sheet-icon-wrap.success {
+      background: rgba(76, 175, 80, 0.15);
+      border-color: rgba(76, 175, 80, 0.4);
+    }
+
+    .sheet-icon-wrap svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sheet-icon-wrap.success svg {
+      stroke: #4caf50;
+    }
+
+    .sheet-badge {
+      display: inline-block;
+      font-size: var(--text-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: var(--sp-1) var(--sp-3);
+      border-radius: 999px;
+      background: rgba(255, 59, 92, 0.15);
+      color: var(--accent);
+      margin-bottom: var(--sp-2);
+    }
+
+    .sheet-badge.success {
+      background: rgba(76, 175, 80, 0.15);
+      color: #4caf50;
+    }
+
+    .sheet-title {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--sp-2);
+    }
+
+    .sheet-desc {
+      font-size: var(--text-sm);
+      color: var(--text-sub);
+      line-height: 1.4;
+      margin-bottom: var(--sp-8);
+    }
+
+    .sheet-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--sp-8);
+    }
+
+    /* Dim entire card when paused */
+    .card.paused .ring-wrapper {
+      opacity: 0.65;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hidden SVG defs for glow filters -->
+<svg width="0" height="0" style="position:absolute;pointer-events:none">
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4"  result="b1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="b2"/>
+      <feMerge>
+        <feMergeNode in="b2"/>
+        <feMergeNode in="b1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-yellow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3"  result="b1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b2"/>
+      <feMerge>
+        <feMergeNode in="b2"/>
+        <feMergeNode in="b1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+</svg>
+
+<main class="card" id="card" aria-label="Active Workout Timer">
+
+  <!-- Voice Recognition Toast Feedback -->
+  <div class="voice-toast" id="voice-toast">🎙️ Command Recognized</div>
+
+  <!-- ── Top Nav ────────────────────────────────────────────────── -->
+  <div class="topnav">
+    <a href="index.html" class="nav-btn" id="nav-back-btn" aria-label="Back to setup">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+
+    <div class="progress-bar" id="progress-bar"
+         role="progressbar" aria-label="Exercise progress"></div>
+
+    <a href="settings.html" class="nav-btn" aria-label="Settings">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- ── Exercise Label ─────────────────────────────────────────── -->
+  <p class="exercise-label" id="exercise-label">Exercise 1</p>
+
+  <!-- ── Ring (Initially Empty) ─────────────────────────────────── -->
+  <div class="ring-wrapper holding" id="ring-wrapper">
+    <div class="ring-glow"></div>
+
+    <svg class="ring-svg" viewBox="0 0 280 280" aria-hidden="true">
+      <circle class="ring-track"    cx="140" cy="140" r="108"/>
+      <circle class="ring-progress" cx="140" cy="140" r="108" id="ring-progress"/>
+    </svg>
+
+    <!-- Center: ONLY shows rep count -->
+    <div class="ring-center">
+      <span class="ring-number" id="ring-number" aria-live="polite" aria-atomic="true">1</span>
+      <span class="ring-of"     id="ring-of">of 10</span>
+    </div>
+  </div>
+
+  <!-- ── Set Info ──────────────────────────────────────────────── -->
+  <p class="set-info" id="set-info">Set <strong>1</strong> of 3</p>
+
+  <!-- ── Controls ─────────────────────────────────────────────── -->
+  <div class="controls">
+    <div class="ctrl-group">
+      <button class="ctrl-btn" id="btn-repeat" aria-label="Repeat current rep">
+        <svg viewBox="0 0 24 24">
+          <polyline points="1 4 1 10 7 10"/>
+          <path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
+        </svg>
+      </button>
+      <span class="ctrl-label">Repeat</span>
+    </div>
+
+    <div class="ctrl-group">
+      <button class="pause-btn" id="btn-pause" aria-label="Pause workout">
+        <svg id="icon-pause" viewBox="0 0 24 24">
+          <rect x="6" y="4" width="4" height="16" rx="1"/>
+          <rect x="14" y="4" width="4" height="16" rx="1"/>
+        </svg>
+        <svg id="icon-play" viewBox="0 0 24 24" style="display:none;margin-left:3px">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+      </button>
+      <span class="ctrl-label" id="pause-label">Pause</span>
+    </div>
+
+    <div class="ctrl-group">
+      <button class="ctrl-btn stop" id="btn-stop" aria-label="Stop workout">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+      </button>
+      <span class="ctrl-label">Stop</span>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── STOP MODAL DIALOG ───────────────────────────────────────── -->
+<div class="modal-overlay" id="stop-modal" role="dialog" aria-modal="true" aria-labelledby="stop-title">
+  <div class="modal-card">
+    <div class="modal-badge-icon">
+      <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+    </div>
+    <h2 class="modal-title" id="stop-title">Stop Workout?</h2>
+    <p class="modal-desc">Would you like to restart from the beginning or return to home?</p>
+    
+    <div class="modal-actions">
+      <button class="modal-btn primary" id="modal-restart-btn">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        <span>Restart from Beginning</span>
+      </button>
+      <button class="modal-btn secondary" id="modal-home-btn">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Go to Home</span>
+      </button>
+      <button class="modal-btn cancel" id="modal-cancel-btn">
+        <span>Cancel & Resume</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE-OVER BOTTOM SHEET ─────────────────────────────────── -->
+<div class="sheet-overlay" id="sheet-overlay" role="dialog" aria-modal="true">
+  <div class="sheet-panel" id="sheet-panel">
+    <div class="sheet-handle"></div>
+    
+    <div class="sheet-icon-wrap" id="sheet-icon-wrap">
+      <svg id="sheet-icon-svg" viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+
+    <div class="sheet-badge" id="sheet-badge">Exercise Complete</div>
+    <h2 class="sheet-title" id="sheet-title">Exercise 1 Done!</h2>
+    <p class="sheet-desc" id="sheet-desc">Great job! Ready for the next exercise?</p>
+
+    <!-- Circular control buttons matching exercise screen style -->
+    <div class="sheet-controls" id="sheet-controls">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ══════════════════════════════════════════════════════════════
+   *  CONFIG — read from URL params
+   * ══════════════════════════════════════════════════════════════ */
+  const p = new URLSearchParams(location.search);
+  const CFG = {
+    sets:          Math.max(1, parseInt(p.get('sets')          ?? '3',  10)),
+    reps:          Math.max(1, parseInt(p.get('reps')          ?? '10', 10)),
+    restSets:      Math.max(0, parseInt(p.get('restSets')      ?? '30', 10)),
+    restReps:      Math.max(0, parseInt(p.get('restReps')      ?? '5',  10)),
+    hold:          Math.max(1, parseInt(p.get('hold')          ?? '10', 10)),
+    exercises:     Math.max(1, parseInt(p.get('exercises')     ?? '1',  10)),
+    soundSets:     p.get('soundSets') !== '0',
+    soundRestSets: p.get('soundRestSets') !== '0',
+    soundReps:     p.get('soundReps') !== '0',
+    soundRestReps: p.get('soundRestReps') === '1',
+    soundHold:     p.get('soundHold') !== '0',
+  };
+
+  // ── Sync to LocalStorage for persistent restoration at Home ────
+  const STORAGE_KEY = 'workout_timer_saved_config';
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      sets:          CFG.sets,
+      restSets:      CFG.restSets,
+      reps:          CFG.reps,
+      restReps:      CFG.restReps,
+      hold:          CFG.hold,
+      exerciseCount: CFG.exercises,
+      soundSets:     CFG.soundSets,
+      soundRestSets: CFG.soundRestSets,
+      soundReps:     CFG.soundReps,
+      soundRestReps: CFG.soundRestReps,
+      soundHold:     CFG.soundHold,
+    }));
+  } catch (e) {
+    console.warn('LocalStorage save error:', e);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  LOAD USER SETTINGS (from settings.html)
+   * ══════════════════════════════════════════════════════════════ */
+  const SETTINGS_STORAGE_KEY = 'workout_timer_settings';
+  let SETTINGS = {
+    voiceURI:        'default',
+    language:        'en-US',
+    speed:           1.0,
+    volume:          80,
+    keepScreenAwake: true,
+    voiceCommands:   true,
+    countdownBeeps:  true,
+  };
+  try {
+    const rawSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (rawSettings) SETTINGS = { ...SETTINGS, ...JSON.parse(rawSettings) };
+  } catch (e) {
+    console.warn('Failed to load settings:', e);
+  }
+
+  // ── Screen Wake Lock (Keep Screen Awake during active workout) ──
+  let wakeLockSentinel = null;
+  async function requestWakeLock() {
+    if ('wakeLock' in navigator && SETTINGS.keepScreenAwake) {
+      try {
+        wakeLockSentinel = await navigator.wakeLock.request('screen');
+      } catch (err) {
+        console.warn('Wake Lock error:', err);
+      }
+    }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (wakeLockSentinel !== null && document.visibilityState === 'visible') {
+      requestWakeLock();
+    }
+  });
+
+  // ── Web Audio Tone Generator for crisp countdown beeps ─────────
+  let audioCtx = null;
+  function playTone(freq, duration = 0.12) {
+    if (!SETTINGS.countdownBeeps) return;
+    try {
+      const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtxClass) return;
+      if (!audioCtx) audioCtx = new AudioCtxClass();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      const vol = (parseFloat(SETTINGS.volume) || 80) / 100 * 0.35;
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {}
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  AUDIO COACH & VOICE TIMING SYNCHRONIZATION
+   * ══════════════════════════════════════════════════════════════ */
+  let activeUtterance = null;
+  let isCoachSpeaking = false;
+  let coachSafetyTimer = null;
+
+  function speakRaw(text, onComplete) {
+    if (!('speechSynthesis' in window)) {
+      if (onComplete) onComplete();
+      return;
+    }
+
+    try {
+      if (coachSafetyTimer) {
+        clearTimeout(coachSafetyTimer);
+        coachSafetyTimer = null;
+      }
+      window.speechSynthesis.cancel();
+
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate   = parseFloat(SETTINGS.speed) || 1.0;
+      u.pitch  = 1.05;
+      u.volume = (parseFloat(SETTINGS.volume) || 80) / 100;
+      u.lang   = SETTINGS.language || 'en-US';
+
+      const voices = window.speechSynthesis.getVoices();
+      if (SETTINGS.voiceURI && SETTINGS.voiceURI !== 'default') {
+        const found = voices.find(v => v.voiceURI === SETTINGS.voiceURI);
+        if (found) u.voice = found;
+      } else {
+        const langPrefix = (SETTINGS.language || 'en').split('-')[0];
+        const enVoice = voices.find(v =>
+          v.lang.startsWith(langPrefix) && (
+            v.name.includes('Natural') ||
+            v.name.includes('Google')  ||
+            v.name.includes('Samantha')||
+            v.name.includes('Daniel')  ||
+            v.name.includes('Karen')
+          )
+        ) || voices.find(v => v.lang.startsWith(langPrefix)) || voices.find(v => v.lang.startsWith('en'));
+
+        if (enVoice) u.voice = enVoice;
+      }
+
+      let called = false;
+      const done = () => {
+        if (called) return;
+        called = true;
+        isCoachSpeaking = false;
+        if (coachSafetyTimer) {
+          clearTimeout(coachSafetyTimer);
+          coachSafetyTimer = null;
+        }
+        if (onComplete) onComplete();
+      };
+
+      u.onstart = () => { isCoachSpeaking = true; };
+      u.onend   = () => { done(); };
+      u.onerror = () => { done(); };
+
+      // Safety timeout: in case browser fails to trigger onend
+      const wordCount = (text || '').trim().split(/\s+/).filter(Boolean).length;
+      const maxMs = Math.max(1200, wordCount * 650 + 900);
+      coachSafetyTimer = setTimeout(done, maxMs);
+
+      activeUtterance = u;
+      setTimeout(() => {
+        try {
+          window.speechSynthesis.speak(u);
+        } catch (err) {
+          done();
+        }
+      }, 25);
+    } catch (e) {
+      isCoachSpeaking = false;
+      console.warn('Speech error:', e);
+      if (onComplete) onComplete();
+    }
+  }
+
+  function isCategoryEnabled(category) {
+    if (category === 'sets') return CFG.soundSets;
+    if (category === 'reps') return CFG.soundReps;
+    if (category === 'hold') return CFG.soundHold;
+    if (category === 'restSets') return CFG.soundRestSets;
+    if (category === 'restReps') return CFG.soundRestReps;
+    return true;
+  }
+
+  // Phase cues wait for speech to finish before progress starts!
+  function speakPhaseCue(category, text, onSpeechDone) {
+    if (!isCategoryEnabled(category)) {
+      state.isWaitingForVoice = false;
+      state.lastTickTime = performance.now();
+      if (onSpeechDone) onSpeechDone();
+      return;
+    }
+
+    state.isWaitingForVoice = true;
+    speakRaw(text, () => {
+      state.isWaitingForVoice = false;
+      state.lastTickTime = performance.now();
+      if (onSpeechDone) onSpeechDone();
+    });
+  }
+
+  // Live countdown audio ("3, 2, 1") does not block progress
+  function speakCountdown(category, text) {
+    if (!isCategoryEnabled(category)) return;
+    speakRaw(text, null);
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  DOM REFS
+   * ══════════════════════════════════════════════════════════════ */
+  const card         = document.getElementById('card');
+  const progressBar  = document.getElementById('progress-bar');
+  const exLabel      = document.getElementById('exercise-label');
+  const ringWrapper  = document.getElementById('ring-wrapper');
+  const ringProg     = document.getElementById('ring-progress');
+  const ringNumber   = document.getElementById('ring-number');
+  const ringOf       = document.getElementById('ring-of');
+  const setInfoEl    = document.getElementById('set-info');
+  const btnPause     = document.getElementById('btn-pause');
+  const iconPause    = document.getElementById('icon-pause');
+  const iconPlay     = document.getElementById('icon-play');
+  const pauseLabel   = document.getElementById('pause-label');
+  const btnRepeat    = document.getElementById('btn-repeat');
+  const btnStop      = document.getElementById('btn-stop');
+
+  // Stop Modal refs
+  const stopModal      = document.getElementById('stop-modal');
+  const modalRestartBtn= document.getElementById('modal-restart-btn');
+  const modalHomeBtn   = document.getElementById('modal-home-btn');
+  const modalCancelBtn = document.getElementById('modal-cancel-btn');
+
+  // Bottom Sheet refs
+  const sheetOverlay   = document.getElementById('sheet-overlay');
+  const sheetPanel     = document.getElementById('sheet-panel');
+  const sheetIconWrap  = document.getElementById('sheet-icon-wrap');
+  const sheetIconSvg   = document.getElementById('sheet-icon-svg');
+  const sheetBadge     = document.getElementById('sheet-badge');
+  const sheetTitle     = document.getElementById('sheet-title');
+  const sheetDesc      = document.getElementById('sheet-desc');
+  const sheetControls  = document.getElementById('sheet-controls');
+
+  // Voice toast
+  const voiceToast     = document.getElementById('voice-toast');
+
+  const CIRCUMFERENCE = 2 * Math.PI * 108; // ≈ 678.584
+
+  /* ══════════════════════════════════════════════════════════════
+   *  STATE & TIMER ENGINE
+   * ══════════════════════════════════════════════════════════════ */
+  const PHASE = {
+    HOLD:      'HOLD',
+    REST_REPS: 'REST_REPS',
+    REST_SETS: 'REST_SETS',
+    SHEET:     'SHEET',
+    MODAL:     'MODAL',
+    DONE:      'DONE'
+  };
+
+  let state = {
+    exercise:          1,
+    set:               1,
+    rep:               1,
+    phase:             PHASE.HOLD,
+    phaseDuration:     CFG.hold * 1000,
+    phaseElapsed:      0,
+    running:           true,
+    finished:          false,
+    lastTickTime:      null,
+    spokenCounts:      {},
+    preModalState:     null,
+    isWaitingForVoice: false, // Progress holds until voice announcement is finished
+  };
+
+  let tickerId = null;
+
+  function setArcFill(fraction) {
+    const clamped = Math.max(0, Math.min(1, fraction));
+    const offset = CIRCUMFERENCE * (1 - clamped);
+    ringProg.style.strokeDashoffset = `${offset}px`;
+  }
+
+  function setRingMode(mode) {
+    ringWrapper.classList.remove('holding', 'resting');
+    ringWrapper.classList.add(mode);
+  }
+
+  function popRepNumber() {
+    ringNumber.classList.remove('pop');
+    void ringNumber.offsetWidth;
+    ringNumber.classList.add('pop');
+  }
+
+  /* ── Dynamic Top Progress Bar ───────────────────────────────── */
+  function buildProgressBar() {
+    progressBar.innerHTML = '';
+    for (let i = 1; i <= CFG.exercises; i++) {
+      const seg = document.createElement('div');
+      seg.className = 'progress-seg';
+      seg.id = `seg-${i}`;
+      progressBar.appendChild(seg);
+    }
+  }
+
+  function updateProgressBar() {
+    for (let i = 1; i <= CFG.exercises; i++) {
+      const seg = document.getElementById(`seg-${i}`);
+      if (!seg) continue;
+      seg.classList.remove('done', 'active');
+      if (i < state.exercise) {
+        seg.classList.add('done');
+      } else if (i === state.exercise) {
+        seg.classList.add('active');
+        const fill = ((state.set - 1) / CFG.sets) * 100;
+        seg.style.setProperty('--fill', `${fill}%`);
+      }
+    }
+  }
+
+  function updateExerciseLabel() {
+    if (CFG.exercises > 1) {
+      exLabel.textContent = `Exercise ${state.exercise} of ${CFG.exercises}`;
+    } else {
+      exLabel.textContent = `Exercise 1`;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  PHASE TRANSITIONS (With Audio Sequencing)
+   * ══════════════════════════════════════════════════════════════ */
+  function startHold(repNum, isFirstOfSet = false, isFirstOfExercise = false) {
+    state.rep           = repNum;
+    state.phase         = PHASE.HOLD;
+    state.phaseDuration = CFG.hold * 1000;
+    state.phaseElapsed  = 0;
+    state.spokenCounts  = {};
+
+    setRingMode('holding'); // Red
+    setArcFill(0);          // Starts empty at 0%!
+
+    ringNumber.textContent = state.rep;
+    ringOf.textContent     = `of ${CFG.reps}`;
+    popRepNumber();
+
+    setInfoEl.innerHTML = `Set <strong>${state.set}</strong> of ${CFG.sets}`;
+    updateExerciseLabel();
+    updateProgressBar();
+
+    // Voice announcement cue text
+    let cueText = '';
+    let category = 'reps';
+
+    if (isFirstOfExercise && state.exercise === 1) {
+      category = 'sets';
+      cueText = CFG.exercises > 1 ? 'Exercise 1. Set 1. Rep 1.' : 'Set 1. Rep 1.';
+    } else if (isFirstOfExercise && state.exercise > 1) {
+      category = 'sets';
+      cueText = `Exercise ${state.exercise}. Set 1. Rep 1.`;
+    } else if (isFirstOfSet && state.set > 1) {
+      category = 'sets';
+      cueText = `Set ${state.set}. Rep ${repNum}`;
+    } else {
+      category = 'reps';
+      cueText = `Rep ${repNum}`;
+    }
+
+    // Bar stays empty at 0% until this voice announcement finishes!
+    speakPhaseCue(category, cueText);
+  }
+
+  function startRestReps() {
+    state.phase         = PHASE.REST_REPS;
+    state.phaseDuration = CFG.restReps * 1000;
+    state.phaseElapsed  = 0;
+    state.spokenCounts  = {};
+
+    setRingMode('resting'); // Yellow
+    setArcFill(1);          // Starts full, stays full until speech is done
+
+    // Rest stays full until "Rest" finishes (if soundRestReps is enabled)
+    speakPhaseCue('restReps', 'Rest');
+  }
+
+  function startRestSets() {
+    state.phase         = PHASE.REST_SETS;
+    state.phaseDuration = CFG.restSets * 1000;
+    state.phaseElapsed  = 0;
+    state.spokenCounts  = {};
+
+    setRingMode('resting');
+    setArcFill(1);
+
+    // Drains after set completion voice cue finishes
+    speakPhaseCue('restSets', `Set ${state.set} complete. Rest.`);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  SLIDE-OVER BOTTOM SHEETS
+   * ══════════════════════════════════════════════════════════════ */
+  function showExerciseCompleteSheet() {
+    stopTicker();
+    state.running = false;
+    card.classList.add('paused');
+
+    speakRaw(`Exercise ${state.exercise} complete! Excellent effort.`);
+
+    sheetIconWrap.className = 'sheet-icon-wrap';
+    sheetIconSvg.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+    sheetBadge.className = 'sheet-badge';
+    sheetBadge.textContent = `Exercise ${state.exercise} Complete`;
+    sheetTitle.textContent = `Exercise ${state.exercise} Done!`;
+    sheetDesc.textContent = `Great effort! Ready for Exercise ${state.exercise + 1}?`;
+
+    // 3 Buttons matching circle icons on main screen: Repeat, Next Exercise, Stop
+    sheetControls.innerHTML = `
+      <div class="ctrl-group">
+        <button class="ctrl-btn" id="sheet-btn-repeat" aria-label="Repeat Exercise">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        </button>
+        <span class="ctrl-label">Repeat</span>
+      </div>
+
+      <div class="ctrl-group">
+        <button class="pause-btn" id="sheet-btn-next" aria-label="Next Exercise">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <span class="ctrl-label">Next Exercise</span>
+      </div>
+
+      <div class="ctrl-group">
+        <button class="ctrl-btn stop" id="sheet-btn-stop" aria-label="Stop Workout">
+          <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+        </button>
+        <span class="ctrl-label">Stop</span>
+      </div>
+    `;
+
+    sheetOverlay.classList.add('active');
+
+    document.getElementById('sheet-btn-repeat').onclick = () => {
+      closeSheet();
+      repeatCurrentExercise();
+    };
+    document.getElementById('sheet-btn-next').onclick = () => {
+      closeSheet();
+      goToNextExercise();
+    };
+    document.getElementById('sheet-btn-stop').onclick = () => {
+      closeSheet();
+      openStopModal();
+    };
+  }
+
+  function showWorkoutCompleteSheet() {
+    state.finished = true;
+    state.running  = false;
+    state.phase    = PHASE.DONE;
+    stopTicker();
+
+    speakRaw('Workout complete. Fantastic job!');
+
+    for (let i = 1; i <= CFG.exercises; i++) {
+      const seg = document.getElementById(`seg-${i}`);
+      if (seg) { seg.classList.remove('active'); seg.classList.add('done'); }
+    }
+
+    setRingMode('holding');
+    setArcFill(1);
+    ringNumber.textContent = '✓';
+    ringOf.textContent     = 'Done!';
+
+    sheetIconWrap.className = 'sheet-icon-wrap success';
+    sheetIconSvg.innerHTML = '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7.5c-.83 0-1.5.67-1.5 1.5v1h12v-1c0-.83-.67-1.5-1.5-1.5H15c-.55 0-1-.45-1-1v-2.34c3.48-.96 6-4.08 6-7.66V2H4v5c0 3.58 2.52 6.7 6 7.66z"/>';
+    sheetBadge.className = 'sheet-badge success';
+    sheetBadge.textContent = 'Workout Complete';
+    sheetTitle.textContent = 'All Finished! 🎉';
+    sheetDesc.textContent = `You finished all ${CFG.exercises} exercise${CFG.exercises > 1 ? 's' : ''}. Great workout!`;
+
+    sheetControls.innerHTML = `
+      <div class="ctrl-group">
+        <button class="ctrl-btn" id="sheet-btn-repeat-all" aria-label="Repeat Workout">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        </button>
+        <span class="ctrl-label">Repeat</span>
+      </div>
+
+      <div class="ctrl-group">
+        <button class="pause-btn" id="sheet-btn-home" aria-label="Go to Home">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+        <span class="ctrl-label">Home</span>
+      </div>
+    `;
+
+    sheetOverlay.classList.add('active');
+
+    document.getElementById('sheet-btn-repeat-all').onclick = () => {
+      closeSheet();
+      restartEntireWorkout();
+    };
+    document.getElementById('sheet-btn-home').onclick = () => {
+      location.href = 'index.html';
+    };
+  }
+
+  function closeSheet() {
+    sheetOverlay.classList.remove('active');
+  }
+
+  function repeatCurrentExercise() {
+    state.set = 1;
+    state.running = true;
+    card.classList.remove('paused');
+    iconPause.style.display = '';
+    iconPlay.style.display  = 'none';
+    pauseLabel.textContent  = 'Pause';
+    startHold(1, true, true);
+    startTicker();
+  }
+
+  function goToNextExercise() {
+    state.exercise++;
+    state.set = 1;
+    state.running = true;
+    card.classList.remove('paused');
+    iconPause.style.display = '';
+    iconPlay.style.display  = 'none';
+    pauseLabel.textContent  = 'Pause';
+    startHold(1, true, true);
+    startTicker();
+  }
+
+  function restartEntireWorkout() {
+    state.finished = false;
+    state.exercise = 1;
+    state.set = 1;
+    state.rep = 1;
+    state.running = true;
+    card.classList.remove('paused');
+    iconPause.style.display = '';
+    iconPlay.style.display  = 'none';
+    pauseLabel.textContent  = 'Pause';
+    buildProgressBar();
+    startHold(1, true, true);
+    startTicker();
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  STOP MODAL
+   * ══════════════════════════════════════════════════════════════ */
+  function openStopModal() {
+    if (state.finished) {
+      location.href = 'index.html';
+      return;
+    }
+
+    state.preModalState = state.running;
+    state.running = false;
+    stopTicker();
+    card.classList.add('paused');
+
+    stopModal.classList.add('active');
+    speakRaw('Workout paused.');
+  }
+
+  function closeStopModal() {
+    stopModal.classList.remove('active');
+    if (state.preModalState) {
+      state.running = true;
+      card.classList.remove('paused');
+      iconPause.style.display = '';
+      iconPlay.style.display  = 'none';
+      pauseLabel.textContent  = 'Pause';
+      startTicker();
+    }
+  }
+
+  modalRestartBtn.onclick = () => {
+    stopModal.classList.remove('active');
+    restartEntireWorkout();
+  };
+
+  modalHomeBtn.onclick = () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    location.href = 'index.html';
+  };
+
+  modalCancelBtn.onclick = () => {
+    closeStopModal();
+  };
+
+  stopModal.addEventListener('click', (e) => {
+    if (e.target === stopModal) {
+      closeStopModal();
+    }
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+   *  MAIN TICK LOOP (Smooth 40ms interval)
+   * ══════════════════════════════════════════════════════════════ */
+  function tick() {
+    if (!state.running || state.finished) return;
+
+    // Wait until voice command / announcement finishes before advancing progress!
+    if (state.isWaitingForVoice) {
+      state.lastTickTime = performance.now();
+      return;
+    }
+
+    const now = performance.now();
+    if (!state.lastTickTime) {
+      state.lastTickTime = now;
+      return;
+    }
+
+    const delta = now - state.lastTickTime;
+    state.lastTickTime = now;
+    state.phaseElapsed += delta;
+
+    const total = state.phaseDuration;
+    const progress = total > 0 ? Math.min(1, state.phaseElapsed / total) : 1;
+
+    // ── HOLD: Fills 0% -> 100% in Red ──
+    if (state.phase === PHASE.HOLD) {
+      setArcFill(progress);
+
+      // Countdown in final 3 seconds (does not block progress)
+      const secondsRemaining = Math.ceil((total - state.phaseElapsed) / 1000);
+      if (secondsRemaining <= 3 && secondsRemaining > 0 && !state.spokenCounts[secondsRemaining]) {
+        state.spokenCounts[secondsRemaining] = true;
+        speakCountdown('hold', String(secondsRemaining));
+        playTone(880, 0.12);
+      }
+
+      if (progress >= 1) {
+        playTone(1760, 0.2);
+        const isLastRepOfSet    = state.rep >= CFG.reps;
+        const isLastSetOfEx     = state.set >= CFG.sets;
+        const isLastExercise    = state.exercise >= CFG.exercises;
+
+        if (!isLastRepOfSet) {
+          if (CFG.restReps > 0) {
+            startRestReps();
+          } else {
+            startHold(state.rep + 1);
+          }
+        } else if (!isLastSetOfEx) {
+          if (CFG.restSets > 0) {
+            startRestSets();
+          } else {
+            state.set++;
+            startHold(1, true);
+          }
+        } else if (!isLastExercise) {
+          showExerciseCompleteSheet();
+        } else {
+          showWorkoutCompleteSheet();
+        }
+      }
+    }
+
+    // ── REST: Drains 100% -> 0% in Yellow ──
+    else if (state.phase === PHASE.REST_REPS || state.phase === PHASE.REST_SETS) {
+      setArcFill(1 - progress);
+
+      if (progress >= 1) {
+        if (state.phase === PHASE.REST_REPS) {
+          startHold(state.rep + 1);
+        } else if (state.phase === PHASE.REST_SETS) {
+          state.set++;
+          startHold(1, true);
+        }
+      }
+    }
+  }
+
+  function startTicker() {
+    stopTicker();
+    state.lastTickTime = performance.now();
+    tickerId = setInterval(tick, 40);
+  }
+
+  function stopTicker() {
+    if (tickerId) {
+      clearInterval(tickerId);
+      tickerId = null;
+    }
+    state.lastTickTime = null;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  CONTROLS
+   * ══════════════════════════════════════════════════════════════ */
+  function togglePause() {
+    if (state.finished) return;
+    state.running = !state.running;
+
+    if (state.running) {
+      speakRaw('Resuming.');
+      state.lastTickTime = performance.now();
+      startTicker();
+    } else {
+      speakRaw('Paused.');
+      state.isWaitingForVoice = false;
+      stopTicker();
+    }
+
+    const paused = !state.running;
+    card.classList.toggle('paused', paused);
+    iconPause.style.display = paused ? 'none' : '';
+    iconPlay.style.display  = paused ? ''     : 'none';
+    pauseLabel.textContent  = paused ? 'Resume' : 'Pause';
+    btnPause.setAttribute('aria-label', paused ? 'Resume workout' : 'Pause workout');
+  }
+
+  btnPause.addEventListener('click', togglePause);
+
+  function repeatCurrentRep() {
+    if (state.finished) return;
+    startHold(state.rep);
+    if (!state.running) {
+      state.running = true;
+      card.classList.remove('paused');
+      iconPause.style.display = '';
+      iconPlay.style.display  = 'none';
+      pauseLabel.textContent  = 'Pause';
+      startTicker();
+    }
+  }
+
+  btnRepeat.addEventListener('click', repeatCurrentRep);
+  btnStop.addEventListener('click', openStopModal);
+
+  /* ══════════════════════════════════════════════════════════════
+   *  VOICE COMMANDS ENGINE (Hands-Free Control)
+   * ══════════════════════════════════════════════════════════════ */
+  let speechRec = null;
+  let voiceToastTimeout = null;
+
+  function showVoiceToast(cmdText) {
+    voiceToast.textContent = `🎙️ Heard: "${cmdText}"`;
+    voiceToast.classList.add('show');
+    clearTimeout(voiceToastTimeout);
+    voiceToastTimeout = setTimeout(() => {
+      voiceToast.classList.remove('show');
+    }, 1800);
+  }
+
+  function setupVoiceRecognition() {
+    if (!SETTINGS.voiceCommands) return;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    try {
+      speechRec = new SpeechRecognition();
+      speechRec.continuous = true;
+      speechRec.interimResults = false;
+      speechRec.lang = 'en-US';
+
+      speechRec.onresult = (event) => {
+        // Ignore voice recognition while the coach itself is speaking
+        if (isCoachSpeaking || ('speechSynthesis' in window && window.speechSynthesis.speaking)) {
+          return;
+        }
+
+        const last = event.results.length - 1;
+        const transcript = event.results[last][0].transcript.trim().toLowerCase();
+        handleVoiceCommand(transcript);
+      };
+
+      speechRec.onerror = (e) => {
+        if (e.error !== 'no-speech') {
+          console.warn('Voice rec error:', e.error);
+        }
+      };
+
+      speechRec.onend = () => {
+        if (!state.finished) {
+          try { speechRec.start(); } catch (err) {}
+        }
+      };
+
+      speechRec.start();
+    } catch (e) {
+      console.warn('SpeechRec start failed:', e);
+    }
+  }
+
+  function handleVoiceCommand(cmd) {
+    console.log('Voice Command received:', cmd);
+
+    // 1. Check if STOP MODAL is active
+    if (stopModal.classList.contains('active')) {
+      if (cmd.includes('restart') || cmd.includes('again') || cmd.includes('beginning')) {
+        showVoiceToast('Restart');
+        modalRestartBtn.click();
+        return;
+      }
+      if (cmd.includes('home') || cmd.includes('exit') || cmd.includes('quit') || cmd.includes('stop')) {
+        showVoiceToast('Home');
+        modalHomeBtn.click();
+        return;
+      }
+      if (cmd.includes('cancel') || cmd.includes('resume') || cmd.includes('back') || cmd.includes('continue')) {
+        showVoiceToast('Cancel / Resume');
+        closeStopModal();
+        return;
+      }
+    }
+
+    // 2. Check if BOTTOM SHEET is active
+    if (sheetOverlay.classList.contains('active')) {
+      if (cmd.includes('repeat') || cmd.includes('again') || cmd.includes('restart')) {
+        const repBtn = document.getElementById('sheet-btn-repeat') || document.getElementById('sheet-btn-repeat-all');
+        if (repBtn) {
+          showVoiceToast('Repeat');
+          repBtn.click();
+          return;
+        }
+      }
+      if (cmd.includes('next') || cmd.includes('continue') || cmd.includes('go')) {
+        const nextBtn = document.getElementById('sheet-btn-next');
+        if (nextBtn) {
+          showVoiceToast('Next Exercise');
+          nextBtn.click();
+          return;
+        }
+      }
+      if (cmd.includes('home') || cmd.includes('stop') || cmd.includes('exit') || cmd.includes('quit')) {
+        const homeBtn = document.getElementById('sheet-btn-home') || document.getElementById('sheet-btn-stop');
+        if (homeBtn) {
+          showVoiceToast('Home / Stop');
+          homeBtn.click();
+          return;
+        }
+      }
+    }
+
+    // 3. Regular active workout commands
+    if (cmd.includes('pause') || cmd.includes('wait') || cmd.includes('hold on')) {
+      if (state.running) {
+        showVoiceToast('Pause');
+        togglePause();
+      }
+      return;
+    }
+
+    if (cmd.includes('resume') || cmd.includes('play') || cmd.includes('start') || cmd.includes('continue')) {
+      if (!state.running && !stopModal.classList.contains('active') && !sheetOverlay.classList.contains('active')) {
+        showVoiceToast('Resume');
+        togglePause();
+      }
+      return;
+    }
+
+    if (cmd.includes('repeat') || cmd.includes('restart') || cmd.includes('again')) {
+      showVoiceToast('Repeat Rep');
+      repeatCurrentRep();
+      return;
+    }
+
+    if (cmd.includes('stop') || cmd.includes('quit') || cmd.includes('end')) {
+      showVoiceToast('Stop');
+      openStopModal();
+      return;
+    }
+
+    if (cmd.includes('home') || cmd.includes('exit')) {
+      showVoiceToast('Go to Home');
+      location.href = 'index.html';
+      return;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  INITIALIZATION
+   * ══════════════════════════════════════════════════════════════ */
+  function init() {
+    buildProgressBar();
+    updateExerciseLabel();
+
+    // Bar starts completely empty
+    setRingMode('holding');
+    setArcFill(0);
+
+    ringNumber.textContent = '1';
+    ringOf.textContent     = `of ${CFG.reps}`;
+    setInfoEl.innerHTML    = `Set <strong>1</strong> of ${CFG.sets}`;
+    updateProgressBar();
+
+    requestWakeLock();
+    setupVoiceRecognition();
+
+    startTicker();
+    startHold(1, true, true);
+  }
+
+  window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

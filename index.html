@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workout Timer</title>
+  <style>
+    /*
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     *  DESIGN TOKENS — 4-Point Grid System
+     *
+     *  Spacing:   4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64
+     *  Type scale: 11 · 12 · 13 · 14 · 16 · 20 · 24 (px)
+     *  Radius:    8 · 12 · 16 · 24 (px)
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     */
+
+    /* ── Reset ──────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Colors */
+      --bg:           #0d0d0f;
+      --surface:      #1a1a1f;
+      --surface-2:    #222228;
+      --border:       #2e2e36;
+      --text:         #f0f0f5;
+      --text-sub:     #a0a0b4;   /* secondary labels */
+      --text-muted:   #6b6b80;   /* placeholder/units */
+      --accent:       #ff3b5c;
+      --accent-hover: #e8293f;
+      --accent-glow:  rgba(255, 59, 92, 0.40);
+
+      /* Spacing (4pt grid) */
+      --sp-1: 4px;
+      --sp-2: 8px;
+      --sp-3: 12px;
+      --sp-4: 16px;
+      --sp-5: 20px;
+      --sp-6: 24px;
+      --sp-8: 32px;
+      --sp-10: 40px;
+      --sp-12: 48px;
+      --sp-16: 64px;
+
+      /* Radius */
+      --r-sm:  8px;
+      --r-md:  12px;
+      --r-lg:  16px;
+      --r-xl:  24px;
+
+      /* Typography */
+      --text-xs:   0.6875rem;  /* 11px */
+      --text-sm:   0.75rem;    /* 12px */
+      --text-base: 0.875rem;   /* 14px */
+      --text-md:   1rem;       /* 16px */
+      --text-lg:   1.25rem;    /* 20px */
+      --text-xl:   1.5rem;     /* 24px */
+
+      /* Misc */
+      --transition: 0.16s ease;
+      --line-base:  1.4;
+    }
+
+    /* ── Base ───────────────────────────────────────────────────── */
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                   'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      line-height: var(--line-base);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: var(--sp-8) var(--sp-4) var(--sp-12);
+    }
+
+    /* ── Card ───────────────────────────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border-radius: var(--r-xl);
+      padding: var(--sp-8) var(--sp-6);
+      box-shadow:
+        0 2px  4px  rgba(0,0,0,0.30),
+        0 8px  24px rgba(0,0,0,0.40),
+        0 24px 64px rgba(0,0,0,0.50),
+        0 0    0 1px var(--border);
+    }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--sp-6);
+    }
+
+    .header-text h1 {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      line-height: 1.2;
+    }
+
+    .header-text p {
+      font-size: var(--text-base);
+      color: var(--text-sub);
+      margin-top: var(--sp-1);
+      line-height: 1.3;
+    }
+
+    .settings-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .settings-btn:hover {
+      background: var(--border);
+      border-color: var(--text-muted);
+    }
+
+    .settings-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-muted);
+      fill: none;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke var(--transition);
+    }
+
+    .settings-btn:hover svg { stroke: var(--text); }
+
+    /* ── Exercise Tabs ───────────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-bottom: var(--sp-6);
+      overflow-x: auto;
+      overflow-y: hidden;
+      width: 100%;
+      max-width: 100%;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      padding-bottom: 6px;
+      cursor: grab;
+    }
+
+    .tabs:active {
+      cursor: grabbing;
+    }
+
+    .tabs::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .tabs::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .tabs::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .tabs::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    .tab-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .tab {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: var(--sp-2) var(--sp-4);
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-sub);
+      cursor: pointer;
+      white-space: nowrap;
+      line-height: 1.4;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      transition: all var(--transition);
+    }
+
+    .tab:hover { color: var(--text); border-color: var(--text-muted); }
+
+    .tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(255, 59, 92, 0.35);
+    }
+
+    .tab-remove {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.25);
+      border: none;
+      color: inherit;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      font-size: 11px;
+      line-height: 1;
+      margin-left: 2px;
+      transition: background var(--transition);
+    }
+
+    .tab-remove:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .tab.has-remove .tab-remove {
+      display: inline-flex;
+    }
+
+    .tab-add {
+      background: var(--surface-2);
+      border: 1px dashed var(--border);
+      border-radius: var(--r-sm);
+      width: 40px;
+      height: 36px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      line-height: 1;
+      transition: all var(--transition);
+    }
+
+    .tab-add:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Parameter Rows ─────────────────────────────────────────── */
+    .params { display: flex; flex-direction: column; gap: var(--sp-1); }
+
+    .param-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: var(--sp-4);
+      border-radius: var(--r-sm);
+      background: var(--surface-2);
+      border: 1px solid transparent;
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    .param-row:hover { border-color: var(--border); }
+
+    /* Color dot */
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Labels */
+    .param-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .param-info strong {
+      display: block;
+      font-size: var(--text-md);
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.1px;
+    }
+
+    .param-info span {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    /* ── Stepper (Click once for 1, hold for high-speed, or type) ─ */
+    .stepper {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .stepper-btn {
+      background: transparent;
+      border: none;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 1.125rem;
+      line-height: 1;
+      transition: background var(--transition), color var(--transition);
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .stepper-btn:hover  { background: var(--surface-2); color: var(--text); }
+    .stepper-btn:active { background: var(--border); color: #fff; }
+
+    /* Typeable Stepper Input (No unit text inside!) */
+    .stepper-input {
+      width: 44px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      outline: none;
+      text-align: center;
+      font-family: inherit;
+      font-size: var(--text-md);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 36px;
+      padding: 0;
+      -moz-appearance: textfield;
+      user-select: all;
+    }
+
+    .stepper-input::-webkit-outer-spin-button,
+    .stepper-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .stepper-input:focus {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    /* ── Speaker Inside Toggle Switch ────────────────────────────── */
+    .switch-wrap {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .switch-pill {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 28px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .switch-input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      transition: background var(--transition), border-color var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      overflow: hidden;
+    }
+
+    /* Speaker icon inside track */
+    .switch-icon {
+      width: 14px;
+      height: 14px;
+      transition: opacity var(--transition), transform var(--transition);
+      pointer-events: none;
+      flex-shrink: 0;
+    }
+
+    .switch-icon.on {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+      transform: translateX(-4px);
+    }
+
+    .switch-icon.off {
+      fill: none;
+      stroke: var(--text-muted);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* White circular thumb */
+    .switch-thumb {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      top: 3px;
+      left: 3px;
+      transition: transform var(--transition), background var(--transition);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      pointer-events: none;
+    }
+
+    /* Checked state (Red with Speaker Icon Visible on Left) */
+    .switch-input:checked + .switch-track {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .switch-input:checked + .switch-track .switch-thumb {
+      transform: translateX(24px);
+      background: #fff;
+    }
+
+    .switch-input:checked + .switch-track .switch-icon.on {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .switch-input:checked + .switch-track .switch-icon.off {
+      opacity: 0;
+      transform: translateX(4px);
+    }
+
+    .switch-input:focus-visible + .switch-track {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ── Dynamic Start Exercise Button ───────────────────────────── */
+    .start-btn-wrap {
+      margin-top: var(--sp-6);
+    }
+
+    .start-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-3);
+      width: 100%;
+      padding: var(--sp-4) var(--sp-6);
+      background: linear-gradient(135deg, #ff4767 0%, #ff2b50 100%);
+      border: none;
+      border-radius: var(--r-md);
+      color: #fff;
+      font-size: var(--text-md);
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+                  box-shadow 0.2s ease,
+                  filter 0.2s ease;
+      box-shadow: 0 4px 20px var(--accent-glow), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+      animation: dynamic-pulse 3s infinite ease-in-out;
+    }
+
+    @keyframes dynamic-pulse {
+      0%, 100% {
+        box-shadow: 0 4px 20px rgba(255, 59, 92, 0.40), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+      }
+      50% {
+        box-shadow: 0 6px 30px rgba(255, 59, 92, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+      }
+    }
+
+    .start-btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 50%;
+      height: 200%;
+      background: linear-gradient(
+        60deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.22) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(25deg);
+      animation: shine 4.5s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { left: -60%; }
+      20%, 100% { left: 140%; }
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 8px 32px rgba(255, 59, 92, 0.70), 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+      filter: brightness(1.05);
+    }
+
+    .start-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 2px 12px rgba(255, 59, 92, 0.50);
+    }
+
+    .start-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: #fff;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .start-btn:hover svg {
+      transform: translateX(2px);
+    }
+
+    /* ── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      body { padding: 0; align-items: stretch; }
+      .card {
+        border-radius: 0;
+        max-width: 100%;
+        min-height: 100vh;
+        padding: var(--sp-6) var(--sp-4);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<main class="card" aria-label="Workout Timer Configuration">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-text">
+      <h1>Workout Timer</h1>
+      <p>Set your intervals and start</p>
+    </div>
+    <a href="settings.html" class="settings-btn" aria-label="Settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- Exercise Tabs (Initially only Exercise 1) -->
+  <div class="tabs" id="tabs-container" role="tablist" aria-label="Exercises">
+    <div class="tab-wrapper" data-tab-id="1">
+      <button class="tab active" role="tab" aria-selected="true" data-tab="1">
+        <span>Exercise 1</span>
+        <span class="tab-remove" title="Remove Exercise">&times;</span>
+      </button>
+    </div>
+    <button class="tab-add" id="tab-add-btn" aria-label="Add Exercise" title="Add Exercise">+</button>
+  </div>
+
+  <!-- Parameter Rows -->
+  <div class="params" id="params">
+
+    <!-- Sets -->
+    <div class="param-row">
+      <span class="dot" style="background:#4caf50" aria-hidden="true"></span>
+      <div class="param-info">
+        <strong>Sets</strong>
+        <span>Number of sets</span>
+      </div>
+      <div class="stepper" aria-label="Sets stepper">
+        <button class="stepper-btn" data-target="sets" data-dir="-1" aria-label="Decrease sets">−</button>
+        <input type="number" class="stepper-input" id="sets-val" value="3" min="1" max="99" aria-label="Sets value" />
+        <button class="stepper-btn" data-target="sets" data-dir="1" aria-label="Increase sets">+</button>
+      </div>
+      <div class="switch-wrap">
+        <label class="switch-pill" aria-label="Toggle voice for Sets">
+          <input class="switch-input" id="sound-sets" type="checkbox" checked />
+          <span class="switch-track">
+            <!-- Speaker ON Icon (Left) -->
+            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            <!-- Speaker OFF Icon (Right) -->
+            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <line x1="22" y1="9" x2="16" y2="15"/>
+              <line x1="16" y1="9" x2="22" y2="15"/>
+            </svg>
+            <span class="switch-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Rest between Sets -->
+    <div class="param-row">
+      <span class="dot" style="background:#2196f3" aria-hidden="true"></span>
+      <div class="param-info">
+        <strong>Rest between Sets</strong>
+        <span>Time between sets (sec)</span>
+      </div>
+      <div class="stepper" aria-label="Rest between sets stepper">
+        <button class="stepper-btn" data-target="rest-sets" data-dir="-1" aria-label="Decrease rest between sets">−</button>
+        <input type="number" class="stepper-input" id="rest-sets-val" value="30" min="0" max="600" aria-label="Rest between sets value" />
+        <button class="stepper-btn" data-target="rest-sets" data-dir="1" aria-label="Increase rest between sets">+</button>
+      </div>
+      <div class="switch-wrap">
+        <label class="switch-pill" aria-label="Toggle voice for Rest between Sets">
+          <input class="switch-input" id="sound-rest-sets" type="checkbox" checked />
+          <span class="switch-track">
+            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <line x1="22" y1="9" x2="16" y2="15"/>
+              <line x1="16" y1="9" x2="22" y2="15"/>
+            </svg>
+            <span class="switch-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Reps Per Set -->
+    <div class="param-row">
+      <span class="dot" style="background:#f44336" aria-hidden="true"></span>
+      <div class="param-info">
+        <strong>Reps Per Set</strong>
+        <span>Number of reps per set</span>
+      </div>
+      <div class="stepper" aria-label="Reps per set stepper">
+        <button class="stepper-btn" data-target="reps" data-dir="-1" aria-label="Decrease reps">−</button>
+        <input type="number" class="stepper-input" id="reps-val" value="10" min="1" max="99" aria-label="Reps value" />
+        <button class="stepper-btn" data-target="reps" data-dir="1" aria-label="Increase reps">+</button>
+      </div>
+      <div class="switch-wrap">
+        <label class="switch-pill" aria-label="Toggle voice for Reps Per Set">
+          <input class="switch-input" id="sound-reps" type="checkbox" checked />
+          <span class="switch-track">
+            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <line x1="22" y1="9" x2="16" y2="15"/>
+              <line x1="16" y1="9" x2="22" y2="15"/>
+            </svg>
+            <span class="switch-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Rest between Reps -->
+    <div class="param-row">
+      <span class="dot" style="background:#ff9800" aria-hidden="true"></span>
+      <div class="param-info">
+        <strong>Rest between Reps</strong>
+        <span>Time between reps (sec)</span>
+      </div>
+      <div class="stepper" aria-label="Rest between reps stepper">
+        <button class="stepper-btn" data-target="rest-reps" data-dir="-1" aria-label="Decrease rest between reps">−</button>
+        <input type="number" class="stepper-input" id="rest-reps-val" value="5" min="0" max="300" aria-label="Rest between reps value" />
+        <button class="stepper-btn" data-target="rest-reps" data-dir="1" aria-label="Increase rest between reps">+</button>
+      </div>
+      <div class="switch-wrap">
+        <label class="switch-pill" aria-label="Toggle voice for Rest between Reps">
+          <input class="switch-input" id="sound-rest-reps" type="checkbox" checked />
+          <span class="switch-track">
+            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <line x1="22" y1="9" x2="16" y2="15"/>
+              <line x1="16" y1="9" x2="22" y2="15"/>
+            </svg>
+            <span class="switch-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Hold Time -->
+    <div class="param-row">
+      <span class="dot" style="background:#9c27b0" aria-hidden="true"></span>
+      <div class="param-info">
+        <strong>Hold Time</strong>
+        <span>Time to hold each rep (sec)</span>
+      </div>
+      <div class="stepper" aria-label="Hold time stepper">
+        <button class="stepper-btn" data-target="hold" data-dir="-1" aria-label="Decrease hold time">−</button>
+        <input type="number" class="stepper-input" id="hold-val" value="10" min="0" max="300" aria-label="Hold time value" />
+        <button class="stepper-btn" data-target="hold" data-dir="1" aria-label="Increase hold time">+</button>
+      </div>
+      <div class="switch-wrap">
+        <label class="switch-pill" aria-label="Toggle voice for Hold Time">
+          <input class="switch-input" id="sound-hold" type="checkbox" checked />
+          <span class="switch-track">
+            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <line x1="22" y1="9" x2="16" y2="15"/>
+              <line x1="16" y1="9" x2="22" y2="15"/>
+            </svg>
+            <span class="switch-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+  </div><!-- /params -->
+
+  <!-- Dynamic Start Exercise Button -->
+  <div class="start-btn-wrap">
+    <button class="start-btn" id="start-btn" aria-label="Start Exercise">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <span>Start Exercise</span>
+    </button>
+  </div>
+
+</main>
+
+<script>
+  // ── State ────────────────────────────────────────────────────
+  const state = {
+    sets:        { value: 3,  min: 1, max: 99  },
+    'rest-sets': { value: 30, min: 0, max: 600 },
+    reps:        { value: 10, min: 1, max: 99  },
+    'rest-reps': { value: 5,  min: 0, max: 300 },
+    hold:        { value: 10, min: 0, max: 300 },
+  };
+
+  const STORAGE_KEY = 'workout_timer_saved_config';
+
+  // ── Persistence Helpers (Save & Restore previous exercise values) ─
+  function saveConfig() {
+    try {
+      const exerciseCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
+      const config = {
+        sets:          state['sets'].value,
+        restSets:      state['rest-sets'].value,
+        reps:          state['reps'].value,
+        restReps:      state['rest-reps'].value,
+        hold:          state['hold'].value,
+        exerciseCount: Math.max(1, exerciseCount),
+        soundSets:     document.getElementById('sound-sets').checked,
+        soundRestSets: document.getElementById('sound-rest-sets').checked,
+        soundReps:     document.getElementById('sound-reps').checked,
+        soundRestReps: document.getElementById('sound-rest-reps').checked,
+        soundHold:     document.getElementById('sound-hold').checked,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+    } catch (e) {
+      console.warn('Failed to save config to localStorage:', e);
+    }
+  }
+
+  function loadConfig() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const cfg = JSON.parse(raw);
+
+      if (typeof cfg.sets === 'number')      updateValue('sets', cfg.sets);
+      if (typeof cfg.restSets === 'number')  updateValue('rest-sets', cfg.restSets);
+      if (typeof cfg.reps === 'number')      updateValue('reps', cfg.reps);
+      if (typeof cfg.restReps === 'number')  updateValue('rest-reps', cfg.restReps);
+      if (typeof cfg.hold === 'number')      updateValue('hold', cfg.hold);
+
+      if (cfg.soundSets !== undefined)     document.getElementById('sound-sets').checked     = !!cfg.soundSets;
+      if (cfg.soundRestSets !== undefined) document.getElementById('sound-rest-sets').checked = !!cfg.soundRestSets;
+      if (cfg.soundReps !== undefined)     document.getElementById('sound-reps').checked     = !!cfg.soundReps;
+      if (cfg.soundRestReps !== undefined) document.getElementById('sound-rest-reps').checked = !!cfg.soundRestReps;
+      if (cfg.soundHold !== undefined)     document.getElementById('sound-hold').checked     = !!cfg.soundHold;
+
+      // Restore saved exercise tabs
+      if (cfg.exerciseCount && cfg.exerciseCount > 1) {
+        tabsContainer.querySelectorAll('.tab-wrapper').forEach(w => w.remove());
+        for (let i = 1; i <= cfg.exerciseCount; i++) {
+          createExerciseTab(i, i === 1);
+        }
+        updateRemoveButtons();
+      }
+    } catch (e) {
+      console.warn('Failed to load config from localStorage:', e);
+    }
+  }
+
+  // ── Helper to Update and Sync Stepper Value ───────────────────
+  function updateValue(target, newVal) {
+    const s = state[target];
+    if (!s) return;
+    const clamped = Math.min(s.max, Math.max(s.min, newVal));
+    s.value = clamped;
+    const input = document.getElementById(`${target}-val`);
+    if (input && parseInt(input.value, 10) !== clamped) {
+      input.value = clamped;
+    }
+    saveConfig();
+  }
+
+  function stepOnce(target, dir) {
+    updateValue(target, state[target].value + dir);
+  }
+
+  // ── Stepper Press & Hold for High Speed Acceleration ─────────
+  let holdTimer = null;
+  let holdInterval = null;
+
+  function startHoldStep(target, dir) {
+    stepOnce(target, dir); // Immediate single click step (+1 or -1)
+
+    // After 350ms of holding, repeat rapidly
+    holdTimer = setTimeout(() => {
+      holdInterval = setInterval(() => {
+        stepOnce(target, dir);
+      }, 60); // High speed 60ms repeat
+    }, 350);
+  }
+
+  function stopHoldStep() {
+    if (holdTimer)    { clearTimeout(holdTimer);   holdTimer = null; }
+    if (holdInterval) { clearInterval(holdInterval); holdInterval = null; }
+  }
+
+  document.querySelectorAll('.stepper-btn').forEach(btn => {
+    const target = btn.dataset.target;
+    const dir    = parseInt(btn.dataset.dir, 10);
+
+    // Mouse events
+    btn.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      startHoldStep(target, dir);
+    });
+    btn.addEventListener('mouseup', stopHoldStep);
+    btn.addEventListener('mouseleave', stopHoldStep);
+
+    // Touch events for mobile/tablet
+    btn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      startHoldStep(target, dir);
+    }, { passive: false });
+    btn.addEventListener('touchend', stopHoldStep);
+    btn.addEventListener('touchcancel', stopHoldStep);
+  });
+
+  // ── Allow User to Type Directly in the Input Field ────────────
+  document.querySelectorAll('.stepper-input').forEach(input => {
+    const id = input.id.replace('-val', '');
+
+    input.addEventListener('input', () => {
+      const val = parseInt(input.value, 10);
+      if (!isNaN(val)) {
+        updateValue(id, val);
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      if (input.value === '' || isNaN(parseInt(input.value, 10))) {
+        input.value = state[id].value;
+      } else {
+        updateValue(id, parseInt(input.value, 10));
+      }
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        stepOnce(id, 1);
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        stepOnce(id, -1);
+      } else if (e.key === 'Enter') {
+        input.blur();
+      }
+    });
+  });
+
+  // ── Track Sound Switch Changes ────────────────────────────────
+  document.querySelectorAll('.switch-input').forEach(sw => {
+    sw.addEventListener('change', saveConfig);
+  });
+
+  // ── Exercise Tabs Management (Initially only Exercise 1) ──────
+  const tabsContainer = document.getElementById('tabs-container');
+  const tabAddBtn     = document.getElementById('tab-add-btn');
+
+  function createExerciseTab(num, isActive = false) {
+    const newWrapper = document.createElement('div');
+    newWrapper.className = 'tab-wrapper';
+    newWrapper.dataset.tabId = num;
+
+    const newTab = document.createElement('button');
+    newTab.className = `tab ${isActive ? 'active' : ''}`;
+    newTab.role = 'tab';
+    newTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    newTab.dataset.tab = num;
+    newTab.innerHTML = `<span>Exercise ${num}</span><span class="tab-remove" title="Remove Exercise">&times;</span>`;
+
+    newWrapper.appendChild(newTab);
+    tabsContainer.insertBefore(newWrapper, tabAddBtn);
+    return newTab;
+  }
+
+  function updateRemoveButtons() {
+    const wrappers = tabsContainer.querySelectorAll('.tab-wrapper');
+    wrappers.forEach(w => {
+      const tab = w.querySelector('.tab');
+      if (wrappers.length > 1) {
+        tab.classList.add('has-remove');
+      } else {
+        tab.classList.remove('has-remove');
+      }
+    });
+  }
+
+  function renumberTabs() {
+    const wrappers = tabsContainer.querySelectorAll('.tab-wrapper');
+    wrappers.forEach((w, index) => {
+      const num = index + 1;
+      w.dataset.tabId = num;
+      const btn = w.querySelector('.tab');
+      btn.dataset.tab = num;
+      btn.querySelector('span:first-child').textContent = `Exercise ${num}`;
+    });
+    updateRemoveButtons();
+    saveConfig();
+  }
+
+  function setActiveTab(tabBtn) {
+    tabsContainer.querySelectorAll('.tab').forEach(t => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    tabBtn.classList.add('active');
+    tabBtn.setAttribute('aria-selected', 'true');
+  }
+
+  // Setup tab click delegation
+  tabsContainer.addEventListener('click', (e) => {
+    const removeBtn = e.target.closest('.tab-remove');
+    if (removeBtn) {
+      e.stopPropagation();
+      const wrapper = removeBtn.closest('.tab-wrapper');
+      const wasActive = wrapper.querySelector('.tab').classList.contains('active');
+      wrapper.remove();
+      renumberTabs();
+      if (wasActive) {
+        const firstTab = tabsContainer.querySelector('.tab');
+        if (firstTab) setActiveTab(firstTab);
+      }
+      saveConfig();
+      return;
+    }
+
+    const tabBtn = e.target.closest('.tab');
+    if (tabBtn && tabBtn.dataset.tab) {
+      setActiveTab(tabBtn);
+    }
+  });
+
+  // ── Smooth Mouse Wheel Horizontal Scrolling ───────────────────
+  tabsContainer.addEventListener('wheel', (e) => {
+    if (e.deltaY !== 0) {
+      e.preventDefault();
+      tabsContainer.scrollLeft += e.deltaY * 0.9;
+    }
+  }, { passive: false });
+
+  // ── Click & Drag Horizontal Scrolling for Desktop ─────────────
+  let isDown = false;
+  let startX = 0;
+  let scrollLeft = 0;
+  let hasMoved = false;
+
+  tabsContainer.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.tab-remove') || e.target.closest('.tab-add')) return;
+    isDown = true;
+    hasMoved = false;
+    startX = e.pageX - tabsContainer.offsetLeft;
+    scrollLeft = tabsContainer.scrollLeft;
+  });
+
+  tabsContainer.addEventListener('mouseleave', () => { isDown = false; });
+  tabsContainer.addEventListener('mouseup', () => {
+    setTimeout(() => { isDown = false; hasMoved = false; }, 50);
+  });
+
+  tabsContainer.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    const x = e.pageX - tabsContainer.offsetLeft;
+    const walk = (x - startX) * 1.4;
+    if (Math.abs(walk) > 4) {
+      hasMoved = true;
+    }
+    tabsContainer.scrollLeft = scrollLeft - walk;
+  });
+
+  // Add Exercise Tab
+  tabAddBtn.addEventListener('click', () => {
+    const wrappers = tabsContainer.querySelectorAll('.tab-wrapper');
+    const newNum = wrappers.length + 1;
+    const newTab = createExerciseTab(newNum, true);
+
+    setActiveTab(newTab);
+    updateRemoveButtons();
+    newTab.scrollIntoView({ behavior: 'smooth', inline: 'nearest' });
+    saveConfig();
+  });
+
+  updateRemoveButtons();
+
+  // ── Restore Previous Exercise Values ──────────────────────────
+  loadConfig();
+
+  // ── Dynamic Start Exercise Button ─────────────────────────────
+  document.getElementById('start-btn').addEventListener('click', () => {
+    saveConfig();
+    const exerciseCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
+
+    // Check voice sound toggles
+    const soundSets     = document.getElementById('sound-sets').checked ? '1' : '0';
+    const soundRestSets = document.getElementById('sound-rest-sets').checked ? '1' : '0';
+    const soundReps     = document.getElementById('sound-reps').checked ? '1' : '0';
+    const soundRestReps = document.getElementById('sound-rest-reps').checked ? '1' : '0';
+    const soundHold     = document.getElementById('sound-hold').checked ? '1' : '0';
+
+    const p = new URLSearchParams({
+      sets:          state['sets'].value,
+      reps:          state['reps'].value,
+      restSets:      state['rest-sets'].value,
+      restReps:      state['rest-reps'].value,
+      hold:          state['hold'].value,
+      exercises:     exerciseCount,
+      soundSets,
+      soundRestSets,
+      soundReps,
+      soundRestReps,
+      soundHold,
+    });
+
+    location.href = `timer.html?${p.toString()}`;
+  });
+</script>
+
+</body>
+</html>

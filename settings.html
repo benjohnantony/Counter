@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — Workout Timer</title>
+  <style>
+    /*
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     *  DESIGN TOKENS — 4-Point Grid System
+     *  Spacing:   4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64
+     *  Type scale: 11 · 12 · 14 · 16 · 18 · 20 · 24 (px)
+     *  Radius:    8 · 12 · 16 · 24 (px)
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:            #0d0d0f;
+      --surface:       #1a1a1f;
+      --surface-2:     #222228;
+      --surface-card:  #16161b;
+      --border:        #2e2e36;
+      --text:          #f0f0f5;
+      --text-sub:      #a0a0b4;
+      --text-muted:    #6b6b80;
+      --blue:          #2f80ed;
+      --blue-glow:     rgba(47, 128, 237, 0.35);
+      --accent:        #ff3b5c;
+      --accent-glow:   rgba(255, 59, 92, 0.35);
+
+      --sp-1:  4px;  --sp-2:  8px;  --sp-3:  12px; --sp-4:  16px;
+      --sp-5:  20px; --sp-6:  24px; --sp-8:  32px; --sp-10: 40px;
+      --sp-12: 48px;
+
+      --r-sm:  8px;
+      --r-md:  12px;
+      --r-lg:  16px;
+      --r-xl:  24px;
+
+      --text-xs:   0.6875rem; /* 11px */
+      --text-sm:   0.75rem;   /* 12px */
+      --text-base: 0.875rem;  /* 14px */
+      --text-md:   1rem;      /* 16px */
+      --text-lg:   1.125rem;  /* 18px */
+      --text-xl:   1.25rem;   /* 20px */
+
+      --transition: 0.16s ease;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                   'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: var(--sp-8) var(--sp-4) var(--sp-12);
+    }
+
+    /* ── Card Container ─────────────────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border-radius: var(--r-xl);
+      padding: var(--sp-6) var(--sp-6) var(--sp-8);
+      box-shadow:
+        0 2px  4px  rgba(0,0,0,0.30),
+        0 8px  24px rgba(0,0,0,0.40),
+        0 24px 64px rgba(0,0,0,0.50),
+        0 0    0 1px var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+    }
+
+    /* ── Top Header Bar ─────────────────────────────────────────── */
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: var(--sp-2);
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r-sm);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--transition), border-color var(--transition);
+      z-index: 2;
+    }
+
+    .back-btn:hover {
+      background: var(--border);
+      border-color: var(--text-muted);
+    }
+
+    .back-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .header-title {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: var(--text-xl);
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      pointer-events: none;
+    }
+
+    .header-placeholder {
+      width: 40px;
+      height: 40px;
+      visibility: hidden;
+    }
+
+    /* ── Settings Group List ────────────────────────────────────── */
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    /* ── Setting Item Card (iOS wireframe style) ────────────────── */
+    .setting-card {
+      background: #141418;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--sp-4) var(--sp-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    .setting-card.clickable {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .setting-card.clickable:hover {
+      background: #18181f;
+      border-color: #3e3e4a;
+    }
+
+    .setting-card.clickable:active {
+      transform: scale(0.995);
+    }
+
+    /* Row inside setting card */
+    .setting-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .setting-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .setting-title {
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.1px;
+    }
+
+    .setting-desc {
+      font-size: var(--text-sm);
+      color: var(--text-sub);
+    }
+
+    /* Right Action in Nav Card (Chevron & Value) */
+    .setting-action {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      color: var(--text-sub);
+      font-size: var(--text-base);
+      font-weight: 500;
+    }
+
+    .chevron-icon {
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-muted);
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform var(--transition);
+    }
+
+    .setting-card.clickable:hover .chevron-icon {
+      transform: translateX(2px);
+      stroke: var(--text);
+    }
+
+    /* ── Range Slider Row ───────────────────────────────────────── */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      margin-top: var(--sp-1);
+    }
+
+    .slider-track-wrap {
+      flex: 1;
+      position: relative;
+      height: 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Custom range input */
+    .custom-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #2a2a34;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      margin: 0;
+    }
+
+    /* Filled track progress style via CSS variable */
+    .custom-slider::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(to right, var(--blue) var(--slider-pct, 50%), #2a2a34 var(--slider-pct, 50%));
+    }
+
+    .custom-slider::-moz-range-track {
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(to right, var(--blue) var(--slider-pct, 50%), #2a2a34 var(--slider-pct, 50%));
+    }
+
+    .custom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid var(--blue);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 10px var(--blue-glow);
+      cursor: pointer;
+      margin-top: -8px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .custom-slider::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid var(--blue);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 10px var(--blue-glow);
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .custom-slider:active::-webkit-slider-thumb {
+      transform: scale(1.15);
+      box-shadow: 0 2px 10px rgba(47, 128, 237, 0.7);
+    }
+
+    .slider-val-label {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text);
+      min-width: 44px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── iOS-Style Toggle Switch (Blue when active) ─────────────── */
+    .toggle-pill {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 30px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .toggle-input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #2b2b36;
+      border-radius: 999px;
+      transition: background 0.22s ease;
+    }
+
+    .toggle-thumb {
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 24px;
+      height: 24px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toggle-input:checked + .toggle-track {
+      background: var(--blue);
+      box-shadow: 0 0 12px var(--blue-glow);
+    }
+
+    .toggle-input:checked + .toggle-track .toggle-thumb {
+      transform: translateX(20px);
+    }
+
+    /* ── Preview Audio Coach Button ─────────────────────────────── */
+    .preview-btn-wrap {
+      margin-top: var(--sp-2);
+    }
+
+    .preview-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      color: var(--text);
+      font-size: var(--text-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .preview-btn:hover {
+      background: #2a2a34;
+      border-color: var(--blue);
+      color: #fff;
+    }
+
+    .preview-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--blue);
+    }
+
+    .preview-btn.playing {
+      border-color: var(--accent);
+      background: rgba(255, 59, 92, 0.1);
+    }
+
+    .preview-btn.playing svg {
+      fill: var(--accent);
+    }
+
+    /* ── Reset Button ───────────────────────────────────────────── */
+    .reset-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      padding: var(--sp-2);
+      margin-top: var(--sp-1);
+      transition: color var(--transition);
+    }
+
+    .reset-btn:hover {
+      color: var(--accent);
+    }
+
+    /* ── Selection Bottom Sheet / Modal ─────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+      z-index: 990;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sheet-card {
+      width: 100%;
+      max-width: 480px;
+      max-height: 80vh;
+      background: #18181e;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      padding: var(--sp-4) var(--sp-5) var(--sp-8);
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-overlay.active .sheet-card {
+      transform: translateY(0);
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--border);
+      margin: 0 auto var(--sp-4);
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--sp-4);
+      padding-bottom: var(--sp-3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sheet-header h3 {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .sheet-close-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .sheet-close-btn:hover {
+      color: var(--text);
+      background: var(--border);
+    }
+
+    .sheet-list {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+      max-height: 55vh;
+      padding-right: var(--sp-1);
+    }
+
+    /* Scrollbar */
+    .sheet-list::-webkit-scrollbar { width: 5px; }
+    .sheet-list::-webkit-scrollbar-track { background: transparent; }
+    .sheet-list::-webkit-scrollbar-thumb { background: #33333f; border-radius: 999px; }
+
+    .sheet-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sp-3) var(--sp-4);
+      background: #141418;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition);
+      color: var(--text);
+    }
+
+    .sheet-item:hover {
+      background: #1e1e26;
+      border-color: #444454;
+    }
+
+    .sheet-item.selected {
+      border-color: var(--blue);
+      background: rgba(47, 128, 237, 0.12);
+    }
+
+    .sheet-item-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sheet-item-name {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .sheet-item-sub {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .sheet-item-check {
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: none;
+    }
+
+    .sheet-item.selected .sheet-item-check {
+      display: block;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      body { padding: 0; align-items: stretch; }
+      .card {
+        border-radius: 0;
+        max-width: 100%;
+        min-height: 100vh;
+        padding: var(--sp-6) var(--sp-4) var(--sp-10);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<main class="card" aria-label="Settings Configuration">
+
+  <!-- Header -->
+  <div class="header-bar">
+    <a href="index.html" class="back-btn" id="back-btn" aria-label="Back" onclick="if (history.length > 1) { history.back(); return false; }">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <h1 class="header-title">Settings</h1>
+    <div class="header-placeholder" aria-hidden="true"></div>
+  </div>
+
+  <div class="settings-list">
+
+    <!-- 1. Voice (Wireframe Row 1) -->
+    <div class="setting-card clickable" id="card-voice" role="button" aria-haspopup="dialog" aria-label="Choose a voice">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Voice</span>
+          <span class="setting-desc">Choose a voice</span>
+        </div>
+        <div class="setting-action">
+          <span id="label-selected-voice">Default</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Language (Wireframe Row 2) -->
+    <div class="setting-card clickable" id="card-language" role="button" aria-haspopup="dialog" aria-label="App language">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Language</span>
+          <span class="setting-desc">App language</span>
+        </div>
+        <div class="setting-action">
+          <span id="label-selected-language">English</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Speech Speed (Wireframe Row 3) -->
+    <div class="setting-card">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Speech speed</span>
+          <span class="setting-desc">Adjust counting speed</span>
+        </div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-track-wrap">
+          <input type="range" class="custom-slider" id="slider-speed"
+                 min="0.6" max="1.6" step="0.1" value="1.0"
+                 aria-label="Speech speed" />
+        </div>
+        <span class="slider-val-label" id="val-speed">1.0x</span>
+      </div>
+    </div>
+
+    <!-- 4. Volume (Wireframe Row 4) -->
+    <div class="setting-card">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Volume</span>
+          <span class="setting-desc">Adjust voice volume</span>
+        </div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-track-wrap">
+          <input type="range" class="custom-slider" id="slider-volume"
+                 min="0" max="100" step="5" value="80"
+                 aria-label="Volume" />
+        </div>
+        <span class="slider-val-label" id="val-volume">80%</span>
+      </div>
+    </div>
+
+    <!-- 5. Keep Screen Awake / Continue in background (Wireframe Row 5) -->
+    <div class="setting-card">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Continue in background</span>
+          <span class="setting-desc">Keep screen awake & timer running</span>
+        </div>
+        <label class="toggle-pill" aria-label="Toggle continue in background">
+          <input type="checkbox" class="toggle-input" id="toggle-wakelock" checked />
+          <span class="toggle-track">
+            <span class="toggle-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 6. Voice Commands Hands-Free Control (Relevant addition) -->
+    <div class="setting-card">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Voice commands</span>
+          <span class="setting-desc">Hands-free control ("pause", "resume", "stop")</span>
+        </div>
+        <label class="toggle-pill" aria-label="Toggle hands-free voice commands">
+          <input type="checkbox" class="toggle-input" id="toggle-voice-commands" checked />
+          <span class="toggle-track">
+            <span class="toggle-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 7. Audio Countdown Beeps (Relevant addition) -->
+    <div class="setting-card">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Countdown beeps</span>
+          <span class="setting-desc">Play audio tone in final 3 seconds</span>
+        </div>
+        <label class="toggle-pill" aria-label="Toggle countdown beeps">
+          <input type="checkbox" class="toggle-input" id="toggle-beeps" checked />
+          <span class="toggle-track">
+            <span class="toggle-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+  </div><!-- /settings-list -->
+
+  <!-- Preview Sound Button -->
+  <div class="preview-btn-wrap">
+    <button class="preview-btn" id="btn-preview-coach" aria-label="Test Voice Coach">
+      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <span id="preview-btn-text">Test Voice Coach</span>
+    </button>
+  </div>
+
+  <!-- Reset Button -->
+  <button class="reset-btn" id="btn-reset" aria-label="Reset all settings to default">
+    Reset to Defaults
+  </button>
+
+</main>
+
+<!-- ── Voice Picker Bottom Sheet ───────────────────────────────── -->
+<div class="modal-overlay" id="modal-voice" role="dialog" aria-modal="true" aria-labelledby="voice-modal-title">
+  <div class="sheet-card">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <h3 id="voice-modal-title">Select Voice</h3>
+      <button class="sheet-close-btn" id="btn-close-voice" aria-label="Close voice picker">&times;</button>
+    </div>
+    <div class="sheet-list" id="voice-list">
+      <!-- Populated dynamically with available browser voices -->
+    </div>
+  </div>
+</div>
+
+<!-- ── Language Picker Bottom Sheet ────────────────────────────── -->
+<div class="modal-overlay" id="modal-language" role="dialog" aria-modal="true" aria-labelledby="lang-modal-title">
+  <div class="sheet-card">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <h3 id="lang-modal-title">Select Language</h3>
+      <button class="sheet-close-btn" id="btn-close-lang" aria-label="Close language picker">&times;</button>
+    </div>
+    <div class="sheet-list" id="lang-list">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ══════════════════════════════════════════════════════════════
+   *  SETTINGS STATE & PERSISTENCE
+   * ══════════════════════════════════════════════════════════════ */
+  const SETTINGS_STORAGE_KEY = 'workout_timer_settings';
+
+  const DEFAULT_SETTINGS = {
+    voiceURI:        'default',
+    voiceName:       'Default',
+    language:        'en-US',
+    languageLabel:   'English',
+    speed:           1.0,
+    volume:          80,
+    keepScreenAwake: true,
+    voiceCommands:   true,
+    countdownBeeps:  true,
+  };
+
+  let currentSettings = { ...DEFAULT_SETTINGS };
+
+  function loadSettings() {
+    try {
+      const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
+      if (raw) {
+        currentSettings = { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+      }
+    } catch (e) {
+      console.warn('Failed to load settings:', e);
+    }
+  }
+
+  function saveSettings() {
+    try {
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(currentSettings));
+    } catch (e) {
+      console.warn('Failed to save settings:', e);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  SLIDER PROGRESS FILL HELPERS
+   * ══════════════════════════════════════════════════════════════ */
+  function updateSliderFill(slider) {
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+    const val = parseFloat(slider.value);
+    const pct = ((val - min) / (max - min)) * 100;
+    slider.style.setProperty('--slider-pct', `${pct}%`);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  DOM REFS
+   * ══════════════════════════════════════════════════════════════ */
+  const labelVoice       = document.getElementById('label-selected-voice');
+  const labelLanguage    = document.getElementById('label-selected-language');
+  const sliderSpeed      = document.getElementById('slider-speed');
+  const valSpeed         = document.getElementById('val-speed');
+  const sliderVolume     = document.getElementById('slider-volume');
+  const valVolume        = document.getElementById('val-volume');
+  const toggleWakelock   = document.getElementById('toggle-wakelock');
+  const toggleCommands   = document.getElementById('toggle-voice-commands');
+  const toggleBeeps      = document.getElementById('toggle-beeps');
+  const btnPreview       = document.getElementById('btn-preview-coach');
+  const previewText      = document.getElementById('preview-btn-text');
+  const btnReset         = document.getElementById('btn-reset');
+
+  // Modals
+  const cardVoice        = document.getElementById('card-voice');
+  const modalVoice       = document.getElementById('modal-voice');
+  const btnCloseVoice    = document.getElementById('btn-close-voice');
+  const voiceListEl      = document.getElementById('voice-list');
+
+  const cardLanguage     = document.getElementById('card-language');
+  const modalLanguage    = document.getElementById('modal-language');
+  const btnCloseLang     = document.getElementById('btn-close-lang');
+  const langListEl       = document.getElementById('lang-list');
+
+  /* ══════════════════════════════════════════════════════════════
+   *  SYNC UI WITH CURRENT SETTINGS
+   * ══════════════════════════════════════════════════════════════ */
+  function syncUI() {
+    labelVoice.textContent    = currentSettings.voiceName || 'Default';
+    labelLanguage.textContent = currentSettings.languageLabel || 'English';
+
+    sliderSpeed.value  = currentSettings.speed;
+    valSpeed.textContent = `${parseFloat(currentSettings.speed).toFixed(1)}x`;
+    updateSliderFill(sliderSpeed);
+
+    sliderVolume.value = currentSettings.volume;
+    valVolume.textContent = `${currentSettings.volume}%`;
+    updateSliderFill(sliderVolume);
+
+    toggleWakelock.checked = !!currentSettings.keepScreenAwake;
+    toggleCommands.checked = !!currentSettings.voiceCommands;
+    toggleBeeps.checked    = !!currentSettings.countdownBeeps;
+  }
+
+  // Speed slider handler
+  sliderSpeed.addEventListener('input', () => {
+    const val = parseFloat(sliderSpeed.value);
+    currentSettings.speed = val;
+    valSpeed.textContent = `${val.toFixed(1)}x`;
+    updateSliderFill(sliderSpeed);
+    saveSettings();
+  });
+
+  // Volume slider handler
+  sliderVolume.addEventListener('input', () => {
+    const val = parseInt(sliderVolume.value, 10);
+    currentSettings.volume = val;
+    valVolume.textContent = `${val}%`;
+    updateSliderFill(sliderVolume);
+    saveSettings();
+  });
+
+  // Toggles
+  toggleWakelock.addEventListener('change', () => {
+    currentSettings.keepScreenAwake = toggleWakelock.checked;
+    saveSettings();
+  });
+
+  toggleCommands.addEventListener('change', () => {
+    currentSettings.voiceCommands = toggleCommands.checked;
+    saveSettings();
+  });
+
+  toggleBeeps.addEventListener('change', () => {
+    currentSettings.countdownBeeps = toggleBeeps.checked;
+    saveSettings();
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+   *  VOICES & LANGUAGE DATA
+   * ══════════════════════════════════════════════════════════════ */
+  const LANGUAGES = [
+    { code: 'en-US', label: 'English (US)' },
+    { code: 'en-GB', label: 'English (UK)' },
+    { code: 'en-AU', label: 'English (Australia)' },
+    { code: 'en-IN', label: 'English (India)' },
+    { code: 'es-ES', label: 'Spanish (Español)' },
+    { code: 'fr-FR', label: 'French (Français)' },
+    { code: 'de-DE', label: 'German (Deutsch)' },
+    { code: 'it-IT', label: 'Italian (Italiano)' },
+    { code: 'pt-BR', label: 'Portuguese (Brasil)' },
+    { code: 'ja-JP', label: 'Japanese (日本語)' },
+  ];
+
+  let availableVoices = [];
+
+  function loadVoices() {
+    if (!('speechSynthesis' in window)) return;
+    availableVoices = window.speechSynthesis.getVoices();
+
+    // Re-render voice modal list if open
+    populateVoiceList();
+  }
+
+  if ('speechSynthesis' in window) {
+    loadVoices();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+  }
+
+  function populateVoiceList() {
+    voiceListEl.innerHTML = '';
+
+    // Option 1: System Default
+    const defaultItem = document.createElement('div');
+    defaultItem.className = `sheet-item ${currentSettings.voiceURI === 'default' ? 'selected' : ''}`;
+    defaultItem.innerHTML = `
+      <div class="sheet-item-left">
+        <span class="sheet-item-name">System Default</span>
+        <span class="sheet-item-sub">Default device voice</span>
+      </div>
+      <span class="sheet-item-check">✓</span>
+    `;
+    defaultItem.onclick = () => {
+      currentSettings.voiceURI  = 'default';
+      currentSettings.voiceName = 'Default';
+      labelVoice.textContent    = 'Default';
+      saveSettings();
+      closeModals();
+      testVoiceCue('Default voice selected');
+    };
+    voiceListEl.appendChild(defaultItem);
+
+    // Filtered or all available voices
+    const currentLangPrefix = currentSettings.language.split('-')[0];
+    const filteredVoices = availableVoices.filter(v => v.lang.startsWith(currentLangPrefix));
+    const voicesToShow = filteredVoices.length > 0 ? filteredVoices : availableVoices;
+
+    voicesToShow.forEach(v => {
+      const item = document.createElement('div');
+      const isSelected = currentSettings.voiceURI === v.voiceURI;
+      item.className = `sheet-item ${isSelected ? 'selected' : ''}`;
+
+      // Clean display name
+      const cleanName = v.name.replace(/Google|Microsoft|Apple|Desktop/g, '').trim() || v.name;
+
+      item.innerHTML = `
+        <div class="sheet-item-left">
+          <span class="sheet-item-name">${cleanName}</span>
+          <span class="sheet-item-sub">${v.lang} ${v.default ? '• System' : ''}</span>
+        </div>
+        <span class="sheet-item-check">✓</span>
+      `;
+
+      item.onclick = () => {
+        currentSettings.voiceURI  = v.voiceURI;
+        currentSettings.voiceName = cleanName;
+        labelVoice.textContent    = cleanName;
+        saveSettings();
+        closeModals();
+        testVoiceCue(`Voice set to ${cleanName}`);
+      };
+
+      voiceListEl.appendChild(item);
+    });
+  }
+
+  function populateLanguageList() {
+    langListEl.innerHTML = '';
+    LANGUAGES.forEach(lang => {
+      const item = document.createElement('div');
+      const isSelected = currentSettings.language === lang.code;
+      item.className = `sheet-item ${isSelected ? 'selected' : ''}`;
+      item.innerHTML = `
+        <div class="sheet-item-left">
+          <span class="sheet-item-name">${lang.label}</span>
+          <span class="sheet-item-sub">${lang.code}</span>
+        </div>
+        <span class="sheet-item-check">✓</span>
+      `;
+
+      item.onclick = () => {
+        currentSettings.language      = lang.code;
+        currentSettings.languageLabel = lang.label.split(' ')[0]; // e.g. "English"
+        labelLanguage.textContent     = currentSettings.languageLabel;
+        saveSettings();
+        closeModals();
+        populateVoiceList(); // Refresh matching voices
+        testVoiceCue(`${lang.label}`);
+      };
+
+      langListEl.appendChild(item);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  MODAL CONTROLS
+   * ══════════════════════════════════════════════════════════════ */
+  function openVoiceModal() {
+    populateVoiceList();
+    modalVoice.classList.add('active');
+  }
+
+  function openLanguageModal() {
+    populateLanguageList();
+    modalLanguage.classList.add('active');
+  }
+
+  function closeModals() {
+    modalVoice.classList.remove('active');
+    modalLanguage.classList.remove('active');
+  }
+
+  cardVoice.addEventListener('click', openVoiceModal);
+  btnCloseVoice.addEventListener('click', closeModals);
+  modalVoice.addEventListener('click', (e) => {
+    if (e.target === modalVoice) closeModals();
+  });
+
+  cardLanguage.addEventListener('click', openLanguageModal);
+  btnCloseLang.addEventListener('click', closeModals);
+  modalLanguage.addEventListener('click', (e) => {
+    if (e.target === modalLanguage) closeModals();
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+   *  AUDIO PREVIEW / TEST COACH
+   * ══════════════════════════════════════════════════════════════ */
+  function testVoiceCue(customPhrase) {
+    if (!('speechSynthesis' in window)) return;
+
+    try {
+      window.speechSynthesis.cancel();
+
+      const phrase = customPhrase || 'Set 1. Rep 1. Get ready, hold for 10 seconds!';
+      const u = new SpeechSynthesisUtterance(phrase);
+      u.rate   = parseFloat(currentSettings.speed) || 1.0;
+      u.volume = (parseFloat(currentSettings.volume) || 80) / 100;
+      u.lang   = currentSettings.language || 'en-US';
+
+      // Find matching voice
+      if (currentSettings.voiceURI && currentSettings.voiceURI !== 'default') {
+        const found = availableVoices.find(v => v.voiceURI === currentSettings.voiceURI);
+        if (found) u.voice = found;
+      }
+
+      btnPreview.classList.add('playing');
+      previewText.textContent = 'Speaking...';
+
+      u.onend = () => {
+        btnPreview.classList.remove('playing');
+        previewText.textContent = 'Test Voice Coach';
+      };
+
+      u.onerror = () => {
+        btnPreview.classList.remove('playing');
+        previewText.textContent = 'Test Voice Coach';
+      };
+
+      window.speechSynthesis.speak(u);
+    } catch (e) {
+      console.warn('Speech preview failed:', e);
+      btnPreview.classList.remove('playing');
+      previewText.textContent = 'Test Voice Coach';
+    }
+  }
+
+  btnPreview.addEventListener('click', () => {
+    testVoiceCue();
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+   *  RESET TO DEFAULTS
+   * ══════════════════════════════════════════════════════════════ */
+  btnReset.addEventListener('click', () => {
+    if (confirm('Reset all settings to default values?')) {
+      currentSettings = { ...DEFAULT_SETTINGS };
+      saveSettings();
+      syncUI();
+      testVoiceCue('Settings have been reset to default.');
+    }
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+   *  INIT
+   * ══════════════════════════════════════════════════════════════ */
+  loadSettings();
+  syncUI();
+</script>
+
+</body>
+</html>
