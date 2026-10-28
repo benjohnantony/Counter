@@ -83,19 +83,26 @@
       padding: var(--sp-6) var(--sp-4);
     }
 
-    /* ── Card ───────────────────────────────────────────────────── */
+    /* ── Card (Fixed Container Size) ────────────────────────────── */
     .card {
       width: 100%;
-      max-width: 480px;
+      max-width: 420px;
+      height: 720px;
+      max-height: calc(100dvh - 32px);
       margin: auto;
       background: var(--surface);
       border-radius: var(--r-xl);
-      padding: var(--sp-8) var(--sp-6);
+      padding: var(--sp-6) var(--sp-5);
       box-shadow:
         0 2px  4px  rgba(0,0,0,0.30),
         0 8px  24px rgba(0,0,0,0.40),
         0 24px 64px rgba(0,0,0,0.50),
         0 0    0 1px var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      box-sizing: border-box;
     }
 
     /* ── Header ─────────────────────────────────────────────────── */
@@ -103,7 +110,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--sp-6);
+      margin-bottom: var(--sp-4);
+      flex-shrink: 0;
     }
 
     .header-text h1 {
@@ -156,7 +164,7 @@
       display: flex;
       align-items: center;
       gap: var(--sp-2);
-      margin-bottom: var(--sp-6);
+      margin-bottom: var(--sp-3);
       overflow-x: auto;
       overflow-y: hidden;
       width: 100%;
@@ -167,6 +175,7 @@
       -ms-overflow-style: none;
       padding-bottom: 0;
       cursor: grab;
+      flex-shrink: 0;
     }
 
     .tabs:active {
@@ -257,13 +266,21 @@
     .tab-add:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── Parameter Rows ─────────────────────────────────────────── */
-    .params { display: flex; flex-direction: column; gap: var(--sp-1); }
+    .params {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      min-height: 0;
+      margin-bottom: var(--sp-3);
+    }
 
     .param-row {
       display: flex;
       align-items: center;
       gap: var(--sp-3);
-      padding: var(--sp-4);
+      padding: var(--sp-3) var(--sp-3);
       border-radius: var(--r-sm);
       background: var(--surface-2);
       border: 1px solid transparent;
@@ -467,7 +484,8 @@
 
     /* ── Dynamic Start Exercise Button ───────────────────────────── */
     .start-btn-wrap {
-      margin-top: var(--sp-6);
+      margin-top: 0;
+      flex-shrink: 0;
     }
 
     .start-btn {
@@ -477,7 +495,8 @@
       justify-content: center;
       gap: var(--sp-3);
       width: 100%;
-      padding: var(--sp-4) var(--sp-6);
+      height: 52px;
+      padding: var(--sp-3) var(--sp-6);
       background: linear-gradient(135deg, #ff4767 0%, #ff2b50 100%);
       border: none;
       border-radius: var(--r-md);
@@ -555,8 +574,11 @@
       .card {
         border-radius: 0;
         max-width: 100%;
-        min-height: 100vh;
-        padding: var(--sp-6) var(--sp-4);
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+        padding: var(--sp-5) var(--sp-4);
+        border: none;
       }
     }
   </style>
