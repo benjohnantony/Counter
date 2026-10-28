@@ -78,15 +78,16 @@
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
-      padding: var(--sp-8) var(--sp-4) var(--sp-12);
+      padding: var(--sp-6) var(--sp-4);
     }
 
     /* ── Card ───────────────────────────────────────────────────── */
     .card {
       width: 100%;
       max-width: 480px;
+      margin: auto;
       background: var(--surface);
       border-radius: var(--r-xl);
       padding: var(--sp-8) var(--sp-6);
@@ -162,9 +163,9 @@
       max-width: 100%;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
-      padding-bottom: 6px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 0;
       cursor: grab;
     }
 
@@ -173,20 +174,9 @@
     }
 
     .tabs::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .tabs::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .tabs::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
-    }
-
-    .tabs::-webkit-scrollbar-thumb:hover {
-      background: var(--text-muted);
+      display: none;
+      width: 0;
+      height: 0;
     }
 
     .tab-wrapper {
