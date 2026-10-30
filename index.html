@@ -58,7 +58,7 @@
 
     html, body {
       min-height: 100%;
-      background: #111114;
+      background: var(--bg);
       color: var(--primary-text);
       font-family: var(--font-body);
       font-size: 16px;
@@ -70,20 +70,20 @@
     body {
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
       min-height: 100dvh;
-      padding: 16px;
+      padding: 24px 16px;
+      background: var(--bg);
     }
 
     /* ── Mobile-First Container (Figma 375 × 833 px) ────────────── */
     .card {
       width: 100%;
       max-width: 420px;
-      min-height: min(733px, calc(100dvh - 32px));
-      height: auto;
+      height: 733px;
       max-height: calc(100dvh - 32px);
-      margin: auto;
+      margin: 0 auto;
       background: var(--bg);
       border-radius: var(--r-lg); /* 16px */
       border: 1px solid var(--outer-border);
@@ -595,16 +595,18 @@
     @media (max-width: 520px) {
       body {
         padding: 0;
-        align-items: stretch;
+        align-items: flex-start;
       }
       .card {
         border-radius: 0;
         border: none;
         max-width: 100%;
-        height: auto;
-        min-height: 100vh;
-        min-height: 100dvh;
-        padding: 24px 16px 32px;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+        margin: 0 auto;
+        padding: 32px 20px;
         box-shadow: none;
       }
     }

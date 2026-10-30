@@ -64,7 +64,7 @@
       align-items: flex-start;
       min-height: 100vh;
       min-height: 100dvh;
-      padding: 16px;
+      padding: 24px 16px;
       background: var(--bg);
     }
 
@@ -1163,7 +1163,14 @@
     try {
       window.speechSynthesis.cancel();
 
-      const phrase = customPhrase || 'Set 1. rep 1. Get ready, hold for 10 seconds!';
+      const rawPhrase = customPhrase || 'Set 1. repp 1. Get ready, hold for 10 seconds!';
+      const phrase = rawPhrase
+        .replace(/\breps\b/gi, 'repps')
+        .replace(/\brep\b/gi, 'repp')
+        .replace(/\brepetition\b/gi, 'repp')
+        .replace(/\brepetitions\b/gi, 'repps')
+        .replace(/\brepresentative\b/gi, 'repp')
+        .replace(/\brepresentatives\b/gi, 'repps');
       const u = new SpeechSynthesisUtterance(phrase);
       u.rate   = parseFloat(currentSettings.speed) || 1.0;
       u.volume = (parseFloat(currentSettings.volume) || 80) / 100;
