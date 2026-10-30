@@ -4,35 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Workout Timer — Active</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Orelega+One&display=swap" rel="stylesheet">
   <style>
     /*
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     *  DESIGN TOKENS — 4-Point Grid System
-     *  Spacing:   4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64
-     *  Type scale: 11 · 12 · 14 · 16 · 20 · 24 · 80 (px)
-     *  Radius:    8 · 12 · 16 · 24 · 28
+     *  FIGMA DESIGN SYSTEM — EXACT DESIGN TOKENS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      */
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:            #0d0d0f;
-      --surface:       #1a1a1f;
-      --surface-2:     #222228;
-      --surface-card:  #16161b;
-      --border:        #2e2e36;
-      --text:          #f0f0f5;
-      --text-sub:      #a0a0b4;
-      --text-muted:    #6b6b80;
-      --accent:        #ff3b5c;          /* Hold red */
-      --accent-hover:  #e8293f;
-      --accent-glow:   rgba(255, 59, 92, 0.40);
-      --accent-dim:    rgba(255, 59, 92, 0.12);
-      --ring-track:    #2a1a1e;
-      --yellow:        #f5a623;          /* Rest yellow */
-      --yellow-glow:   rgba(245, 166, 35, 0.35);
-      --green:         #4caf50;
+      --bg:            #1B1B1F;
+      --surface:       #222227;
+      --surface-2:     #1B1B20;
+      --surface-card:  #222227;
+      --border:        #28282E;
+      --control-border:#303038;
+      --text:          #F5F5F7;
+      --text-sub:      #AAAABF;
+      --text-muted:    #727287;
+      --accent:        #FF315F;          /* Hold red */
+      --accent-hover:  #FE3B68;
+      --accent-glow:   rgba(255, 49, 95, 0.40);
+      --accent-dim:    rgba(255, 49, 95, 0.12);
+      --ring-track:    #252026;
+      --yellow:        #FFAB00;          /* Rest yellow */
+      --yellow-glow:   rgba(255, 171, 0, 0.35);
+      --green:         #4CAF50;
+
+      --font-heading:  'Orelega One', Georgia, serif;
+      --font-body:     'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
       --sp-1:  4px;  --sp-2:  8px;  --sp-3:  12px; --sp-4:  16px;
       --sp-5:  20px; --sp-6:  24px; --sp-8:  32px; --sp-10: 40px;
@@ -53,10 +57,9 @@
 
     html, body {
       height: 100%;
-      background: var(--bg);
+      background: #111114;
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                   'Helvetica Neue', Arial, sans-serif;
+      font-family: var(--font-body);
       font-size: 16px;
       line-height: 1.4;
       -webkit-font-smoothing: antialiased;
@@ -75,18 +78,15 @@
     .card {
       position: relative;
       width: 100%;
-      max-width: 420px;
-      height: 720px;
+      max-width: 520px;
+      height: 733px;
       max-height: calc(100dvh - 32px);
       margin: auto;
-      background: var(--surface);
-      border-radius: var(--r-xl);
-      padding: var(--sp-6) var(--sp-5) var(--sp-6);
-      box-shadow:
-        0 2px  4px  rgba(0,0,0,0.30),
-        0 8px  24px rgba(0,0,0,0.40),
-        0 24px 64px rgba(0,0,0,0.50),
-        0 0    0 1px var(--border);
+      background: var(--bg);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--border);
+      padding: 32px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -103,8 +103,8 @@
     }
 
     .nav-btn {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
+      background: var(--surface);
+      border: 1px solid var(--control-border);
       border-radius: var(--r-sm);
       width: 40px;
       height: 40px;
@@ -116,11 +116,11 @@
       transition: background var(--transition), border-color var(--transition);
     }
 
-    .nav-btn:hover { background: var(--border); border-color: var(--text-muted); }
+    .nav-btn:hover { background: #2a2a32; border-color: #3e3e48; }
 
     .nav-btn svg {
       width: 18px; height: 18px;
-      stroke: var(--text-muted); fill: none;
+      stroke: var(--muted-text); fill: none;
       stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
       transition: stroke var(--transition);
     }
@@ -160,10 +160,11 @@
     /* ── Exercise Label ─────────────────────────────────────────── */
     .exercise-label {
       text-align: center;
-      font-size: var(--text-base);
-      color: var(--text-sub);
-      font-weight: 500;
-      letter-spacing: 0.1px;
+      font-family: var(--font-heading);
+      font-size: 20px;
+      color: var(--text);
+      font-weight: 400;
+      letter-spacing: 0.4px;
     }
 
     /* ── Ring ───────────────────────────────────────────────────── */

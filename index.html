@@ -4,73 +4,64 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Workout Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Orelega+One&display=swap" rel="stylesheet">
   <style>
     /*
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     *  DESIGN TOKENS — 4-Point Grid System
-     *
-     *  Spacing:   4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64
-     *  Type scale: 11 · 12 · 13 · 14 · 16 · 20 · 24 (px)
-     *  Radius:    8 · 12 · 16 · 24 (px)
-     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     *  FIGMA DESIGN SYSTEM — EXACT SPECIFICATION (520 × 733 px)
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      */
 
-    /* ── Reset ──────────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       /* Colors */
-      --bg:           #0d0d0f;
-      --surface:      #1a1a1f;
-      --surface-2:    #222228;
-      --border:       #2e2e36;
-      --text:         #f0f0f5;
-      --text-sub:     #a0a0b4;   /* secondary labels */
-      --text-muted:   #6b6b80;   /* placeholder/units */
-      --accent:       #ff3b5c;
-      --accent-hover: #e8293f;
-      --accent-glow:  rgba(255, 59, 92, 0.40);
+      --bg:                   #1B1B1F; /* Main surface */
+      --card-surface:         #222227; /* Setting cards, inactive tabs, icon buttons */
+      --input-surface:        #1B1B20; /* Number steppers */
+      --outer-border:         #28282E; /* Main container outline */
+      --control-border:       #303038; /* Inactive tabs, steppers, icon buttons */
+      --primary-accent:       #FF315F; /* Selected tabs and enabled switches */
+      --primary-button:       #FE3B68; /* Main call to action */
+      --white:                #FFFFFF; /* Page title, primary-button text, switch thumb */
+      --primary-text:         #F5F5F7; /* Setting labels, values, light icons */
+      --secondary-text:       #AAAABF; /* Inactive tab labels */
+      --subtitle-text:        #9E9E9F; /* Page subtitle */
+      --muted-text:           #727287; /* Helper text and secondary icons */
+      --close-btn-surface:    rgba(0, 0, 0, 0.16); /* Circular tab-dismiss background */
 
-      /* Spacing (4pt grid) */
-      --sp-1: 4px;
-      --sp-2: 8px;
-      --sp-3: 12px;
-      --sp-4: 16px;
-      --sp-5: 20px;
-      --sp-6: 24px;
-      --sp-8: 32px;
-      --sp-10: 40px;
-      --sp-12: 48px;
-      --sp-16: 64px;
-
-      /* Radius */
-      --r-sm:  8px;
-      --r-md:  12px;
-      --r-lg:  16px;
-      --r-xl:  24px;
+      /* Category indicators */
+      --cat-sets:             #4CAF50; /* green */
+      --cat-rest-sets:        #2196F3; /* blue */
+      --cat-reps:             #FF4747; /* red */
+      --cat-rest-reps:        #FFAB00; /* amber */
+      --cat-hold:             #A62CC6; /* purple */
 
       /* Typography */
-      --text-xs:   0.6875rem;  /* 11px */
-      --text-sm:   0.75rem;    /* 12px */
-      --text-base: 0.875rem;   /* 14px */
-      --text-md:   1rem;       /* 16px */
-      --text-lg:   1.25rem;    /* 20px */
-      --text-xl:   1.5rem;     /* 24px */
+      --font-heading:         'Orelega One', Georgia, serif;
+      --font-body:            'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-      /* Misc */
-      --transition: 0.16s ease;
-      --line-base:  1.4;
+      /* Radii */
+      --r-sm:                 8px;
+      --r-lg:                 16px;
+      --r-pill:               18px;
+
+      --transition:           0.15s ease;
     }
 
-    /* ── Base ───────────────────────────────────────────────────── */
     html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                   'Helvetica Neue', Arial, sans-serif;
+      min-height: 100%;
+      background: #111114;
+      color: var(--primary-text);
+      font-family: var(--font-body);
       font-size: 16px;
-      line-height: var(--line-base);
+      line-height: 1.4;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
@@ -80,103 +71,109 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: var(--sp-6) var(--sp-4);
+      padding: 16px;
     }
 
-    /* ── Card (Fixed Container Size) ────────────────────────────── */
+    /* ── Main Container (Exact 520 × 733 px Reference Size) ─────── */
     .card {
       width: 100%;
-      max-width: 420px;
-      height: 720px;
-      max-height: calc(100dvh - 32px);
+      max-width: 520px;
+      height: 733px;
       margin: auto;
-      background: var(--surface);
-      border-radius: var(--r-xl);
-      padding: var(--sp-6) var(--sp-5);
-      box-shadow:
-        0 2px  4px  rgba(0,0,0,0.30),
-        0 8px  24px rgba(0,0,0,0.40),
-        0 24px 64px rgba(0,0,0,0.50),
-        0 0    0 1px var(--border);
+      background: var(--bg);
+      border-radius: var(--r-lg); /* 16px */
+      border: 1px solid var(--outer-border);
+      padding: 32px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
       box-sizing: border-box;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
     }
 
-    /* ── Group A: Header (Main Title & Brief) ─────────────────── */
-    .group-a.header {
+    /* ── 4. Header (454 × 47 px) ────────────────────────────────── */
+    .header {
+      width: 100%;
+      height: 47px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--sp-5); /* 20px (4-pt grid) */
+      justify-content: space-between;
+      margin-bottom: 32px; /* Gap to tabs: 32px */
       flex-shrink: 0;
     }
 
+    .header-text {
+      width: 398px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
     .header-text h1 {
-      font-size: var(--text-xl); /* 24px */
-      font-weight: 700;
-      letter-spacing: -0.4px;
-      line-height: 1.25;
-      color: var(--text);
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 31px;
+      letter-spacing: 0.4px;
+      color: var(--white);
     }
 
     .header-text p {
-      font-size: var(--text-base); /* 14px */
-      color: var(--text-sub);
-      margin-top: var(--sp-1); /* 4px */
-      line-height: 1.4;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: 0.4px;
+      color: var(--subtitle-text);
+      margin-top: 2px; /* 2px vertical gap between title & subtitle */
     }
 
     .settings-btn {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--r-sm); /* 8px */
       width: 40px;
       height: 40px;
+      border-radius: var(--r-sm); /* 8px */
+      background: var(--card-surface);
+      border: 1px solid var(--control-border);
       display: grid;
       place-items: center;
       cursor: pointer;
       flex-shrink: 0;
+      text-decoration: none;
       transition: background var(--transition), border-color var(--transition);
     }
 
     .settings-btn:hover {
-      background: var(--border);
-      border-color: var(--text-muted);
+      background: #2a2a32;
+      border-color: #3e3e48;
     }
 
     .settings-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--text-muted);
-      fill: none;
-      stroke-width: 1.75;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+      width: 16px;
+      height: 16px;
+      stroke: var(--muted-text);
       transition: stroke var(--transition);
     }
 
-    .settings-btn:hover svg { stroke: var(--text); }
+    .settings-btn:hover svg {
+      stroke: var(--primary-text);
+    }
 
-    /* ── Group B: Exercise Tabs ───────────────────────────────── */
-    .group-b.tabs {
+    /* ── 5. Tabs and Add Button (Height 40px, Gap 8px) ───────────── */
+    .tabs {
+      height: 40px;
       display: flex;
       align-items: center;
-      gap: var(--sp-2); /* 8px */
-      margin-bottom: var(--sp-5); /* 20px (4-pt grid) */
+      gap: 8px;
+      margin-bottom: 24px; /* Gap to first card: 24px */
       overflow-x: auto;
       overflow-y: hidden;
       width: 100%;
-      max-width: 100%;
       -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
       scrollbar-width: none;
       -ms-overflow-style: none;
-      padding-bottom: 0;
-      cursor: grab;
       flex-shrink: 0;
+      cursor: grab;
     }
 
     .tabs:active {
@@ -197,176 +194,251 @@
     }
 
     .tab {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
+      height: 40px;
+      min-width: 130px;
       border-radius: var(--r-sm); /* 8px */
-      padding: var(--sp-2) var(--sp-4); /* 8px 16px (4-pt grid) */
-      font-size: var(--text-base); /* 14px */
-      font-weight: 600;
-      color: var(--text-sub);
+      background: var(--card-surface);
+      border: 1px solid var(--control-border);
+      padding: 0 8px 0 16px;
       cursor: pointer;
       white-space: nowrap;
-      line-height: 1.4;
       display: inline-flex;
       align-items: center;
-      gap: var(--sp-2); /* 8px */
+      justify-content: space-between;
+      gap: 10px; /* Inactive gap label-to-dismiss: 10px */
       transition: all var(--transition);
     }
 
-    .tab:hover { color: var(--text); border-color: var(--text-muted); }
-
-    .tab.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-      font-weight: 600;
-      box-shadow: 0 2px 10px rgba(255, 59, 92, 0.35);
+    .tab span.tab-title {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 14px;
+      letter-spacing: 0;
+      color: var(--secondary-text); /* #AAAABF */
     }
 
+    .tab:hover {
+      border-color: #3e3e48;
+    }
+
+    /* Selected Tab */
+    .tab.active {
+      background: var(--primary-accent); /* #FF315F */
+      border: 1px solid var(--primary-accent);
+      gap: 16px; /* Selected gap label-to-dismiss: 16px */
+    }
+
+    .tab.active span.tab-title {
+      color: var(--white);
+    }
+
+    /* Dismiss button inside tab: 24 × 24px circular, black at 16% opacity */
     .tab-remove {
       display: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--close-btn-surface);
+      border: none;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.25);
-      border: none;
-      color: inherit;
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
       cursor: pointer;
-      font-size: 11px;
-      line-height: 1;
-      margin-left: 2px;
-      transition: background var(--transition);
+      color: var(--muted-text);
+      transition: background var(--transition), color var(--transition);
+      flex-shrink: 0;
+    }
+
+    .tab.active .tab-remove {
+      color: var(--primary-text); /* Selected close glyph: #F5F5F7 */
     }
 
     .tab-remove:hover {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.32);
     }
 
     .tab.has-remove .tab-remove {
       display: inline-flex;
     }
 
+    .tab-remove svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    /* Add Tab Button: 40 × 40px, 8px radius, card fill, 1px control border */
     .tab-add {
-      background: var(--surface-2);
-      border: 1px dashed var(--border);
-      border-radius: var(--r-sm); /* 8px */
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r-sm);
+      background: var(--card-surface);
+      border: 1px solid var(--control-border);
       flex-shrink: 0;
       display: grid;
       place-items: center;
       cursor: pointer;
-      color: var(--text-muted);
-      font-size: 1.125rem;
-      line-height: 1;
+      color: var(--muted-text);
       transition: all var(--transition);
     }
 
-    .tab-add:hover { border-color: var(--accent); color: var(--accent); }
+    .tab-add:hover {
+      border-color: var(--primary-accent);
+      color: var(--primary-accent);
+      background: #2a2a32;
+    }
 
-    /* ── Group C: Parameter Cards ─────────────────────────────── */
-    .group-c.params {
-      flex: 1;
+    .tab-add svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    /* ── 6. Setting Cards Container (454 × 72 px, Gap 20px) ─────── */
+    .params {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: var(--sp-2); /* 8px (4-pt grid) */
-      min-height: 0;
-      margin-bottom: var(--sp-5); /* 20px (4-pt grid) */
+      gap: 20px; /* Gap between setting cards: 20px */
+      margin-bottom: 32px; /* Last-card-to-primary-button gap: 32px */
+      flex-shrink: 0;
     }
 
     .param-row {
+      width: 100%;
+      height: 72px;
+      background: var(--card-surface); /* #222227 */
+      border-radius: var(--r-sm); /* 8px */
+      padding: 16px;
       display: flex;
       align-items: center;
-      gap: var(--sp-3); /* 12px (4-pt grid) */
-      padding: var(--sp-3) var(--sp-4); /* 12px 16px (4-pt grid) */
-      border-radius: var(--r-md); /* 12px */
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      transition: border-color var(--transition), background var(--transition);
+      justify-content: space-between;
+      border: none; /* No visible border or shadow */
+      box-shadow: none;
+      box-sizing: border-box;
     }
 
-    .param-row:hover {
-      border-color: rgba(255, 255, 255, 0.16);
-      background: #25252c;
-    }
-
-    /* Color dot */
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+    /* Structure: 249px label group → 16px gap → 89px stepper → 16px gap → 52px switch */
+    .param-label-group {
+      width: 249px;
+      height: 40px;
+      display: flex;
+      align-items: flex-start;
       flex-shrink: 0;
     }
 
-    /* Labels */
-    .param-info {
-      flex: 1;
+    /* Category marker: 6px wide column, dot 6 × 6px, marker-to-text gap 8px */
+    .param-marker-col {
+      width: 6px;
+      height: 40px;
+      display: flex;
+      align-items: flex-start;
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Dot top is 9px below text stack's top (aligned with first 24px title line) */
+    .category-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 9px;
+      flex-shrink: 0;
+    }
+
+    /* Text stack: 235px wide × 40px high */
+    .param-text-stack {
+      width: 235px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
       min-width: 0;
     }
 
-    .param-info strong {
-      display: block;
-      font-size: var(--text-md); /* 16px (4-pt grid) */
-      font-weight: 600;
-      line-height: 1.25;
-      letter-spacing: -0.1px;
-      color: var(--text);
+    .param-text-stack strong {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: 0.4px;
+      color: var(--primary-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .param-info span {
-      display: block;
-      font-size: var(--text-sm); /* 12px (4-pt grid) */
-      color: var(--text-muted);
-      line-height: 1.35;
-      margin-top: 2px;
+    .param-text-stack span {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: 0.4px;
+      color: var(--muted-text);
+      margin-top: 2px; /* 2px label-to-helper gap */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* ── Stepper (Click once for 1, hold for high-speed, or type) ─ */
+    /* ── 7. Number Stepper (Reference size: 89 × 40 px) ──────────── */
     .stepper {
+      width: 89px;
+      height: 40px;
+      background: var(--input-surface); /* #1B1B20 */
+      border: 1px solid var(--control-border); /* #303038 */
+      border-radius: var(--r-sm); /* 8px */
       display: flex;
       align-items: center;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-sm);
-      overflow: hidden;
+      justify-content: space-between;
+      padding: 0 12px;
       flex-shrink: 0;
+      box-sizing: border-box;
+      transition: border-color var(--transition);
+    }
+
+    .stepper:focus-within {
+      border-color: #4c4c58;
     }
 
     .stepper-btn {
+      width: 16px;
+      height: 16px;
       background: transparent;
       border: none;
-      width: 36px;
-      height: 36px;
+      padding: 0;
       display: grid;
       place-items: center;
       cursor: pointer;
-      color: var(--text-muted);
-      font-size: 1.125rem;
-      line-height: 1;
-      transition: background var(--transition), color var(--transition);
+      color: var(--muted-text); /* #727287 */
+      transition: color var(--transition);
       user-select: none;
       touch-action: manipulation;
+      flex-shrink: 0;
     }
 
-    .stepper-btn:hover  { background: var(--surface-2); color: var(--text); }
-    .stepper-btn:active { background: var(--border); color: #fff; }
+    .stepper-btn:hover {
+      color: var(--primary-text);
+    }
 
-    /* Typeable Stepper Input (No unit text inside!) */
+    .stepper-btn svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
     .stepper-input {
-      width: 44px;
-      height: 36px;
+      width: 32px;
+      height: 40px;
       background: transparent;
       border: none;
       outline: none;
       text-align: center;
-      font-family: inherit;
-      font-size: var(--text-md);
-      font-weight: 700;
-      color: var(--text);
-      line-height: 36px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 14px;
+      letter-spacing: 0.4px;
+      color: var(--primary-text); /* #F5F5F7 */
       padding: 0;
       -moz-appearance: textfield;
       user-select: all;
@@ -378,21 +450,17 @@
       margin: 0;
     }
 
-    .stepper-input:focus {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 4px;
-    }
-
-    /* ── Speaker Inside Toggle Switch ────────────────────────────── */
+    /* ── 8. Enabled Sound Switch (Track: 52 × 28 px) ─────────────── */
     .switch-wrap {
-      display: flex;
-      align-items: center;
+      width: 52px;
+      height: 28px;
+      position: relative;
       flex-shrink: 0;
     }
 
     .switch-pill {
       position: relative;
-      display: inline-block;
+      display: block;
       width: 52px;
       height: 28px;
       cursor: pointer;
@@ -400,192 +468,159 @@
     }
 
     .switch-input {
+      position: absolute;
       opacity: 0;
       width: 0;
       height: 0;
-      position: absolute;
     }
 
     .switch-track {
       position: absolute;
       inset: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 999px;
+      width: 52px;
+      height: 28px;
+      border-radius: var(--r-pill); /* 18px pill shape */
+      background: var(--input-surface);
+      border: 1px solid var(--control-border);
       transition: background var(--transition), border-color var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 6px;
+      box-sizing: border-box;
       overflow: hidden;
     }
 
-    /* Speaker icon inside track */
-    .switch-icon {
-      width: 14px;
-      height: 14px;
-      transition: opacity var(--transition), transform var(--transition);
+    /* Sound icon box: 13 × 13px, positioned at x6, y7.5 */
+    .switch-sound-icon {
+      position: absolute;
+      left: 6px;
+      top: 7.5px;
+      width: 13px;
+      height: 13px;
       pointer-events: none;
-      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity var(--transition);
     }
 
-    .switch-icon.on {
-      fill: none;
-      stroke: #fff;
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      opacity: 0;
-      transform: translateX(-4px);
+    .switch-sound-icon svg {
+      width: 13px;
+      height: 13px;
+      display: block;
     }
 
-    .switch-icon.off {
-      fill: none;
-      stroke: var(--text-muted);
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    /* White circular thumb */
+    /* Thumb: 21 × 21px white circle, shadow x0, y1, blur2, spread0 black @ 18.8% */
     .switch-thumb {
       position: absolute;
-      width: 20px;
-      height: 20px;
+      width: 21px;
+      height: 21px;
       border-radius: 50%;
-      background: var(--text-muted);
-      top: 3px;
-      left: 3px;
-      transition: transform var(--transition), background var(--transition);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      background: var(--white);
+      top: 3.5px;
+      left: 3.5px;
+      transition: transform var(--transition);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.188);
       pointer-events: none;
     }
 
-    /* Checked state (Red with Speaker Icon Visible on Left) */
+    /* Enabled State */
     .switch-input:checked + .switch-track {
-      background: var(--accent);
-      border-color: var(--accent);
+      background: var(--primary-accent); /* #FF315F */
+      border-color: var(--primary-accent);
     }
 
     .switch-input:checked + .switch-track .switch-thumb {
-      transform: translateX(24px);
-      background: #fff;
+      transform: translateX(23.5px); /* Position x27, y3.5 inside track */
     }
 
-    .switch-input:checked + .switch-track .switch-icon.on {
+    .switch-input:checked + .switch-track .switch-sound-icon {
       opacity: 1;
-      transform: translateX(0);
     }
 
-    .switch-input:checked + .switch-track .switch-icon.off {
-      opacity: 0;
-      transform: translateX(4px);
+    .switch-input:not(:checked) + .switch-track .switch-sound-icon {
+      opacity: 0.35;
     }
 
     .switch-input:focus-visible + .switch-track {
-      outline: 2px solid var(--accent);
+      outline: 2px solid var(--primary-accent);
       outline-offset: 2px;
     }
 
-    /* ── Dynamic Start Exercise Button ───────────────────────────── */
+    /* ── 9. Primary Action Button (454 × 52 px) ──────────────────── */
     .start-btn-wrap {
-      margin-top: 0;
+      width: 100%;
+      height: 52px;
       flex-shrink: 0;
     }
 
     .start-btn {
-      position: relative;
+      width: 100%;
+      height: 52px;
+      background: var(--primary-button); /* #FE3B68 */
+      border-radius: var(--r-sm); /* 8px */
+      border: none;
+      box-shadow: none; /* No border or shadow */
+      padding: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: var(--sp-3);
-      width: 100%;
-      height: 52px;
-      padding: var(--sp-3) var(--sp-6);
-      background: linear-gradient(135deg, #ff4767 0%, #ff2b50 100%);
-      border: none;
-      border-radius: var(--r-md);
-      color: #fff;
-      font-size: var(--text-md);
-      font-weight: 700;
-      letter-spacing: 0.3px;
+      gap: 8px; /* Icon-to-label gap: 8px */
       cursor: pointer;
-      overflow: hidden;
-      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
-                  box-shadow 0.2s ease,
-                  filter 0.2s ease;
-      box-shadow: 0 4px 20px var(--accent-glow), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
-      animation: dynamic-pulse 3s infinite ease-in-out;
-    }
-
-    @keyframes dynamic-pulse {
-      0%, 100% {
-        box-shadow: 0 4px 20px rgba(255, 59, 92, 0.40), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
-      }
-      50% {
-        box-shadow: 0 6px 30px rgba(255, 59, 92, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
-      }
-    }
-
-    .start-btn::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -60%;
-      width: 50%;
-      height: 200%;
-      background: linear-gradient(
-        60deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.22) 50%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      transform: rotate(25deg);
-      animation: shine 4.5s infinite ease-in-out;
-      pointer-events: none;
-    }
-
-    @keyframes shine {
-      0% { left: -60%; }
-      20%, 100% { left: 140%; }
+      text-decoration: none;
+      transition: opacity var(--transition), transform var(--transition);
+      -webkit-tap-highlight-color: transparent;
     }
 
     .start-btn:hover {
-      transform: translateY(-2px) scale(1.01);
-      box-shadow: 0 8px 32px rgba(255, 59, 92, 0.70), 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-      filter: brightness(1.05);
+      opacity: 0.94;
     }
 
     .start-btn:active {
-      transform: translateY(1px) scale(0.99);
-      box-shadow: 0 2px 12px rgba(255, 59, 92, 0.50);
+      transform: scale(0.99);
     }
 
+    /* Play Icon: Filled white triangle, 15.71 × 20 px, 1px corner rounding */
     .start-btn svg {
-      width: 18px;
-      height: 18px;
-      fill: #fff;
+      width: 16px;
+      height: 20px;
+      display: block;
       flex-shrink: 0;
-      transition: transform 0.2s ease;
     }
 
-    .start-btn:hover svg {
-      transform: translateX(2px);
+    /* Label: Onest SemiBold, 20px, white */
+    .start-btn span {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 16px;
+      letter-spacing: 0;
+      color: var(--white);
     }
 
-    /* ── Responsive ─────────────────────────────────────────────── */
-    @media (max-width: 520px) {
-      body { padding: 0; align-items: stretch; }
+    /* ── Responsive Viewports ────────────────────────────────────── */
+    @media (max-width: 540px) {
+      body {
+        padding: 0;
+        align-items: stretch;
+      }
       .card {
         border-radius: 0;
-        max-width: 100%;
-        height: 100vh;
-        height: 100dvh;
-        max-height: 100dvh;
-        padding: var(--sp-5) var(--sp-4);
         border: none;
+        max-width: 100%;
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 24px 16px 32px;
+        box-shadow: none;
+      }
+      .header-text {
+        width: auto;
+      }
+      .param-label-group {
+        width: auto;
+        flex: 1;
+      }
+      .param-text-stack {
+        width: auto;
+        flex: 1;
       }
     }
   </style>
@@ -594,197 +629,250 @@
 
 <main class="card" aria-label="Workout Timer Configuration">
 
-  <!-- Group A: Header (Main Title & Brief) -->
-  <header class="group-a header">
+  <!-- 4. Header (454 × 47 px) -->
+  <header class="header">
     <div class="header-text">
       <h1>Workout Timer</h1>
       <p>Set your intervals and start</p>
     </div>
-    <a href="settings.html" class="settings-btn" aria-label="Settings">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
+    <a href="settings.html" class="settings-btn" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
       </svg>
     </a>
   </header>
 
-  <!-- Group B: Exercise Tabs -->
-  <nav class="group-b tabs" id="tabs-container" role="tablist" aria-label="Exercise Tabs">
+  <!-- 5. Tabs and Add Button (Height 40 px) -->
+  <nav class="tabs" id="tabs-container" role="tablist" aria-label="Exercise Tabs">
     <div class="tab-wrapper" data-tab-id="1">
       <button class="tab active" role="tab" aria-selected="true" data-tab="1">
-        <span>Exercise 1</span>
-        <span class="tab-remove" title="Remove Exercise">&times;</span>
+        <span class="tab-title">Exercise 1</span>
+        <span class="tab-remove" title="Remove Exercise" aria-label="Remove Exercise">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M5 5L11 11M11 5L5 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </span>
       </button>
     </div>
-    <button class="tab-add" id="tab-add-btn" aria-label="Add Exercise" title="Add Exercise">+</button>
+    <button class="tab-add" id="tab-add-btn" aria-label="Add Exercise" title="Add Exercise">
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.87" stroke-linecap="round"/>
+      </svg>
+    </button>
   </nav>
 
-  <!-- Group C: Parameter Cards -->
-  <section class="group-c params" id="params" aria-label="Workout Parameters">
+  <!-- 6. Setting Cards (5 Cards, each 454 × 72 px, Gap 20 px) -->
+  <section class="params" id="params" aria-label="Workout Parameters">
 
-    <!-- Sets -->
+    <!-- 1. Sets (Green #4CAF50) -->
     <div class="param-row">
-      <span class="dot" style="background:#4caf50" aria-hidden="true"></span>
-      <div class="param-info">
-        <strong>Sets</strong>
-        <span>Number of sets</span>
+      <div class="param-label-group">
+        <div class="param-marker-col">
+          <span class="category-dot" style="background: var(--cat-sets);" aria-hidden="true"></span>
+        </div>
+        <div class="param-text-stack">
+          <strong>Sets</strong>
+          <span>Number of sets</span>
+        </div>
       </div>
       <div class="stepper" aria-label="Sets stepper">
-        <button class="stepper-btn" data-target="sets" data-dir="-1" aria-label="Decrease sets">−</button>
+        <button class="stepper-btn" data-target="sets" data-dir="-1" aria-label="Decrease sets">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
         <input type="number" class="stepper-input" id="sets-val" value="3" min="1" max="99" aria-label="Sets value" />
-        <button class="stepper-btn" data-target="sets" data-dir="1" aria-label="Increase sets">+</button>
+        <button class="stepper-btn" data-target="sets" data-dir="1" aria-label="Increase sets">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
       <div class="switch-wrap">
         <label class="switch-pill" aria-label="Toggle voice for Sets">
           <input class="switch-input" id="sound-sets" type="checkbox" checked />
           <span class="switch-track">
-            <!-- Speaker ON Icon (Left) -->
-            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-            </svg>
-            <!-- Speaker OFF Icon (Right) -->
-            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <line x1="22" y1="9" x2="16" y2="15"/>
-              <line x1="16" y1="9" x2="22" y2="15"/>
-            </svg>
+            <span class="switch-sound-icon">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3.5L3.5 5.5H1.5v5h2L6 12.5V3.5z" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 5.5a3.5 3.5 0 0 1 0 5" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </span>
             <span class="switch-thumb"></span>
           </span>
         </label>
       </div>
     </div>
 
-    <!-- Rest between Sets -->
+    <!-- 2. Rest between Sets (Blue #2196F3) -->
     <div class="param-row">
-      <span class="dot" style="background:#2196f3" aria-hidden="true"></span>
-      <div class="param-info">
-        <strong>Rest between Sets</strong>
-        <span>Time between sets (sec)</span>
+      <div class="param-label-group">
+        <div class="param-marker-col">
+          <span class="category-dot" style="background: var(--cat-rest-sets);" aria-hidden="true"></span>
+        </div>
+        <div class="param-text-stack">
+          <strong>Rest between Sets</strong>
+          <span>Time between sets (sec)</span>
+        </div>
       </div>
       <div class="stepper" aria-label="Rest between sets stepper">
-        <button class="stepper-btn" data-target="rest-sets" data-dir="-1" aria-label="Decrease rest between sets">−</button>
+        <button class="stepper-btn" data-target="rest-sets" data-dir="-1" aria-label="Decrease rest between sets">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
         <input type="number" class="stepper-input" id="rest-sets-val" value="30" min="0" max="600" aria-label="Rest between sets value" />
-        <button class="stepper-btn" data-target="rest-sets" data-dir="1" aria-label="Increase rest between sets">+</button>
+        <button class="stepper-btn" data-target="rest-sets" data-dir="1" aria-label="Increase rest between sets">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
       <div class="switch-wrap">
         <label class="switch-pill" aria-label="Toggle voice for Rest between Sets">
           <input class="switch-input" id="sound-rest-sets" type="checkbox" checked />
           <span class="switch-track">
-            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-            </svg>
-            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <line x1="22" y1="9" x2="16" y2="15"/>
-              <line x1="16" y1="9" x2="22" y2="15"/>
-            </svg>
+            <span class="switch-sound-icon">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3.5L3.5 5.5H1.5v5h2L6 12.5V3.5z" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 5.5a3.5 3.5 0 0 1 0 5" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </span>
             <span class="switch-thumb"></span>
           </span>
         </label>
       </div>
     </div>
 
-    <!-- Reps Per Set -->
+    <!-- 3. Reps Per Set (Red #FF4747) -->
     <div class="param-row">
-      <span class="dot" style="background:#f44336" aria-hidden="true"></span>
-      <div class="param-info">
-        <strong>Reps Per Set</strong>
-        <span>Number of reps per set</span>
+      <div class="param-label-group">
+        <div class="param-marker-col">
+          <span class="category-dot" style="background: var(--cat-reps);" aria-hidden="true"></span>
+        </div>
+        <div class="param-text-stack">
+          <strong>Reps Per Set</strong>
+          <span>Number of reps per set</span>
+        </div>
       </div>
       <div class="stepper" aria-label="Reps per set stepper">
-        <button class="stepper-btn" data-target="reps" data-dir="-1" aria-label="Decrease reps">−</button>
+        <button class="stepper-btn" data-target="reps" data-dir="-1" aria-label="Decrease reps">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
         <input type="number" class="stepper-input" id="reps-val" value="10" min="1" max="99" aria-label="Reps value" />
-        <button class="stepper-btn" data-target="reps" data-dir="1" aria-label="Increase reps">+</button>
+        <button class="stepper-btn" data-target="reps" data-dir="1" aria-label="Increase reps">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
       <div class="switch-wrap">
         <label class="switch-pill" aria-label="Toggle voice for Reps Per Set">
           <input class="switch-input" id="sound-reps" type="checkbox" checked />
           <span class="switch-track">
-            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-            </svg>
-            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <line x1="22" y1="9" x2="16" y2="15"/>
-              <line x1="16" y1="9" x2="22" y2="15"/>
-            </svg>
+            <span class="switch-sound-icon">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3.5L3.5 5.5H1.5v5h2L6 12.5V3.5z" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 5.5a3.5 3.5 0 0 1 0 5" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </span>
             <span class="switch-thumb"></span>
           </span>
         </label>
       </div>
     </div>
 
-    <!-- Rest between Reps -->
+    <!-- 4. Rest between Reps (Amber #FFAB00) -->
     <div class="param-row">
-      <span class="dot" style="background:#ff9800" aria-hidden="true"></span>
-      <div class="param-info">
-        <strong>Rest between Reps</strong>
-        <span>Time between reps (sec)</span>
+      <div class="param-label-group">
+        <div class="param-marker-col">
+          <span class="category-dot" style="background: var(--cat-rest-reps);" aria-hidden="true"></span>
+        </div>
+        <div class="param-text-stack">
+          <strong>Rest between Reps</strong>
+          <span>Time between reps (sec)</span>
+        </div>
       </div>
       <div class="stepper" aria-label="Rest between reps stepper">
-        <button class="stepper-btn" data-target="rest-reps" data-dir="-1" aria-label="Decrease rest between reps">−</button>
+        <button class="stepper-btn" data-target="rest-reps" data-dir="-1" aria-label="Decrease rest between reps">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
         <input type="number" class="stepper-input" id="rest-reps-val" value="5" min="0" max="300" aria-label="Rest between reps value" />
-        <button class="stepper-btn" data-target="rest-reps" data-dir="1" aria-label="Increase rest between reps">+</button>
+        <button class="stepper-btn" data-target="rest-reps" data-dir="1" aria-label="Increase rest between reps">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
       <div class="switch-wrap">
         <label class="switch-pill" aria-label="Toggle voice for Rest between Reps">
           <input class="switch-input" id="sound-rest-reps" type="checkbox" checked />
           <span class="switch-track">
-            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-            </svg>
-            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <line x1="22" y1="9" x2="16" y2="15"/>
-              <line x1="16" y1="9" x2="22" y2="15"/>
-            </svg>
+            <span class="switch-sound-icon">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3.5L3.5 5.5H1.5v5h2L6 12.5V3.5z" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 5.5a3.5 3.5 0 0 1 0 5" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </span>
             <span class="switch-thumb"></span>
           </span>
         </label>
       </div>
     </div>
 
-    <!-- Hold Time -->
+    <!-- 5. Hold Time (Purple #A62CC6) -->
     <div class="param-row">
-      <span class="dot" style="background:#9c27b0" aria-hidden="true"></span>
-      <div class="param-info">
-        <strong>Hold Time</strong>
-        <span>Time to hold each rep (sec)</span>
+      <div class="param-label-group">
+        <div class="param-marker-col">
+          <span class="category-dot" style="background: var(--cat-hold);" aria-hidden="true"></span>
+        </div>
+        <div class="param-text-stack">
+          <strong>Hold Time</strong>
+          <span>Time to hold each rep (sec)</span>
+        </div>
       </div>
       <div class="stepper" aria-label="Hold time stepper">
-        <button class="stepper-btn" data-target="hold" data-dir="-1" aria-label="Decrease hold time">−</button>
+        <button class="stepper-btn" data-target="hold" data-dir="-1" aria-label="Decrease hold time">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
         <input type="number" class="stepper-input" id="hold-val" value="10" min="0" max="300" aria-label="Hold time value" />
-        <button class="stepper-btn" data-target="hold" data-dir="1" aria-label="Increase hold time">+</button>
+        <button class="stepper-btn" data-target="hold" data-dir="1" aria-label="Increase hold time">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
       <div class="switch-wrap">
         <label class="switch-pill" aria-label="Toggle voice for Hold Time">
           <input class="switch-input" id="sound-hold" type="checkbox" checked />
           <span class="switch-track">
-            <svg class="switch-icon on" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-            </svg>
-            <svg class="switch-icon off" viewBox="0 0 24 24" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <line x1="22" y1="9" x2="16" y2="15"/>
-              <line x1="16" y1="9" x2="22" y2="15"/>
-            </svg>
+            <span class="switch-sound-icon">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3.5L3.5 5.5H1.5v5h2L6 12.5V3.5z" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 5.5a3.5 3.5 0 0 1 0 5" stroke="#F5F5F7" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </span>
             <span class="switch-thumb"></span>
           </span>
         </label>
       </div>
     </div>
 
-  </section><!-- /params (Group C) -->
+  </section>
 
-  <!-- Group D: CTA Start Button -->
-  <footer class="group-d start-btn-wrap">
+  <!-- 9. Primary Action Button (454 × 52 px) -->
+  <footer class="start-btn-wrap">
     <button class="start-btn" id="start-btn" aria-label="Start Exercise">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <svg viewBox="0 0 16 20" fill="none" aria-hidden="true">
+        <path d="M14.6 9.14a1 1 0 0 1 0 1.72L2.6 17.86A1 1 0 0 1 1 17V3a1 1 0 0 1 1.6-.86l12 7z" fill="#FFFFFF"/>
+      </svg>
       <span>Start Exercise</span>
     </button>
   </footer>
@@ -803,7 +891,7 @@
 
   const STORAGE_KEY = 'workout_timer_saved_config';
 
-  // ── Persistence Helpers (Save & Restore previous exercise values) ─
+  // ── Persistence Helpers ──────────────────────────────────────
   function saveConfig() {
     try {
       const exerciseCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
@@ -879,13 +967,12 @@
   let holdInterval = null;
 
   function startHoldStep(target, dir) {
-    stepOnce(target, dir); // Immediate single click step (+1 or -1)
+    stepOnce(target, dir);
 
-    // After 350ms of holding, repeat rapidly
     holdTimer = setTimeout(() => {
       holdInterval = setInterval(() => {
         stepOnce(target, dir);
-      }, 60); // High speed 60ms repeat
+      }, 60);
     }, 350);
   }
 
@@ -906,7 +993,7 @@
     btn.addEventListener('mouseup', stopHoldStep);
     btn.addEventListener('mouseleave', stopHoldStep);
 
-    // Touch events for mobile/tablet
+    // Touch events for mobile
     btn.addEventListener('touchstart', (e) => {
       e.preventDefault();
       startHoldStep(target, dir);
@@ -915,22 +1002,22 @@
     btn.addEventListener('touchcancel', stopHoldStep);
   });
 
-  // ── Allow User to Type Directly in the Input Field ────────────
+  // ── Direct Stepper Input Editing ──────────────────────────────
   document.querySelectorAll('.stepper-input').forEach(input => {
     const id = input.id.replace('-val', '');
 
     input.addEventListener('input', () => {
-      const val = parseInt(input.value, 10);
-      if (!isNaN(val)) {
-        updateValue(id, val);
-      }
+      let v = parseInt(input.value, 10);
+      if (isNaN(v)) return;
+      updateValue(id, v);
     });
 
     input.addEventListener('blur', () => {
-      if (input.value === '' || isNaN(parseInt(input.value, 10))) {
+      let v = parseInt(input.value, 10);
+      if (isNaN(v)) {
         input.value = state[id].value;
       } else {
-        updateValue(id, parseInt(input.value, 10));
+        updateValue(id, v);
       }
     });
 
@@ -952,7 +1039,7 @@
     sw.addEventListener('change', saveConfig);
   });
 
-  // ── Exercise Tabs Management (Initially only Exercise 1) ──────
+  // ── Exercise Tabs Management ──────────────────────────────────
   const tabsContainer = document.getElementById('tabs-container');
   const tabAddBtn     = document.getElementById('tab-add-btn');
 
@@ -966,7 +1053,13 @@
     newTab.role = 'tab';
     newTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
     newTab.dataset.tab = num;
-    newTab.innerHTML = `<span>Exercise ${num}</span><span class="tab-remove" title="Remove Exercise">&times;</span>`;
+    newTab.innerHTML = `
+      <span class="tab-title">Exercise ${num}</span>
+      <span class="tab-remove" title="Remove Exercise" aria-label="Remove Exercise">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M5 5L11 11M11 5L5 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+      </span>`;
 
     newWrapper.appendChild(newTab);
     tabsContainer.insertBefore(newWrapper, tabAddBtn);
@@ -992,7 +1085,7 @@
       w.dataset.tabId = num;
       const btn = w.querySelector('.tab');
       btn.dataset.tab = num;
-      btn.querySelector('span:first-child').textContent = `Exercise ${num}`;
+      btn.querySelector('.tab-title').textContent = `Exercise ${num}`;
     });
     updateRemoveButtons();
     saveConfig();
@@ -1084,12 +1177,11 @@
   // ── Restore Previous Exercise Values ──────────────────────────
   loadConfig();
 
-  // ── Dynamic Start Exercise Button ─────────────────────────────
+  // ── Start Exercise Button ─────────────────────────────────────
   document.getElementById('start-btn').addEventListener('click', () => {
     saveConfig();
     const exerciseCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
 
-    // Check voice sound toggles
     const soundSets     = document.getElementById('sound-sets').checked ? '1' : '0';
     const soundRestSets = document.getElementById('sound-rest-sets').checked ? '1' : '0';
     const soundReps     = document.getElementById('sound-reps').checked ? '1' : '0';
