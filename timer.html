@@ -493,7 +493,7 @@
       display: flex;
       justify-content: center;
       align-items: flex-end; /* Overlay from bottom as per design */
-      padding: 0 20px 24px 20px; /* Positioned 24px from bottom */
+      padding: 0 20px 20px 20px; /* Equal padding: left 20px, right 20px, bottom 20px */
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
@@ -588,10 +588,9 @@
         <p class="header-subtitle">Workout in progress...</p>
       </div>
 
-      <button class="header-btn" id="header-stop-btn" aria-label="Stop workout or settings">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      <button class="header-btn" id="header-stop-btn" aria-label="Close workout">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
@@ -836,6 +835,7 @@
   let audioCtx = null;
   function playTone(freq, duration = 0.12) {
     if (!SETTINGS.countdownBeeps) return;
+    if (!state.running || state.finished) return; // Prevent sound when paused
     try {
       const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtxClass) return;
@@ -1026,27 +1026,38 @@
     preModalState:     false,
   };
 
+  function calculateTotalWorkoutDuration() {
+    const setDuration = (CFG.reps * CFG.hold) + (Math.max(0, CFG.reps - 1) * CFG.restReps);
+    const exerciseDuration = (CFG.sets * setDuration) + (Math.max(0, CFG.sets - 1) * CFG.restSets);
+    return Math.max(1, CFG.exercises * exerciseDuration);
+  }
+
   let tickerId = null;
-  let totalWorkoutSeconds = 0;
+  let totalWorkoutSeconds = calculateTotalWorkoutDuration();
+  let remainingWorkoutSeconds = totalWorkoutSeconds;
   let clockInterval = null;
 
   /* ══════════════════════════════════════════════════════════════
-   *  STOPWATCH CLOCK (00:00:00 format)
+   *  COUNTDOWN CLOCK (Counts backwards from overall time)
    * ══════════════════════════════════════════════════════════════ */
   function startWorkoutClock() {
     if (clockInterval) clearInterval(clockInterval);
+    updateClockDisplay();
     clockInterval = setInterval(() => {
-      if (state.running && !state.finished) {
-        totalWorkoutSeconds++;
+      if (state.running && !state.finished && !state.isWaitingForVoice) {
+        if (remainingWorkoutSeconds > 0) {
+          remainingWorkoutSeconds--;
+        }
         updateClockDisplay();
       }
     }, 1000);
   }
 
   function updateClockDisplay() {
-    const hrs  = Math.floor(totalWorkoutSeconds / 3600);
-    const mins = Math.floor((totalWorkoutSeconds % 3600) / 60);
-    const secs = totalWorkoutSeconds % 60;
+    const safeSecs = Math.max(0, remainingWorkoutSeconds);
+    const hrs  = Math.floor(safeSecs / 3600);
+    const mins = Math.floor((safeSecs % 3600) / 60);
+    const secs = safeSecs % 60;
     const pad  = n => String(n).padStart(2, '0');
     workoutClock.textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
   }
@@ -1186,6 +1197,11 @@
     state.phase    = PHASE.DONE;
     stopTicker();
 
+    remainingWorkoutSeconds = 0;
+    updateClockDisplay();
+    if (audioCtx) {
+      try { audioCtx.suspend(); } catch (e) {}
+    }
     speakRaw('Workout complete. Fantastic job!');
 
     // Mark all segments done
@@ -1211,8 +1227,11 @@
     state.set = 1;
     state.rep = 1;
     state.running = true;
-    totalWorkoutSeconds = 0;
+    remainingWorkoutSeconds = totalWorkoutSeconds;
     updateClockDisplay();
+    if (audioCtx && audioCtx.state === 'suspended') {
+      try { audioCtx.resume(); } catch (e) {}
+    }
     card.classList.remove('paused');
     iconPause.style.display = '';
     iconPlay.style.display  = 'none';
@@ -1234,6 +1253,9 @@
     state.preModalState = state.running;
     state.running = false;
     stopTicker();
+    if (audioCtx) {
+      try { audioCtx.suspend(); } catch (e) {}
+    }
     card.classList.add('paused');
 
     stopModal.classList.add('active');
@@ -1244,6 +1266,9 @@
     stopModal.classList.remove('active');
     if (state.preModalState) {
       state.running = true;
+      if (audioCtx && audioCtx.state === 'suspended') {
+        try { audioCtx.resume(); } catch (e) {}
+      }
       card.classList.remove('paused');
       iconPause.style.display = '';
       iconPlay.style.display  = 'none';
@@ -1401,10 +1426,16 @@
     state.running = !state.running;
 
     if (state.running) {
+      if (audioCtx && audioCtx.state === 'suspended') {
+        try { audioCtx.resume(); } catch (e) {}
+      }
       speakRaw('Resuming.');
       state.lastTickTime = performance.now();
       startTicker();
     } else {
+      if (audioCtx) {
+        try { audioCtx.suspend(); } catch (e) {}
+      }
       speakRaw('Paused.');
       state.isWaitingForVoice = false;
       stopTicker();
