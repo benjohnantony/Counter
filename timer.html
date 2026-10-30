@@ -1192,16 +1192,16 @@
 
     if (isFirstOfExercise && state.exercise === 1) {
       category = 'sets';
-      cueText = CFG.exercises > 1 ? 'Exercise 1. Set 1. Repetition 1.' : 'Set 1. Repetition 1.';
+      cueText = CFG.exercises > 1 ? 'Exercise 1. Set 1. rep 1.' : 'Set 1. rep 1.';
     } else if (isFirstOfExercise && state.exercise > 1) {
       category = 'sets';
-      cueText = `Exercise ${state.exercise}. Set 1. Repetition 1.`;
+      cueText = `Exercise ${state.exercise}. Set 1. rep 1.`;
     } else if (isFirstOfSet && state.set > 1) {
       category = 'sets';
-      cueText = `Set ${state.set}. Repetition ${repNum}`;
+      cueText = `Set ${state.set}. rep ${repNum}`;
     } else {
       category = 'reps';
-      cueText = `Repetition ${repNum}`;
+      cueText = `rep ${repNum}`;
     }
 
     // Bar stays empty at 0% until this voice announcement finishes!
@@ -1705,7 +1705,7 @@
     }
 
     if (cmd.includes('repeat') || cmd.includes('restart') || cmd.includes('again')) {
-      showVoiceToast('Repeat Repetition');
+      showVoiceToast('Repeat Rep');
       repeatCurrentRep();
       return;
     }
