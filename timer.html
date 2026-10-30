@@ -10,59 +10,56 @@
   <style>
     /*
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     *  FIGMA DESIGN SYSTEM — EXACT DESIGN TOKENS
+     *  FIGMA MOBILE DESIGN SYSTEM — EXACT DESIGN TOKENS
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      */
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:            #1B1B1F;
-      --surface:       #222227;
-      --surface-2:     #1B1B20;
-      --surface-card:  #222227;
-      --border:        #28282E;
-      --control-border:#303038;
-      --text:          #F5F5F7;
-      --text-sub:      #AAAABF;
-      --text-muted:    #727287;
-      --accent:        #FF315F;          /* Hold red */
-      --accent-hover:  #FE3B68;
-      --accent-glow:   rgba(255, 49, 95, 0.40);
-      --accent-dim:    rgba(255, 49, 95, 0.12);
-      --ring-track:    #252026;
-      --yellow:        #FFAB00;          /* Rest yellow */
-      --yellow-glow:   rgba(255, 171, 0, 0.35);
-      --green:         #4CAF50;
+      /* Colors */
+      --bg:             #1B1B1F; /* Main surface */
+      --card-surface:   #222227; /* Setting cards, icon buttons */
+      --input-surface:  #1B1B20; /* Steppers, inactive tracks */
+      --outer-border:   #28282E; /* Main container outline */
+      --control-border: #303038; /* Inactive controls & borders */
+      --primary-accent: #FE3B68; /* Selected tabs, enabled switches, active items */
+      --primary-btn:    #FE3B68; /* Main call to action */
+      --white:          #FFFFFF; /* White */
+      --primary-text:   #F5F5F7; /* Setting labels, values */
+      --secondary-text: #AAAABF; /* Inactive tab labels */
+      --subtitle-text:  #9E9E9F; /* Page subtitles */
+      --muted-text:     #727287; /* Helper text, inactive icons */
 
-      --font-heading:  'Orelega One', Georgia, serif;
-      --font-body:     'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      /* Category indicators */
+      --cat-green:      #4CAF50;
+      --cat-blue:       #2196F3;
+      --cat-red:        #FF4747;
+      --cat-amber:      #FFAB00;
+      --cat-purple:     #A62CC6;
 
-      --sp-1:  4px;  --sp-2:  8px;  --sp-3:  12px; --sp-4:  16px;
-      --sp-5:  20px; --sp-6:  24px; --sp-8:  32px; --sp-10: 40px;
-      --sp-12: 48px; --sp-16: 64px;
+      /* Typography */
+      --font-heading:   'Orelega One', Georgia, serif;
+      --font-body:      'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-      --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px; --r-2xl: 28px;
+      /* Radii */
+      --r-xs:           6px;
+      --r-sm:           8px;
+      --r-lg:           16px;
+      --r-pill:         360px;
 
-      --text-xs:   0.6875rem; /* 11px */
-      --text-sm:   0.75rem;   /* 12px */
-      --text-base: 0.875rem;  /* 14px */
-      --text-md:   1rem;      /* 16px */
-      --text-lg:   1.25rem;   /* 20px */
-      --text-xl:   1.5rem;    /* 24px */
-      --text-hero: 5rem;      /* 80px */
-
-      --transition: 0.16s ease;
+      --transition:     0.15s ease;
     }
 
     html, body {
-      height: 100%;
+      min-height: 100%;
       background: #111114;
-      color: var(--text);
+      color: var(--primary-text);
       font-family: var(--font-body);
       font-size: 16px;
       line-height: 1.4;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
       overflow-x: hidden;
     }
 
@@ -71,165 +68,219 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: var(--sp-6) var(--sp-4);
+      min-height: 100dvh;
+      padding: 16px;
     }
 
-    /* ── Card (Fixed Container Size matching Home) ──────────────── */
+    /* ── Mobile Container (Figma 375 × 833 px Frame) ─────────────── */
     .card {
-      position: relative;
       width: 100%;
-      max-width: 520px;
+      max-width: 420px;
       height: 733px;
       max-height: calc(100dvh - 32px);
       margin: auto;
       background: var(--bg);
-      border-radius: var(--r-lg);
-      border: 1px solid var(--border);
-      padding: 32px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+      border-radius: var(--r-lg); /* 16px */
+      border: 1px solid var(--outer-border);
+      padding: 32px 20px; /* Pad: [T:32 R:20 B:32 L:20] from Figma */
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      align-items: stretch;
-      overflow: hidden;
       box-sizing: border-box;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+      position: relative;
     }
 
-    /* ── Top Nav ────────────────────────────────────────────────── */
-    .topnav {
+    /* ── Top Header Section (Height 146px in Figma) ──────────────── */
+    .top-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Group A: Clock + Settings Button (Height 47px, Gap 16px) */
+    .header-bar {
+      width: 100%;
+      height: 47px;
       display: flex;
       align-items: center;
-      gap: var(--sp-3);
+      justify-content: space-between;
+      gap: 16px;
     }
 
-    .nav-btn {
-      background: var(--surface);
-      border: 1px solid var(--control-border);
-      border-radius: var(--r-sm);
+    .header-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .header-clock {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 31px;
+      letter-spacing: 0.4px;
+      color: var(--primary-text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .header-subtitle {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: 0.4px;
+      color: var(--subtitle-text);
+    }
+
+    /* Settings Button (40 × 40 px, Radius 6px) */
+    .header-btn {
       width: 40px;
       height: 40px;
+      border-radius: var(--r-xs);
+      background: var(--card-surface);
+      border: 1px solid var(--control-border);
       display: grid;
       place-items: center;
       cursor: pointer;
-      flex-shrink: 0;
+      color: var(--muted-text);
       text-decoration: none;
-      transition: background var(--transition), border-color var(--transition);
+      flex-shrink: 0;
+      padding: 12px;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .nav-btn:hover { background: #2a2a32; border-color: #3e3e48; }
-
-    .nav-btn svg {
-      width: 18px; height: 18px;
-      stroke: var(--muted-text); fill: none;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-      transition: stroke var(--transition);
+    .header-btn:hover {
+      background: #282830;
+      border-color: #3e3e48;
+      color: var(--primary-text);
     }
 
-    .nav-btn:hover svg { stroke: var(--text); }
+    .header-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
-    /* ── Progress Bar (Dynamic Exercises) ───────────────────────── */
+    /* ── Progress Segments Bar (Height 4px, Gap 4px) ─────────────── */
     .progress-bar {
-      flex: 1;
+      width: 100%;
+      height: 4px;
       display: flex;
-      gap: var(--sp-1);
       align-items: center;
+      gap: 4px;
     }
 
-    .progress-seg {
+    .ex-group {
+      flex: 1;
+      height: 4px;
+      display: flex;
+      gap: 1px;
+    }
+
+    .seg-bar {
       flex: 1;
       height: 4px;
       border-radius: 999px;
-      background: var(--border);
-      transition: background 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      background: var(--muted-text);
+      transition: background 0.25s ease;
     }
 
-    .progress-seg.done { background: var(--accent); }
-
-    .progress-seg.active::after {
-      content: '';
-      position: absolute;
-      inset-block: 0; left: 0;
-      width: var(--fill, 0%);
-      background: var(--accent);
-      border-radius: inherit;
-      transition: width 0.3s linear;
+    .seg-bar.done,
+    .seg-bar.active {
+      background: var(--primary-accent);
     }
 
-    /* ── Exercise Label ─────────────────────────────────────────── */
-    .exercise-label {
-      text-align: center;
+    /* ── Workout Title (Height 31px) ─────────────────────────────── */
+    .workout-title {
       font-family: var(--font-heading);
-      font-size: 20px;
-      color: var(--text);
       font-weight: 400;
+      font-size: 20px;
+      line-height: 31px;
       letter-spacing: 0.4px;
+      color: var(--primary-text);
+      text-align: left;
     }
 
-    /* ── Ring ───────────────────────────────────────────────────── */
-    .ring-wrapper {
-      position: relative;
+    /* ── Center Section: Ring & Set Info ─────────────────────────── */
+    .center-section {
+      width: 100%;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      gap: 16px;
       margin: auto 0;
     }
 
-    /* Ambient glow behind ring */
+    .ring-wrapper {
+      position: relative;
+      width: 275px;
+      height: 275px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Ambient glow */
     .ring-glow {
       position: absolute;
-      width: 220px; height: 220px;
+      width: 220px;
+      height: 220px;
       border-radius: 50%;
       pointer-events: none;
       transition: background 0.3s ease;
     }
 
     .ring-wrapper.holding .ring-glow {
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(254, 59, 104, 0.35) 0%, transparent 70%);
     }
 
     .ring-wrapper.resting .ring-glow {
-      background: radial-gradient(circle, var(--yellow-glow) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 171, 0, 0.35) 0%, transparent 70%);
     }
 
     .ring-svg {
-      width: 260px;
-      height: 260px;
+      width: 275px;
+      height: 275px;
       transform: rotate(-90deg); /* 12 o'clock top origin */
       overflow: visible;
     }
 
     .ring-track {
       fill: none;
-      stroke: var(--ring-track);
+      stroke: var(--card-surface); /* #222227 */
       stroke-width: 12;
-      stroke-linecap: round;
     }
 
     .ring-progress {
       fill: none;
       stroke-width: 12;
       stroke-linecap: round;
-      stroke-dasharray: 678.584; /* 2 * PI * 108 */
-      stroke-dashoffset: 678.584; /* starts empty */
-      filter: url(#glow);
+      stroke-dasharray: 722.566; /* 2 * PI * 115 */
+      stroke-dashoffset: 722.566;
       transition: stroke 0.25s ease;
     }
 
-    /* Hold mode = Red */
     .ring-wrapper.holding .ring-progress {
-      stroke: var(--accent);
-      filter: url(#glow);
+      stroke: var(--primary-accent); /* #FE3B68 */
     }
 
-    /* Rest mode = Yellow */
     .ring-wrapper.resting .ring-progress {
-      stroke: var(--yellow);
-      filter: url(#glow-yellow);
+      stroke: var(--cat-amber); /* #FFAB00 */
     }
 
-    /* Ring Center: STRICTLY rep count */
+    /* Ring Center Typography */
     .ring-center {
       position: absolute;
       inset: 0;
@@ -239,87 +290,111 @@
       justify-content: center;
       pointer-events: none;
       user-select: none;
+      gap: 0px;
     }
 
     .ring-number {
-      font-size: var(--text-hero);
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -2px;
-      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 80px;
+      line-height: 81.2px;
+      letter-spacing: 2.32px;
+      color: var(--primary-text);
       font-variant-numeric: tabular-nums;
       transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .ring-number.pop {
-      transform: scale(1.18);
+      transform: scale(1.16);
+    }
+
+    .ring-rep-label {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 31px;
+      letter-spacing: 0.4px;
+      color: var(--primary-text);
+      margin-top: -6px;
     }
 
     .ring-of {
-      font-size: var(--text-base);
-      color: var(--text-sub);
+      font-family: var(--font-body);
       font-weight: 600;
-      margin-top: var(--sp-1);
-      letter-spacing: 0.2px;
+      font-size: 14px;
+      line-height: 16px;
+      letter-spacing: 0.4px;
+      color: var(--muted-text); /* #727287 */
     }
 
-    /* ── Set Info ───────────────────────────────────────────────── */
+    /* Set Info below Ring */
     .set-info {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 31px;
+      letter-spacing: 0.4px;
+      color: var(--primary-text);
       text-align: center;
-      font-size: var(--text-base);
-      color: var(--text-sub);
     }
 
-    .set-info strong {
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    /* ── Controls ───────────────────────────────────────────────── */
+    /* ── Controls Section (Height 106px in Figma, Gap 32px) ──────── */
     .controls {
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: var(--sp-8);
-      padding: var(--sp-2) 0;
+      gap: 32px;
+      flex-shrink: 0;
+      padding-bottom: 4px;
     }
 
-    .ctrl-group {
+    .ctrl-col {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--sp-2);
+      gap: 12px;
     }
 
-    .ctrl-btn {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
+    /* Circle Control 52 × 52 px */
+    .ctrl-circle-52 {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--r-pill);
+      background: transparent;
+      border: 1px solid var(--muted-text); /* #727287 */
       display: grid;
       place-items: center;
       cursor: pointer;
-      color: var(--text-sub);
-      transition:
-        background var(--transition),
-        border-color var(--transition),
-        color var(--transition),
-        transform 0.1s ease;
+      color: var(--muted-text);
+      padding: 16px;
+      transition: background var(--transition), border-color var(--transition), color var(--transition), transform 0.1s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .ctrl-btn:hover {
-      background: var(--border);
-      color: var(--text);
-      border-color: var(--text-muted);
+    .ctrl-circle-52:hover {
+      background: rgba(114, 114, 135, 0.15);
+      border-color: var(--primary-text);
+      color: var(--primary-text);
     }
 
-    .ctrl-btn:active { transform: scale(0.94); }
+    .ctrl-circle-52:active {
+      transform: scale(0.94);
+    }
 
-    .ctrl-btn svg {
-      width: 22px;
-      height: 22px;
+    .ctrl-circle-52.stop {
+      border-color: var(--primary-accent);
+      color: var(--primary-accent);
+    }
+
+    .ctrl-circle-52.stop:hover {
+      background: rgba(254, 59, 104, 0.15);
+      border-color: var(--primary-accent);
+    }
+
+    .ctrl-circle-52 svg {
+      width: 20px;
+      height: 20px;
       stroke: currentColor;
       fill: none;
       stroke-width: 2;
@@ -327,77 +402,73 @@
       stroke-linejoin: round;
     }
 
-    .ctrl-btn.stop {
-      color: var(--accent);
-      border-color: rgba(255, 59, 92, 0.3);
-      background: rgba(255, 59, 92, 0.08);
-    }
-
-    .ctrl-btn.stop:hover {
-      background: rgba(255, 59, 92, 0.18);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .ctrl-btn.stop svg {
+    .ctrl-circle-52.stop svg {
       fill: currentColor;
       stroke: none;
     }
 
-    /* Pause / Play central button */
-    .pause-btn {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: var(--accent);
+    /* Circle Control 80 × 80 px (Center Pause / Play) */
+    .ctrl-circle-80 {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--r-pill);
+      background: var(--primary-accent); /* #FE3B68 */
       border: none;
       display: grid;
       place-items: center;
       cursor: pointer;
-      color: #fff;
-      box-shadow: 0 4px 20px var(--accent-glow);
-      transition:
-        background var(--transition),
-        box-shadow var(--transition),
-        transform 0.1s ease;
+      color: var(--white);
+      padding: 24.6px;
+      box-shadow: 0 4px 20px rgba(254, 59, 104, 0.4);
+      transition: background var(--transition), box-shadow var(--transition), transform 0.1s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .pause-btn:hover {
-      background: var(--accent-hover);
-      box-shadow: 0 6px 24px rgba(255, 59, 92, 0.55);
+    .ctrl-circle-80:hover {
+      background: #e62e58;
+      box-shadow: 0 6px 24px rgba(254, 59, 104, 0.55);
     }
 
-    .pause-btn:active { transform: scale(0.95); }
+    .ctrl-circle-80:active {
+      transform: scale(0.95);
+    }
 
-    .pause-btn svg {
+    .ctrl-circle-80 svg {
       width: 28px;
       height: 28px;
-      fill: #fff;
+      fill: var(--white);
       stroke: none;
     }
 
     .ctrl-label {
-      font-size: var(--text-xs);
-      color: var(--text-muted);
+      font-family: var(--font-body);
       font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: 0.4px;
+      color: var(--muted-text);
     }
 
-    /* ── Voice Feedback Toast ───────────────────────────────────── */
+    /* Dim card when paused */
+    .card.paused .ring-wrapper {
+      opacity: 0.65;
+    }
+
+    /* ── Voice Toast ─────────────────────────────────────────────── */
     .voice-toast {
       position: absolute;
-      top: 56px;
+      top: 24px;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
-      background: rgba(26, 26, 31, 0.95);
-      border: 1px solid var(--accent);
-      color: var(--text);
-      font-size: var(--text-xs);
-      font-weight: 600;
-      letter-spacing: 0.2px;
-      padding: var(--sp-1) var(--sp-4);
+      background: rgba(34, 34, 39, 0.95);
+      border: 1px solid var(--control-border);
+      color: var(--primary-text);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
       border-radius: 999px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 12px var(--accent-glow);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease, transform 0.2s ease;
@@ -410,7 +481,7 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* ── STOP POPUP MODAL ───────────────────────────────────────── */
+    /* ── POPUP MODAL (Exact Figma 335 × 257 px) ──────────────────── */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -420,10 +491,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: var(--sp-4);
+      padding: 16px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.24s ease;
+      transition: opacity 0.22s ease;
       z-index: 1000;
     }
 
@@ -434,246 +505,66 @@
 
     .modal-card {
       width: 100%;
-      max-width: 380px;
-      background: #1c1c22;
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      padding: var(--sp-6) var(--sp-6) var(--sp-6);
+      max-width: 335px;
+      background: var(--bg); /* #1B1B1F */
+      border: 1px solid var(--outer-border); /* #28282E */
+      border-radius: var(--r-lg); /* 16px */
+      padding: 24px 20px; /* Pad: [T:24 R:20 B:24 L:20] from Figma */
+      display: flex;
+      flex-direction: column;
+      gap: 40px; /* Gap: 40px from Figma */
       text-align: center;
-      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
-      transform: scale(0.94);
-      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65);
+      transform: scale(0.95);
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .modal-overlay.active .modal-card {
       transform: scale(1);
     }
 
-    .modal-badge-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: rgba(255, 59, 92, 0.14);
-      border: 1px solid rgba(255, 59, 92, 0.3);
-      display: grid;
-      place-items: center;
-      margin: 0 auto var(--sp-3);
-    }
-
-    .modal-badge-icon svg {
-      width: 22px;
-      height: 22px;
-      fill: var(--accent);
+    .modal-text-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      text-align: center;
     }
 
     .modal-title {
-      font-size: var(--text-lg);
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: var(--sp-1);
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 31px;
+      letter-spacing: 0.4px;
+      color: var(--primary-text);
     }
 
-    .modal-desc {
-      font-size: var(--text-sm);
-      color: var(--text-sub);
-      line-height: 1.4;
-      margin-bottom: var(--sp-6);
+    .modal-subtitle {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: 0.4px;
+      color: var(--subtitle-text);
     }
 
-    .modal-actions {
-      display: flex;
-      flex-direction: column;
-      gap: var(--sp-2);
-    }
-
-    .modal-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--sp-2);
-      width: 100%;
-      padding: var(--sp-3) var(--sp-4);
-      border-radius: var(--r-md);
-      font-size: var(--text-base);
-      font-weight: 600;
-      cursor: pointer;
-      transition: background var(--transition), transform var(--transition);
-      border: none;
-    }
-
-    .modal-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .modal-btn.primary {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 4px 14px var(--accent-glow);
-    }
-
-    .modal-btn.primary:hover {
-      background: var(--accent-hover);
-    }
-
-    .modal-btn.secondary {
-      background: var(--surface-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .modal-btn.secondary:hover {
-      background: var(--border);
-    }
-
-    .modal-btn.cancel {
-      background: transparent;
-      color: var(--text-muted);
-      margin-top: var(--sp-1);
-      font-size: var(--text-sm);
-    }
-
-    .modal-btn.cancel:hover {
-      color: var(--text);
-    }
-
-    /* ── SLIDE-OVER BOTTOM SHEET ────────────────────────────────── */
-    .sheet-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.70);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      z-index: 990;
-    }
-
-    .sheet-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .sheet-panel {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translate(-50%, 100%);
-      width: 100%;
-      max-width: 480px;
-      background: #18181e;
-      border: 1px solid var(--border);
-      border-bottom: none;
-      border-radius: var(--r-2xl) var(--r-2xl) 0 0;
-      padding: var(--sp-4) var(--sp-6) var(--sp-10);
-      text-align: center;
-      box-shadow: 0 -8px 36px rgba(0, 0, 0, 0.75), 0 -1px 0 rgba(255, 255, 255, 0.1);
-      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 995;
-    }
-
-    .sheet-overlay.active .sheet-panel {
-      transform: translate(-50%, 0);
-    }
-
-    .sheet-handle {
-      width: 40px;
-      height: 4px;
-      border-radius: 999px;
-      background: var(--border);
-      margin: 0 auto var(--sp-5);
-    }
-
-    .sheet-icon-wrap {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(255, 59, 92, 0.15);
-      border: 1px solid rgba(255, 59, 92, 0.35);
-      display: grid;
-      place-items: center;
-      margin: 0 auto var(--sp-4);
-    }
-
-    .sheet-icon-wrap.success {
-      background: rgba(76, 175, 80, 0.15);
-      border-color: rgba(76, 175, 80, 0.4);
-    }
-
-    .sheet-icon-wrap svg {
-      width: 28px;
-      height: 28px;
-      stroke: var(--accent);
-      fill: none;
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .sheet-icon-wrap.success svg {
-      stroke: #4caf50;
-    }
-
-    .sheet-badge {
-      display: inline-block;
-      font-size: var(--text-xs);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      padding: var(--sp-1) var(--sp-3);
-      border-radius: 999px;
-      background: rgba(255, 59, 92, 0.15);
-      color: var(--accent);
-      margin-bottom: var(--sp-2);
-    }
-
-    .sheet-badge.success {
-      background: rgba(76, 175, 80, 0.15);
-      color: #4caf50;
-    }
-
-    .sheet-title {
-      font-size: var(--text-xl);
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: var(--sp-2);
-    }
-
-    .sheet-desc {
-      font-size: var(--text-sm);
-      color: var(--text-sub);
-      line-height: 1.4;
-      margin-bottom: var(--sp-8);
-    }
-
-    .sheet-controls {
+    .modal-controls {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: var(--sp-8);
+      gap: 32px;
     }
 
-    /* Dim entire card when paused */
-    .card.paused .ring-wrapper {
-      opacity: 0.65;
-    }
-
-    /* ── Responsive ─────────────────────────────────────────────── */
-    @media (max-width: 520px) {
-      body { padding: 0; align-items: stretch; }
+    /* Responsive */
+    @media (max-width: 480px) {
+      body {
+        padding: 0;
+      }
       .card {
-        border-radius: 0;
-        max-width: 100%;
         height: 100vh;
         height: 100dvh;
         max-height: 100dvh;
-        padding: var(--sp-5) var(--sp-4);
+        border-radius: 0;
         border: none;
       }
     }
@@ -681,95 +572,92 @@
 </head>
 <body>
 
-<!-- Hidden SVG defs for glow filters -->
-<svg width="0" height="0" style="position:absolute;pointer-events:none">
-  <defs>
-    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="4"  result="b1"/>
-      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="b2"/>
-      <feMerge>
-        <feMergeNode in="b2"/>
-        <feMergeNode in="b1"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <filter id="glow-yellow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="3"  result="b1"/>
-      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b2"/>
-      <feMerge>
-        <feMergeNode in="b2"/>
-        <feMergeNode in="b1"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-</svg>
-
 <main class="card" id="card" aria-label="Active Workout Timer">
 
-  <!-- Voice Recognition Toast Feedback -->
+  <!-- Voice Toast Feedback -->
   <div class="voice-toast" id="voice-toast">🎙️ Command Recognized</div>
 
-  <!-- ── Top Nav ────────────────────────────────────────────────── -->
-  <div class="topnav">
-    <a href="index.html" class="nav-btn" id="nav-back-btn" aria-label="Back to setup">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </a>
+  <!-- ── Top Section (Header + Progress Bar + Workout Title) ───── -->
+  <div class="top-section">
+    <!-- Header: Clock + Settings Button -->
+    <div class="header-bar">
+      <div class="header-text">
+        <h1 class="header-clock" id="workout-clock">00:00:00</h1>
+        <p class="header-subtitle">Workout in progress...</p>
+      </div>
 
-    <div class="progress-bar" id="progress-bar"
-         role="progressbar" aria-label="Exercise progress"></div>
-  </div>
-
-  <!-- ── Exercise Label ─────────────────────────────────────────── -->
-  <p class="exercise-label" id="exercise-label">Exercise 1</p>
-
-  <!-- ── Ring (Initially Empty) ─────────────────────────────────── -->
-  <div class="ring-wrapper holding" id="ring-wrapper">
-    <div class="ring-glow"></div>
-
-    <svg class="ring-svg" viewBox="0 0 280 280" aria-hidden="true">
-      <circle class="ring-track"    cx="140" cy="140" r="108"/>
-      <circle class="ring-progress" cx="140" cy="140" r="108" id="ring-progress"/>
-    </svg>
-
-    <!-- Center: ONLY shows rep count -->
-    <div class="ring-center">
-      <span class="ring-number" id="ring-number" aria-live="polite" aria-atomic="true">1</span>
-      <span class="ring-of"     id="ring-of">of 10</span>
-    </div>
-  </div>
-
-  <!-- ── Set Info ──────────────────────────────────────────────── -->
-  <p class="set-info" id="set-info">Set <strong>1</strong> of 3</p>
-
-  <!-- ── Controls ─────────────────────────────────────────────── -->
-  <div class="controls">
-    <div class="ctrl-group">
-      <button class="ctrl-btn" id="btn-repeat" aria-label="Repeat current rep">
+      <button class="header-btn" id="header-stop-btn" aria-label="Stop workout or settings">
         <svg viewBox="0 0 24 24">
-          <polyline points="1 4 1 10 7 10"/>
-          <path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Progress Segments -->
+    <div class="progress-bar" id="progress-bar" role="progressbar" aria-label="Workout progress">
+      <!-- Generated dynamically based on exercises & sets -->
+    </div>
+
+    <!-- Workout Title (e.g. Workout 1 of 3) -->
+    <h2 class="workout-title" id="workout-title">Workout 1 of 3</h2>
+  </div>
+
+  <!-- ── Center Section: Ring & Set Info ───────────────────────── -->
+  <div class="center-section">
+    <div class="ring-wrapper holding" id="ring-wrapper">
+      <div class="ring-glow"></div>
+
+      <svg class="ring-svg" viewBox="0 0 275 275" aria-hidden="true">
+        <circle class="ring-track" cx="137.5" cy="137.5" r="115"></circle>
+        <circle class="ring-progress" cx="137.5" cy="137.5" r="115" id="ring-progress"></circle>
+      </svg>
+
+      <!-- Center text inside ring -->
+      <div class="ring-center">
+        <span class="ring-number" id="ring-number" aria-live="polite" aria-atomic="true">1</span>
+        <span class="ring-rep-label">Rep</span>
+        <span class="ring-of" id="ring-of">of 10</span>
+      </div>
+    </div>
+
+    <!-- Set Info below Ring -->
+    <p class="set-info" id="set-info">Set 1 of 3</p>
+  </div>
+
+  <!-- ── Controls Section ──────────────────────────────────────── -->
+  <div class="controls">
+    <!-- Repeat -->
+    <div class="ctrl-col">
+      <button class="ctrl-circle-52" id="btn-repeat" aria-label="Repeat current rep">
+        <svg viewBox="0 0 24 24">
+          <polyline points="1 4 1 10 7 10"></polyline>
+          <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
         </svg>
       </button>
       <span class="ctrl-label">Repeat</span>
     </div>
 
-    <div class="ctrl-group">
-      <button class="pause-btn" id="btn-pause" aria-label="Pause workout">
+    <!-- Center Pause / Play -->
+    <div class="ctrl-col">
+      <button class="ctrl-circle-80" id="btn-pause" aria-label="Pause workout">
         <svg id="icon-pause" viewBox="0 0 24 24">
-          <rect x="6" y="4" width="4" height="16" rx="1"/>
-          <rect x="14" y="4" width="4" height="16" rx="1"/>
+          <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
+          <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
         </svg>
-        <svg id="icon-play" viewBox="0 0 24 24" style="display:none;margin-left:3px">
-          <polygon points="5 3 19 12 5 21 5 3"/>
+        <svg id="icon-play" viewBox="0 0 24 24" style="display:none; margin-left: 3px;">
+          <polygon points="6 4 20 12 6 20 6 4"></polygon>
         </svg>
       </button>
       <span class="ctrl-label" id="pause-label">Pause</span>
     </div>
 
-    <div class="ctrl-group">
-      <button class="ctrl-btn stop" id="btn-stop" aria-label="Stop workout">
-        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+    <!-- Stop -->
+    <div class="ctrl-col">
+      <button class="ctrl-circle-52 stop" id="btn-stop" aria-label="Stop workout">
+        <svg viewBox="0 0 24 24">
+          <rect x="5" y="5" width="14" height="14" rx="2"></rect>
+        </svg>
       </button>
       <span class="ctrl-label">Stop</span>
     </div>
@@ -777,49 +665,90 @@
 
 </main>
 
-<!-- ── STOP MODAL DIALOG ───────────────────────────────────────── -->
+<!-- ── STOP POPUP MODAL (Exact Figma 335 × 257 px) ──────────────── -->
 <div class="modal-overlay" id="stop-modal" role="dialog" aria-modal="true" aria-labelledby="stop-title">
   <div class="modal-card">
-    <div class="modal-badge-icon">
-      <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+    <div class="modal-text-group">
+      <h2 class="modal-title" id="stop-title">Stop Workout?</h2>
+      <p class="modal-subtitle">Would you like to restart from the beginning or return to home?</p>
     </div>
-    <h2 class="modal-title" id="stop-title">Stop Workout?</h2>
-    <p class="modal-desc">Would you like to restart from the beginning or return to home?</p>
-    
-    <div class="modal-actions">
-      <button class="modal-btn primary" id="modal-restart-btn">
-        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
-        <span>Restart from Beginning</span>
-      </button>
-      <button class="modal-btn secondary" id="modal-home-btn">
-        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>Go to Home</span>
-      </button>
-      <button class="modal-btn cancel" id="modal-cancel-btn">
-        <span>Cancel & Resume</span>
-      </button>
+
+    <div class="modal-controls">
+      <!-- Restart -->
+      <div class="ctrl-col">
+        <button class="ctrl-circle-52" id="modal-restart-btn" aria-label="Restart entire workout">
+          <svg viewBox="0 0 24 24">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
+          </svg>
+        </button>
+        <span class="ctrl-label">Restart</span>
+      </div>
+
+      <!-- Resume -->
+      <div class="ctrl-col">
+        <button class="ctrl-circle-80" id="modal-resume-btn" aria-label="Resume workout">
+          <svg viewBox="0 0 24 24" style="margin-left: 3px;">
+            <polygon points="6 4 20 12 6 20 6 4"></polygon>
+          </svg>
+        </button>
+        <span class="ctrl-label">Resume</span>
+      </div>
+
+      <!-- Home -->
+      <div class="ctrl-col">
+        <button class="ctrl-circle-52 stop" id="modal-home-btn" aria-label="Go to Home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </button>
+        <span class="ctrl-label">Home</span>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ── SLIDE-OVER BOTTOM SHEET ─────────────────────────────────── -->
-<div class="sheet-overlay" id="sheet-overlay" role="dialog" aria-modal="true">
-  <div class="sheet-panel" id="sheet-panel">
-    <div class="sheet-handle"></div>
-    
-    <div class="sheet-icon-wrap" id="sheet-icon-wrap">
-      <svg id="sheet-icon-svg" viewBox="0 0 24 24">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
+<!-- ── FINISH POPUP MODAL (Exact Figma 335 × 257 px) ─────────────── -->
+<div class="modal-overlay" id="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finish-title">
+  <div class="modal-card">
+    <div class="modal-text-group">
+      <h2 class="modal-title" id="finish-title">Workout Complete</h2>
+      <p class="modal-subtitle" id="finish-subtitle">You finished all 3 exercises. Great Workout!</p>
     </div>
 
-    <div class="sheet-badge" id="sheet-badge">Exercise Complete</div>
-    <h2 class="sheet-title" id="sheet-title">Exercise 1 Done!</h2>
-    <p class="sheet-desc" id="sheet-desc">Great job! Ready for the next exercise?</p>
+    <div class="modal-controls">
+      <!-- Restart -->
+      <div class="ctrl-col">
+        <button class="ctrl-circle-52" id="finish-restart-btn" aria-label="Restart entire workout">
+          <svg viewBox="0 0 24 24">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
+          </svg>
+        </button>
+        <span class="ctrl-label">Restart</span>
+      </div>
 
-    <!-- Circular control buttons matching exercise screen style -->
-    <div class="sheet-controls" id="sheet-controls">
-      <!-- Populated dynamically -->
+      <!-- Home (Center Primary) -->
+      <div class="ctrl-col">
+        <button class="ctrl-circle-80" id="finish-home-btn" aria-label="Return to Home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </button>
+        <span class="ctrl-label">Home</span>
+      </div>
+
+      <!-- Setup / Repeat -->
+      <div class="ctrl-col">
+        <button class="ctrl-circle-52 stop" id="finish-setup-btn" aria-label="Setup workout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </button>
+        <span class="ctrl-label">Setup</span>
+      </div>
     </div>
   </div>
 </div>
@@ -843,7 +772,7 @@
     soundHold:     p.get('soundHold') !== '0',
   };
 
-  // ── Sync to LocalStorage for persistent restoration at Home ────
+  // Sync to LocalStorage
   const STORAGE_KEY = 'workout_timer_saved_config';
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -864,7 +793,7 @@
   }
 
   /* ══════════════════════════════════════════════════════════════
-   *  LOAD USER SETTINGS (from settings.html)
+   *  LOAD USER SETTINGS
    * ══════════════════════════════════════════════════════════════ */
   const SETTINGS_STORAGE_KEY = 'workout_timer_settings';
   let SETTINGS = {
@@ -883,7 +812,7 @@
     console.warn('Failed to load settings:', e);
   }
 
-  // ── Screen Wake Lock (Keep Screen Awake during active workout) ──
+  // Keep screen awake
   let wakeLockSentinel = null;
   async function requestWakeLock() {
     if ('wakeLock' in navigator && SETTINGS.keepScreenAwake) {
@@ -901,7 +830,7 @@
     }
   });
 
-  // ── Web Audio Tone Generator for crisp countdown beeps ─────────
+  // Web Audio Tone Generator
   let audioCtx = null;
   function playTone(freq, duration = 0.12) {
     if (!SETTINGS.countdownBeeps) return;
@@ -988,7 +917,6 @@
       u.onend   = () => { done(); };
       u.onerror = () => { done(); };
 
-      // Safety timeout: in case browser fails to trigger onend
       const wordCount = (text || '').trim().split(/\s+/).filter(Boolean).length;
       const maxMs = Math.max(1200, wordCount * 650 + 900);
       coachSafetyTimer = setTimeout(done, maxMs);
@@ -1000,7 +928,7 @@
         } catch (err) {
           done();
         }
-      }, 25);
+      }, 10);
     } catch (e) {
       isCoachSpeaking = false;
       console.warn('Speech error:', e);
@@ -1009,15 +937,14 @@
   }
 
   function isCategoryEnabled(category) {
-    if (category === 'sets') return CFG.soundSets;
-    if (category === 'reps') return CFG.soundReps;
-    if (category === 'hold') return CFG.soundHold;
+    if (category === 'sets')     return CFG.soundSets;
+    if (category === 'reps')     return CFG.soundReps;
+    if (category === 'hold')     return CFG.soundHold;
     if (category === 'restSets') return CFG.soundRestSets;
     if (category === 'restReps') return CFG.soundRestReps;
     return true;
   }
 
-  // Phase cues wait for speech to finish before progress starts!
   function speakPhaseCue(category, text, onSpeechDone) {
     if (!isCategoryEnabled(category)) {
       state.isWaitingForVoice = false;
@@ -1034,68 +961,52 @@
     });
   }
 
-  // Live countdown audio ("3, 2, 1") does not block progress
   function speakCountdown(category, text) {
     if (!isCategoryEnabled(category)) return;
     speakRaw(text, null);
   }
 
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.getVoices();
-    if (window.speechSynthesis.onvoiceschanged !== undefined) {
-      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-    }
-  }
-
   /* ══════════════════════════════════════════════════════════════
-   *  DOM REFS
+   *  DOM REFS & STATE
    * ══════════════════════════════════════════════════════════════ */
-  const card         = document.getElementById('card');
-  const progressBar  = document.getElementById('progress-bar');
-  const exLabel      = document.getElementById('exercise-label');
-  const ringWrapper  = document.getElementById('ring-wrapper');
-  const ringProg     = document.getElementById('ring-progress');
-  const ringNumber   = document.getElementById('ring-number');
-  const ringOf       = document.getElementById('ring-of');
-  const setInfoEl    = document.getElementById('set-info');
-  const btnPause     = document.getElementById('btn-pause');
-  const iconPause    = document.getElementById('icon-pause');
-  const iconPlay     = document.getElementById('icon-play');
-  const pauseLabel   = document.getElementById('pause-label');
-  const btnRepeat    = document.getElementById('btn-repeat');
-  const btnStop      = document.getElementById('btn-stop');
+  const card            = document.getElementById('card');
+  const workoutClock    = document.getElementById('workout-clock');
+  const workoutTitle    = document.getElementById('workout-title');
+  const progressBar     = document.getElementById('progress-bar');
+  const ringWrapper     = document.getElementById('ring-wrapper');
+  const ringProgress    = document.getElementById('ring-progress');
+  const ringNumber      = document.getElementById('ring-number');
+  const ringOf          = document.getElementById('ring-of');
+  const setInfoEl       = document.getElementById('set-info');
+  const voiceToast      = document.getElementById('voice-toast');
 
-  // Stop Modal refs
-  const stopModal      = document.getElementById('stop-modal');
-  const modalRestartBtn= document.getElementById('modal-restart-btn');
-  const modalHomeBtn   = document.getElementById('modal-home-btn');
-  const modalCancelBtn = document.getElementById('modal-cancel-btn');
+  const btnRepeat       = document.getElementById('btn-repeat');
+  const btnPause        = document.getElementById('btn-pause');
+  const btnStop         = document.getElementById('btn-stop');
+  const iconPause       = document.getElementById('icon-pause');
+  const iconPlay        = document.getElementById('icon-play');
+  const pauseLabel      = document.getElementById('pause-label');
 
-  // Bottom Sheet refs
-  const sheetOverlay   = document.getElementById('sheet-overlay');
-  const sheetPanel     = document.getElementById('sheet-panel');
-  const sheetIconWrap  = document.getElementById('sheet-icon-wrap');
-  const sheetIconSvg   = document.getElementById('sheet-icon-svg');
-  const sheetBadge     = document.getElementById('sheet-badge');
-  const sheetTitle     = document.getElementById('sheet-title');
-  const sheetDesc      = document.getElementById('sheet-desc');
-  const sheetControls  = document.getElementById('sheet-controls');
+  const headerStopBtn   = document.getElementById('header-stop-btn');
+  const stopModal       = document.getElementById('stop-modal');
+  const modalRestartBtn = document.getElementById('modal-restart-btn');
+  const modalResumeBtn  = document.getElementById('modal-resume-btn');
+  const modalHomeBtn    = document.getElementById('modal-home-btn');
 
-  // Voice toast
-  const voiceToast     = document.getElementById('voice-toast');
+  const finishModal     = document.getElementById('finish-modal');
+  const finishSubtitle  = document.getElementById('finish-subtitle');
+  const finishRestartBtn= document.getElementById('finish-restart-btn');
+  const finishHomeBtn   = document.getElementById('finish-home-btn');
+  const finishSetupBtn  = document.getElementById('finish-setup-btn');
 
-  const CIRCUMFERENCE = 2 * Math.PI * 108; // ≈ 678.584
+  const CIRCUMFERENCE = 2 * Math.PI * 115; // 722.566 px
+  ringProgress.style.strokeDasharray = String(CIRCUMFERENCE);
 
-  /* ══════════════════════════════════════════════════════════════
-   *  STATE & TIMER ENGINE
-   * ══════════════════════════════════════════════════════════════ */
   const PHASE = {
     HOLD:      'HOLD',
     REST_REPS: 'REST_REPS',
     REST_SETS: 'REST_SETS',
-    SHEET:     'SHEET',
-    MODAL:     'MODAL',
-    DONE:      'DONE'
+    DONE:      'DONE',
   };
 
   let state = {
@@ -1109,21 +1020,45 @@
     finished:          false,
     lastTickTime:      null,
     spokenCounts:      {},
-    preModalState:     null,
-    isWaitingForVoice: false, // Progress holds until voice announcement is finished
+    isWaitingForVoice: false,
+    preModalState:     false,
   };
 
   let tickerId = null;
+  let totalWorkoutSeconds = 0;
+  let clockInterval = null;
+
+  /* ══════════════════════════════════════════════════════════════
+   *  STOPWATCH CLOCK (00:00:00 format)
+   * ══════════════════════════════════════════════════════════════ */
+  function startWorkoutClock() {
+    if (clockInterval) clearInterval(clockInterval);
+    clockInterval = setInterval(() => {
+      if (state.running && !state.finished) {
+        totalWorkoutSeconds++;
+        updateClockDisplay();
+      }
+    }, 1000);
+  }
+
+  function updateClockDisplay() {
+    const hrs  = Math.floor(totalWorkoutSeconds / 3600);
+    const mins = Math.floor((totalWorkoutSeconds % 3600) / 60);
+    const secs = totalWorkoutSeconds % 60;
+    const pad  = n => String(n).padStart(2, '0');
+    workoutClock.textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+  }
+
+  /* ── Ring Arc & Glow ─────────────────────────────────────────── */
+  function setRingMode(mode) {
+    ringWrapper.classList.remove('holding', 'resting');
+    ringWrapper.classList.add(mode);
+  }
 
   function setArcFill(fraction) {
     const clamped = Math.max(0, Math.min(1, fraction));
     const offset = CIRCUMFERENCE * (1 - clamped);
-    ringProg.style.strokeDashoffset = `${offset}px`;
-  }
-
-  function setRingMode(mode) {
-    ringWrapper.classList.remove('holding', 'resting');
-    ringWrapper.classList.add(mode);
+    ringProgress.style.strokeDashoffset = String(offset);
   }
 
   function popRepNumber() {
@@ -1132,37 +1067,44 @@
     ringNumber.classList.add('pop');
   }
 
-  /* ── Dynamic Top Progress Bar ───────────────────────────────── */
+  /* ── Progress Segments Bar ───────────────────────────────────── */
   function buildProgressBar() {
     progressBar.innerHTML = '';
-    for (let i = 1; i <= CFG.exercises; i++) {
-      const seg = document.createElement('div');
-      seg.className = 'progress-seg';
-      seg.id = `seg-${i}`;
-      progressBar.appendChild(seg);
+    for (let e = 1; e <= CFG.exercises; e++) {
+      const exGroup = document.createElement('div');
+      exGroup.className = 'ex-group';
+      exGroup.id = `ex-group-${e}`;
+
+      for (let s = 1; s <= CFG.sets; s++) {
+        const seg = document.createElement('div');
+        seg.className = 'seg-bar';
+        seg.id = `seg-${e}-${s}`;
+        exGroup.appendChild(seg);
+      }
+      progressBar.appendChild(exGroup);
     }
   }
 
   function updateProgressBar() {
-    for (let i = 1; i <= CFG.exercises; i++) {
-      const seg = document.getElementById(`seg-${i}`);
-      if (!seg) continue;
-      seg.classList.remove('done', 'active');
-      if (i < state.exercise) {
-        seg.classList.add('done');
-      } else if (i === state.exercise) {
-        seg.classList.add('active');
-        const fill = ((state.set - 1) / CFG.sets) * 100;
-        seg.style.setProperty('--fill', `${fill}%`);
+    for (let e = 1; e <= CFG.exercises; e++) {
+      for (let s = 1; s <= CFG.sets; s++) {
+        const seg = document.getElementById(`seg-${e}-${s}`);
+        if (!seg) continue;
+        seg.classList.remove('done', 'active');
+        if (e < state.exercise || (e === state.exercise && s < state.set)) {
+          seg.classList.add('done');
+        } else if (e === state.exercise && s === state.set) {
+          seg.classList.add('active');
+        }
       }
     }
   }
 
-  function updateExerciseLabel() {
+  function updateWorkoutTitle() {
     if (CFG.exercises > 1) {
-      exLabel.textContent = `Exercise ${state.exercise} of ${CFG.exercises}`;
+      workoutTitle.textContent = `Workout ${state.exercise} of ${CFG.exercises}`;
     } else {
-      exLabel.textContent = `Exercise 1`;
+      workoutTitle.textContent = `Workout 1 of 1`;
     }
   }
 
@@ -1177,17 +1119,17 @@
     state.spokenCounts  = {};
 
     setRingMode('holding'); // Red
-    setArcFill(0);          // Starts empty at 0%!
+    setArcFill(0);          // Starts empty at 0%
 
     ringNumber.textContent = state.rep;
     ringOf.textContent     = `of ${CFG.reps}`;
     popRepNumber();
 
-    setInfoEl.innerHTML = `Set <strong>${state.set}</strong> of ${CFG.sets}`;
-    updateExerciseLabel();
+    setInfoEl.textContent = `Set ${state.set} of ${CFG.sets}`;
+    updateWorkoutTitle();
     updateProgressBar();
 
-    // Voice announcement cue text
+    // Voice announcement cue: strictly "rep", never "repetition" or "representation"
     let cueText = '';
     let category = 'reps';
 
@@ -1205,7 +1147,7 @@
       cueText = `rep ${repNum}`;
     }
 
-    // Bar stays empty at 0% until this voice announcement finishes!
+    // Bar stays empty at 0% until this voice announcement finishes
     speakPhaseCue(category, cueText);
   }
 
@@ -1216,9 +1158,8 @@
     state.spokenCounts  = {};
 
     setRingMode('resting'); // Yellow
-    setArcFill(1);          // Starts full, stays full until speech is done
+    setArcFill(1);          // Starts full, drains 100% -> 0%
 
-    // Rest stays full until "Rest" finishes (if soundRestReps is enabled)
     speakPhaseCue('restReps', 'Rest');
   }
 
@@ -1231,68 +1172,13 @@
     setRingMode('resting');
     setArcFill(1);
 
-    // Drains after set completion voice cue finishes
     speakPhaseCue('restSets', `Set ${state.set} complete. Rest.`);
   }
 
   /* ══════════════════════════════════════════════════════════════
-   *  SLIDE-OVER BOTTOM SHEETS
+   *  FINISH / COMPLETE MODAL
    * ══════════════════════════════════════════════════════════════ */
-  function showExerciseCompleteSheet() {
-    stopTicker();
-    state.running = false;
-    card.classList.add('paused');
-
-    speakRaw(`Exercise ${state.exercise} complete! Excellent effort.`);
-
-    sheetIconWrap.className = 'sheet-icon-wrap';
-    sheetIconSvg.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
-    sheetBadge.className = 'sheet-badge';
-    sheetBadge.textContent = `Exercise ${state.exercise} Complete`;
-    sheetTitle.textContent = `Exercise ${state.exercise} Done!`;
-    sheetDesc.textContent = `Great effort! Ready for Exercise ${state.exercise + 1}?`;
-
-    // 3 Buttons matching circle icons on main screen: Repeat, Next Exercise, Stop
-    sheetControls.innerHTML = `
-      <div class="ctrl-group">
-        <button class="ctrl-btn" id="sheet-btn-repeat" aria-label="Repeat Exercise">
-          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
-        </button>
-        <span class="ctrl-label">Repeat</span>
-      </div>
-
-      <div class="ctrl-group">
-        <button class="pause-btn" id="sheet-btn-next" aria-label="Next Exercise">
-          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </button>
-        <span class="ctrl-label">Next Exercise</span>
-      </div>
-
-      <div class="ctrl-group">
-        <button class="ctrl-btn stop" id="sheet-btn-stop" aria-label="Stop Workout">
-          <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
-        </button>
-        <span class="ctrl-label">Stop</span>
-      </div>
-    `;
-
-    sheetOverlay.classList.add('active');
-
-    document.getElementById('sheet-btn-repeat').onclick = () => {
-      closeSheet();
-      repeatCurrentExercise();
-    };
-    document.getElementById('sheet-btn-next').onclick = () => {
-      closeSheet();
-      goToNextExercise();
-    };
-    document.getElementById('sheet-btn-stop').onclick = () => {
-      closeSheet();
-      openStopModal();
-    };
-  }
-
-  function showWorkoutCompleteSheet() {
+  function showWorkoutCompleteModal() {
     state.finished = true;
     state.running  = false;
     state.phase    = PHASE.DONE;
@@ -1300,9 +1186,12 @@
 
     speakRaw('Workout complete. Fantastic job!');
 
-    for (let i = 1; i <= CFG.exercises; i++) {
-      const seg = document.getElementById(`seg-${i}`);
-      if (seg) { seg.classList.remove('active'); seg.classList.add('done'); }
+    // Mark all segments done
+    for (let e = 1; e <= CFG.exercises; e++) {
+      for (let s = 1; s <= CFG.sets; s++) {
+        const seg = document.getElementById(`seg-${e}-${s}`);
+        if (seg) seg.classList.add('done');
+      }
     }
 
     setRingMode('holding');
@@ -1310,65 +1199,8 @@
     ringNumber.textContent = '✓';
     ringOf.textContent     = 'Done!';
 
-    sheetIconWrap.className = 'sheet-icon-wrap success';
-    sheetIconSvg.innerHTML = '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7.5c-.83 0-1.5.67-1.5 1.5v1h12v-1c0-.83-.67-1.5-1.5-1.5H15c-.55 0-1-.45-1-1v-2.34c3.48-.96 6-4.08 6-7.66V2H4v5c0 3.58 2.52 6.7 6 7.66z"/>';
-    sheetBadge.className = 'sheet-badge success';
-    sheetBadge.textContent = 'Workout Complete';
-    sheetTitle.textContent = 'All Finished! 🎉';
-    sheetDesc.textContent = `You finished all ${CFG.exercises} exercise${CFG.exercises > 1 ? 's' : ''}. Great workout!`;
-
-    sheetControls.innerHTML = `
-      <div class="ctrl-group">
-        <button class="ctrl-btn" id="sheet-btn-repeat-all" aria-label="Repeat Workout">
-          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
-        </button>
-        <span class="ctrl-label">Repeat</span>
-      </div>
-
-      <div class="ctrl-group">
-        <button class="pause-btn" id="sheet-btn-home" aria-label="Go to Home">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </button>
-        <span class="ctrl-label">Home</span>
-      </div>
-    `;
-
-    sheetOverlay.classList.add('active');
-
-    document.getElementById('sheet-btn-repeat-all').onclick = () => {
-      closeSheet();
-      restartEntireWorkout();
-    };
-    document.getElementById('sheet-btn-home').onclick = () => {
-      location.href = 'index.html';
-    };
-  }
-
-  function closeSheet() {
-    sheetOverlay.classList.remove('active');
-  }
-
-  function repeatCurrentExercise() {
-    state.set = 1;
-    state.running = true;
-    card.classList.remove('paused');
-    iconPause.style.display = '';
-    iconPlay.style.display  = 'none';
-    pauseLabel.textContent  = 'Pause';
-    startHold(1, true, true);
-    startTicker();
-  }
-
-  function goToNextExercise() {
-    state.exercise++;
-    state.set = 1;
-    state.running = true;
-    card.classList.remove('paused');
-    iconPause.style.display = '';
-    iconPlay.style.display  = 'none';
-    pauseLabel.textContent  = 'Pause';
-    startHold(1, true, true);
-    startTicker();
+    finishSubtitle.textContent = `You finished all ${CFG.exercises} exercise${CFG.exercises > 1 ? 's' : ''}. Great Workout!`;
+    finishModal.classList.add('active');
   }
 
   function restartEntireWorkout() {
@@ -1377,6 +1209,8 @@
     state.set = 1;
     state.rep = 1;
     state.running = true;
+    totalWorkoutSeconds = 0;
+    updateClockDisplay();
     card.classList.remove('paused');
     iconPause.style.display = '';
     iconPlay.style.display  = 'none';
@@ -1421,20 +1255,36 @@
     restartEntireWorkout();
   };
 
+  modalResumeBtn.onclick = () => {
+    closeStopModal();
+  };
+
   modalHomeBtn.onclick = () => {
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     location.href = 'index.html';
   };
 
-  modalCancelBtn.onclick = () => {
-    closeStopModal();
+  stopModal.addEventListener('click', (e) => {
+    if (e.target === stopModal) closeStopModal();
+  });
+
+  headerStopBtn.addEventListener('click', openStopModal);
+
+  // Finish Modal buttons
+  finishRestartBtn.onclick = () => {
+    finishModal.classList.remove('active');
+    restartEntireWorkout();
   };
 
-  stopModal.addEventListener('click', (e) => {
-    if (e.target === stopModal) {
-      closeStopModal();
-    }
-  });
+  finishHomeBtn.onclick = () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    location.href = 'index.html';
+  };
+
+  finishSetupBtn.onclick = () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    location.href = 'index.html';
+  };
 
   /* ══════════════════════════════════════════════════════════════
    *  MAIN TICK LOOP (Smooth 40ms interval)
@@ -1442,7 +1292,6 @@
   function tick() {
     if (!state.running || state.finished) return;
 
-    // Wait until voice command / announcement finishes before advancing progress!
     if (state.isWaitingForVoice) {
       state.lastTickTime = performance.now();
       return;
@@ -1476,9 +1325,9 @@
 
       if (progress >= 1) {
         playTone(1760, 0.2);
-        const isLastRepOfSet    = state.rep >= CFG.reps;
-        const isLastSetOfEx     = state.set >= CFG.sets;
-        const isLastExercise    = state.exercise >= CFG.exercises;
+        const isLastRepOfSet = state.rep >= CFG.reps;
+        const isLastSetOfEx  = state.set >= CFG.sets;
+        const isLastExercise = state.exercise >= CFG.exercises;
 
         if (!isLastRepOfSet) {
           if (CFG.restReps > 0) {
@@ -1494,9 +1343,11 @@
             startHold(1, true);
           }
         } else if (!isLastExercise) {
-          showExerciseCompleteSheet();
+          state.exercise++;
+          state.set = 1;
+          startHold(1, true, true);
         } else {
-          showWorkoutCompleteSheet();
+          showWorkoutCompleteModal();
         }
       }
     }
@@ -1610,7 +1461,6 @@
       speechRec.lang = 'en-US';
 
       speechRec.onresult = (event) => {
-        // Ignore voice recognition while the coach itself is speaking
         if (isCoachSpeaking || ('speechSynthesis' in window && window.speechSynthesis.speaking)) {
           return;
         }
@@ -1641,7 +1491,6 @@
   function handleVoiceCommand(cmd) {
     console.log('Voice Command received:', cmd);
 
-    // 1. Check if STOP MODAL is active
     if (stopModal.classList.contains('active')) {
       if (cmd.includes('restart') || cmd.includes('again') || cmd.includes('beginning')) {
         showVoiceToast('Restart');
@@ -1654,41 +1503,12 @@
         return;
       }
       if (cmd.includes('cancel') || cmd.includes('resume') || cmd.includes('back') || cmd.includes('continue')) {
-        showVoiceToast('Cancel / Resume');
+        showVoiceToast('Resume');
         closeStopModal();
         return;
       }
     }
 
-    // 2. Check if BOTTOM SHEET is active
-    if (sheetOverlay.classList.contains('active')) {
-      if (cmd.includes('repeat') || cmd.includes('again') || cmd.includes('restart')) {
-        const repBtn = document.getElementById('sheet-btn-repeat') || document.getElementById('sheet-btn-repeat-all');
-        if (repBtn) {
-          showVoiceToast('Repeat');
-          repBtn.click();
-          return;
-        }
-      }
-      if (cmd.includes('next') || cmd.includes('continue') || cmd.includes('go')) {
-        const nextBtn = document.getElementById('sheet-btn-next');
-        if (nextBtn) {
-          showVoiceToast('Next Exercise');
-          nextBtn.click();
-          return;
-        }
-      }
-      if (cmd.includes('home') || cmd.includes('stop') || cmd.includes('exit') || cmd.includes('quit')) {
-        const homeBtn = document.getElementById('sheet-btn-home') || document.getElementById('sheet-btn-stop');
-        if (homeBtn) {
-          showVoiceToast('Home / Stop');
-          homeBtn.click();
-          return;
-        }
-      }
-    }
-
-    // 3. Regular active workout commands
     if (cmd.includes('pause') || cmd.includes('wait') || cmd.includes('hold on')) {
       if (state.running) {
         showVoiceToast('Pause');
@@ -1698,7 +1518,7 @@
     }
 
     if (cmd.includes('resume') || cmd.includes('play') || cmd.includes('start') || cmd.includes('continue')) {
-      if (!state.running && !stopModal.classList.contains('active') && !sheetOverlay.classList.contains('active')) {
+      if (!state.running && !stopModal.classList.contains('active') && !finishModal.classList.contains('active')) {
         showVoiceToast('Resume');
         togglePause();
       }
@@ -1729,15 +1549,15 @@
    * ══════════════════════════════════════════════════════════════ */
   function init() {
     buildProgressBar();
-    updateExerciseLabel();
+    updateWorkoutTitle();
+    startWorkoutClock();
 
-    // Bar starts completely empty
     setRingMode('holding');
     setArcFill(0);
 
     ringNumber.textContent = '1';
     ringOf.textContent     = `of ${CFG.reps}`;
-    setInfoEl.innerHTML    = `Set <strong>1</strong> of ${CFG.sets}`;
+    setInfoEl.textContent  = `Set 1 of ${CFG.sets}`;
     updateProgressBar();
 
     requestWakeLock();

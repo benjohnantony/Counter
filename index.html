@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Workout Timer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,7 +10,8 @@
   <style>
     /*
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     *  FIGMA DESIGN SYSTEM — EXACT SPECIFICATION (520 × 733 px)
+     *  FIGMA MOBILE-FIRST SPECIFICATION (Home Page ID: 38:5027)
+     *  Frame: 375 × 833 px · Padding: 32px 20px · Gap: 32px / 24px / 16px
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      */
 
@@ -21,20 +22,19 @@
     }
 
     :root {
-      /* Colors */
+      /* Colors directly from Figma file */
       --bg:                   #1B1B1F; /* Main surface */
       --card-surface:         #222227; /* Setting cards, inactive tabs, icon buttons */
-      --input-surface:        #1B1B20; /* Number steppers */
+      --input-surface:        #1B1B1F; /* Steppers and inactive tracks */
       --outer-border:         #28282E; /* Main container outline */
       --control-border:       #303038; /* Inactive tabs, steppers, icon buttons */
-      --primary-accent:       #FF315F; /* Selected tabs and enabled switches */
-      --primary-button:       #FE3B68; /* Main call to action */
-      --white:                #FFFFFF; /* Page title, primary-button text, switch thumb */
-      --primary-text:         #F5F5F7; /* Setting labels, values, light icons */
+      --primary-accent:       #FE3B68; /* Selected tabs, enabled switches, main CTA */
+      --white:                #FFFFFF; /* White text, play icon */
+      --primary-text:         #F5F5F7; /* Setting labels, values */
       --secondary-text:       #AAAABF; /* Inactive tab labels */
       --subtitle-text:        #9E9E9F; /* Page subtitle */
-      --muted-text:           #727287; /* Helper text and secondary icons */
-      --close-btn-surface:    rgba(0, 0, 0, 0.16); /* Circular tab-dismiss background */
+      --muted-text:           #727287; /* Helper text and inactive icons */
+      --close-btn-surface:    rgba(0, 0, 0, 0.16); /* Tab dismiss circle */
 
       /* Category indicators */
       --cat-sets:             #4CAF50; /* green */
@@ -48,9 +48,10 @@
       --font-body:            'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
       /* Radii */
+      --r-xs:                 6px;
       --r-sm:                 8px;
       --r-lg:                 16px;
-      --r-pill:               18px;
+      --r-pill:               360px;
 
       --transition:           0.15s ease;
     }
@@ -71,52 +72,55 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      min-height: 100dvh;
       padding: 16px;
     }
 
-    /* ── Main Container (Exact 520 × 733 px Reference Size) ─────── */
+    /* ── Mobile-First Container (Figma 375 × 833 px) ────────────── */
     .card {
       width: 100%;
-      max-width: 520px;
+      max-width: 420px;
       height: 733px;
+      max-height: calc(100dvh - 32px);
       margin: auto;
       background: var(--bg);
       border-radius: var(--r-lg); /* 16px */
       border: 1px solid var(--outer-border);
-      padding: 32px;
+      padding: 32px 20px; /* Pad: [T:32 R:20 B:32 L:20] from Figma */
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       box-sizing: border-box;
       overflow: hidden;
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
     }
 
-    /* ── 4. Header (454 × 47 px) ────────────────────────────────── */
+    /* ── Group A: Header (333 × 47 px, Gap 16 px) ───────────────── */
     .header {
       width: 100%;
       height: 47px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 32px; /* Gap to tabs: 32px */
+      gap: 16px;
       flex-shrink: 0;
     }
 
     .header-text {
-      width: 398px;
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      gap: 2px;
     }
 
     .header-text h1 {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 24px;
+      font-size: 20px;
       line-height: 31px;
       letter-spacing: 0.4px;
-      color: var(--white);
+      color: var(--primary-text); /* #F5F5F7 */
     }
 
     .header-text p {
@@ -125,14 +129,13 @@
       font-size: 12px;
       line-height: 14px;
       letter-spacing: 0.4px;
-      color: var(--subtitle-text);
-      margin-top: 2px; /* 2px vertical gap between title & subtitle */
+      color: var(--subtitle-text); /* #9E9E9F */
     }
 
     .settings-btn {
       width: 40px;
       height: 40px;
-      border-radius: var(--r-sm); /* 8px */
+      border-radius: var(--r-xs); /* 6px from Figma */
       background: var(--card-surface);
       border: 1px solid var(--control-border);
       display: grid;
@@ -159,13 +162,12 @@
       stroke: var(--primary-text);
     }
 
-    /* ── 5. Tabs and Add Button (Height 40px, Gap 8px) ───────────── */
+    /* ── Group B: Exercise Tabs (Height 40 px, Gap 8 px) ────────── */
     .tabs {
       height: 40px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 24px; /* Gap to first card: 24px */
+      gap: 8px; /* Gap: 8px from Figma */
       overflow-x: auto;
       overflow-y: hidden;
       width: 100%;
@@ -174,6 +176,7 @@
       -ms-overflow-style: none;
       flex-shrink: 0;
       cursor: grab;
+      margin: 8px 0;
     }
 
     .tabs:active {
@@ -195,17 +198,16 @@
 
     .tab {
       height: 40px;
-      min-width: 130px;
-      border-radius: var(--r-sm); /* 8px */
+      border-radius: var(--r-xs); /* 6px from Figma */
       background: var(--card-surface);
       border: 1px solid var(--control-border);
-      padding: 0 8px 0 16px;
+      padding: 8px 12px; /* Pad: [T:8 R:12 B:8 L:12] from Figma */
       cursor: pointer;
       white-space: nowrap;
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px; /* Inactive gap label-to-dismiss: 10px */
+      gap: 12px; /* Gap: 12px from Figma */
       transition: all var(--transition);
     }
 
@@ -215,25 +217,25 @@
       font-size: 14px;
       line-height: 14px;
       letter-spacing: 0;
-      color: var(--secondary-text); /* #AAAABF */
+      color: var(--muted-text); /* #727287 in inactive tab */
     }
 
     .tab:hover {
       border-color: #3e3e48;
     }
 
-    /* Selected Tab */
+    /* Selected Tab (Fill: #FE3B68, Radius: 6px, Text: #FFFFFF) */
     .tab.active {
-      background: var(--primary-accent); /* #FF315F */
+      background: var(--primary-accent); /* #FE3B68 */
       border: 1px solid var(--primary-accent);
-      gap: 16px; /* Selected gap label-to-dismiss: 16px */
     }
 
     .tab.active span.tab-title {
+      font-weight: 600;
       color: var(--white);
     }
 
-    /* Dismiss button inside tab: 24 × 24px circular, black at 16% opacity */
+    /* Dismiss button: 24 × 24 px circular, black at 16% opacity */
     .tab-remove {
       display: none;
       width: 24px;
@@ -250,7 +252,7 @@
     }
 
     .tab.active .tab-remove {
-      color: var(--primary-text); /* Selected close glyph: #F5F5F7 */
+      color: var(--primary-text);
     }
 
     .tab-remove:hover {
@@ -262,16 +264,16 @@
     }
 
     .tab-remove svg {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       display: block;
     }
 
-    /* Add Tab Button: 40 × 40px, 8px radius, card fill, 1px control border */
+    /* Add Tab Button: 40 × 40 px, 6px radius, fill #222227, 1px #303038 */
     .tab-add {
       width: 40px;
       height: 40px;
-      border-radius: var(--r-sm);
+      border-radius: var(--r-xs); /* 6px from Figma */
       background: var(--card-surface);
       border: 1px solid var(--control-border);
       flex-shrink: 0;
@@ -289,79 +291,75 @@
     }
 
     .tab-add svg {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       display: block;
     }
 
-    /* ── 6. Setting Cards Container (454 × 72 px, Gap 20px) ─────── */
+    /* ── Group C: Parameter Cards (5 Cards, each 72 px, Gap 16 px) ─ */
     .params {
       display: flex;
       flex-direction: column;
-      gap: 20px; /* Gap between setting cards: 20px */
-      margin-bottom: 32px; /* Last-card-to-primary-button gap: 32px */
+      gap: 16px; /* Gap: 16px from Figma Frame Group C */
       flex-shrink: 0;
+      margin: 4px 0;
     }
 
     .param-row {
       width: 100%;
-      height: 72px;
+      height: 72px; /* 72px from Figma */
       background: var(--card-surface); /* #222227 */
       border-radius: var(--r-sm); /* 8px */
-      padding: 16px;
+      padding: 16px; /* Pad: [T:16 R:16 B:16 L:16] */
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border: none; /* No visible border or shadow */
+      border: none;
       box-shadow: none;
       box-sizing: border-box;
+      gap: 12px;
     }
 
-    /* Structure: 249px label group → 16px gap → 89px stepper → 16px gap → 52px switch */
     .param-label-group {
-      width: 249px;
-      height: 40px;
       display: flex;
       align-items: flex-start;
-      flex-shrink: 0;
+      gap: 12px; /* Gap: 12px from Figma */
+      flex: 1;
+      min-width: 0;
     }
 
-    /* Category marker: 6px wide column, dot 6 × 6px, marker-to-text gap 8px */
     .param-marker-col {
       width: 6px;
       height: 40px;
       display: flex;
       align-items: flex-start;
-      margin-right: 8px;
       flex-shrink: 0;
     }
 
-    /* Dot top is 9px below text stack's top (aligned with first 24px title line) */
     .category-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      margin-top: 9px;
+      margin-top: 9px; /* Vertically aligned with 24px title */
       flex-shrink: 0;
     }
 
-    /* Text stack: 235px wide × 40px high */
     .param-text-stack {
-      width: 235px;
-      height: 40px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
+      gap: 2px; /* Gap: 2px from Figma */
       min-width: 0;
+      flex: 1;
     }
 
     .param-text-stack strong {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 20px;
+      font-size: 16px; /* 16px from Figma */
       line-height: 24px;
       letter-spacing: 0.4px;
-      color: var(--primary-text);
+      color: var(--primary-text); /* #F5F5F7 */
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -370,21 +368,20 @@
     .param-text-stack span {
       font-family: var(--font-body);
       font-weight: 500;
-      font-size: 12px;
+      font-size: 12px; /* 12px from Figma */
       line-height: 14px;
       letter-spacing: 0.4px;
-      color: var(--muted-text);
-      margin-top: 2px; /* 2px label-to-helper gap */
+      color: var(--muted-text); /* #727287 */
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* ── 7. Number Stepper (Reference size: 89 × 40 px) ──────────── */
+    /* ── Stepper (Figma: 90 × 40 px, Fill #1B1B1F, 1px #303038) ─── */
     .stepper {
-      width: 89px;
+      width: 90px;
       height: 40px;
-      background: var(--input-surface); /* #1B1B20 */
+      background: var(--input-surface); /* #1B1B1F */
       border: 1px solid var(--control-border); /* #303038 */
       border-radius: var(--r-sm); /* 8px */
       display: flex;
@@ -409,7 +406,7 @@
       display: grid;
       place-items: center;
       cursor: pointer;
-      color: var(--muted-text); /* #727287 */
+      color: var(--muted-text);
       transition: color var(--transition);
       user-select: none;
       touch-action: manipulation;
@@ -421,13 +418,13 @@
     }
 
     .stepper-btn svg {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       display: block;
     }
 
     .stepper-input {
-      width: 32px;
+      width: 28px;
       height: 40px;
       background: transparent;
       border: none;
@@ -438,7 +435,7 @@
       font-size: 14px;
       line-height: 14px;
       letter-spacing: 0.4px;
-      color: var(--primary-text); /* #F5F5F7 */
+      color: var(--primary-text);
       padding: 0;
       -moz-appearance: textfield;
       user-select: all;
@@ -450,7 +447,7 @@
       margin: 0;
     }
 
-    /* ── 8. Enabled Sound Switch (Track: 52 × 28 px) ─────────────── */
+    /* ── Switch (Figma: 52 × 28 px, Fill #FE3B68, Thumb 20 × 20 px) ── */
     .switch-wrap {
       width: 52px;
       height: 28px;
@@ -479,7 +476,7 @@
       inset: 0;
       width: 52px;
       height: 28px;
-      border-radius: var(--r-pill); /* 18px pill shape */
+      border-radius: var(--r-pill); /* 360px */
       background: var(--input-surface);
       border: 1px solid var(--control-border);
       transition: background var(--transition), border-color var(--transition);
@@ -487,11 +484,10 @@
       overflow: hidden;
     }
 
-    /* Sound icon box: 13 × 13px, positioned at x6, y7.5 */
     .switch-sound-icon {
       position: absolute;
       left: 6px;
-      top: 7.5px;
+      top: 7px;
       width: 13px;
       height: 13px;
       pointer-events: none;
@@ -507,28 +503,26 @@
       display: block;
     }
 
-    /* Thumb: 21 × 21px white circle, shadow x0, y1, blur2, spread0 black @ 18.8% */
     .switch-thumb {
       position: absolute;
-      width: 21px;
-      height: 21px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: var(--white);
-      top: 3.5px;
-      left: 3.5px;
+      top: 3px;
+      left: 3px;
       transition: transform var(--transition);
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.188);
       pointer-events: none;
     }
 
-    /* Enabled State */
     .switch-input:checked + .switch-track {
-      background: var(--primary-accent); /* #FF315F */
+      background: var(--primary-accent); /* #FE3B68 */
       border-color: var(--primary-accent);
     }
 
     .switch-input:checked + .switch-track .switch-thumb {
-      transform: translateX(23.5px); /* Position x27, y3.5 inside track */
+      transform: translateX(24px);
     }
 
     .switch-input:checked + .switch-track .switch-sound-icon {
@@ -544,25 +538,25 @@
       outline-offset: 2px;
     }
 
-    /* ── 9. Primary Action Button (454 × 52 px) ──────────────────── */
+    /* ── Group D: CTA Button (333 × 48 px, Fill #FE3B68, Radius 8px) ── */
     .start-btn-wrap {
       width: 100%;
-      height: 52px;
+      height: 48px;
       flex-shrink: 0;
     }
 
     .start-btn {
       width: 100%;
-      height: 52px;
-      background: var(--primary-button); /* #FE3B68 */
+      height: 48px;
+      background: var(--primary-accent); /* #FE3B68 */
       border-radius: var(--r-sm); /* 8px */
       border: none;
-      box-shadow: none; /* No border or shadow */
+      box-shadow: none;
       padding: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px; /* Icon-to-label gap: 8px */
+      gap: 8px; /* Gap: 8px */
       cursor: pointer;
       text-decoration: none;
       transition: opacity var(--transition), transform var(--transition);
@@ -577,26 +571,26 @@
       transform: scale(0.99);
     }
 
-    /* Play Icon: Filled white triangle, 15.71 × 20 px, 1px corner rounding */
+    /* Play Icon: 12.6 × 16 px from Figma */
     .start-btn svg {
-      width: 16px;
-      height: 20px;
+      width: 13px;
+      height: 16px;
       display: block;
       flex-shrink: 0;
     }
 
-    /* Label: Onest SemiBold, 20px, white */
+    /* Label: Start Workout, Onest 600, 14px, LineHeight: 16px */
     .start-btn span {
       font-family: var(--font-body);
       font-weight: 600;
-      font-size: 20px;
+      font-size: 14px;
       line-height: 16px;
       letter-spacing: 0;
       color: var(--white);
     }
 
-    /* ── Responsive Viewports ────────────────────────────────────── */
-    @media (max-width: 540px) {
+    /* ── Mobile Viewports ────────────────────────────────────────── */
+    @media (max-width: 520px) {
       body {
         padding: 0;
         align-items: stretch;
@@ -611,17 +605,6 @@
         padding: 24px 16px 32px;
         box-shadow: none;
       }
-      .header-text {
-        width: auto;
-      }
-      .param-label-group {
-        width: auto;
-        flex: 1;
-      }
-      .param-text-stack {
-        width: auto;
-        flex: 1;
-      }
     }
   </style>
 </head>
@@ -629,21 +612,21 @@
 
 <main class="card" aria-label="Workout Timer Configuration">
 
-  <!-- 4. Header (454 × 47 px) -->
+  <!-- Group A: Header (333 × 47 px) -->
   <header class="header">
     <div class="header-text">
       <h1>Workout Timer</h1>
       <p>Set your intervals and start</p>
     </div>
     <a href="settings.html" class="settings-btn" aria-label="Settings" title="Settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
       </svg>
     </a>
   </header>
 
-  <!-- 5. Tabs and Add Button (Height 40 px) -->
+  <!-- Group B: Exercise Tabs (Height 40 px) -->
   <nav class="tabs" id="tabs-container" role="tablist" aria-label="Exercise Tabs">
     <div class="tab-wrapper" data-tab-id="1">
       <button class="tab active" role="tab" aria-selected="true" data-tab="1">
@@ -657,12 +640,12 @@
     </div>
     <button class="tab-add" id="tab-add-btn" aria-label="Add Exercise" title="Add Exercise">
       <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.87" stroke-linecap="round"/>
+        <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
       </svg>
     </button>
   </nav>
 
-  <!-- 6. Setting Cards (5 Cards, each 454 × 72 px, Gap 20 px) -->
+  <!-- Group C: Setting Cards (5 Cards, each 72 px, Gap 16 px) -->
   <section class="params" id="params" aria-label="Workout Parameters">
 
     <!-- 1. Sets (Green #4CAF50) -->
@@ -867,13 +850,13 @@
 
   </section>
 
-  <!-- 9. Primary Action Button (454 × 52 px) -->
+  <!-- Group D: CTA Button (333 × 48 px, Fill #FE3B68) -->
   <footer class="start-btn-wrap">
-    <button class="start-btn" id="start-btn" aria-label="Start Exercise">
-      <svg viewBox="0 0 16 20" fill="none" aria-hidden="true">
-        <path d="M14.6 9.14a1 1 0 0 1 0 1.72L2.6 17.86A1 1 0 0 1 1 17V3a1 1 0 0 1 1.6-.86l12 7z" fill="#FFFFFF"/>
+    <button class="start-btn" id="start-btn" aria-label="Start Workout">
+      <svg viewBox="0 0 13 16" fill="none" aria-hidden="true">
+        <path d="M12.1 7.14a1 1 0 0 1 0 1.72L2.1 14.86A1 1 0 0 1 0.5 14V2a1 1 0 0 1 1.6-.86l10 6z" fill="#FFFFFF"/>
       </svg>
-      <span>Start Exercise</span>
+      <span>Start Workout</span>
     </button>
   </footer>
 
@@ -1177,7 +1160,7 @@
   // ── Restore Previous Exercise Values ──────────────────────────
   loadConfig();
 
-  // ── Start Exercise Button ─────────────────────────────────────
+  // ── Start Workout Button ──────────────────────────────────────
   document.getElementById('start-btn').addEventListener('click', () => {
     saveConfig();
     const exerciseCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
