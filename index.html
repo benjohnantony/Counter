@@ -80,7 +80,8 @@
     .card {
       width: 100%;
       max-width: 420px;
-      height: 733px;
+      min-height: min(733px, calc(100dvh - 32px));
+      height: auto;
       max-height: calc(100dvh - 32px);
       margin: auto;
       background: var(--bg);
@@ -89,9 +90,10 @@
       padding: 32px 20px; /* Pad: [T:32 R:20 B:32 L:20] from Figma */
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       box-sizing: border-box;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
     }
 
@@ -103,6 +105,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      margin-bottom: 32px; /* Exact Figma gap between Header and Tabs: 32px */
       flex-shrink: 0;
     }
 
@@ -143,23 +146,21 @@
       cursor: pointer;
       flex-shrink: 0;
       text-decoration: none;
-      transition: background var(--transition), border-color var(--transition);
+      color: var(--muted-text) !important;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
     }
 
     .settings-btn:hover {
       background: #2a2a32;
       border-color: #3e3e48;
+      color: var(--primary-text) !important;
     }
 
     .settings-btn svg {
       width: 16px;
       height: 16px;
-      stroke: var(--muted-text);
+      stroke: currentColor;
       transition: stroke var(--transition);
-    }
-
-    .settings-btn:hover svg {
-      stroke: var(--primary-text);
     }
 
     /* ── Group B: Exercise Tabs (Height 40 px, Gap 8 px) ────────── */
@@ -176,7 +177,7 @@
       -ms-overflow-style: none;
       flex-shrink: 0;
       cursor: grab;
-      margin: 8px 0;
+      margin: 0 0 24px 0; /* Exact Figma gap between Tabs and Cards: 24px */
     }
 
     .tabs:active {
@@ -302,7 +303,7 @@
       flex-direction: column;
       gap: 16px; /* Gap: 16px from Figma Frame Group C */
       flex-shrink: 0;
-      margin: 4px 0;
+      margin: 0 0 32px 0; /* Gap from cards to CTA button: 32px */
     }
 
     .param-row {
@@ -543,6 +544,7 @@
       width: 100%;
       height: 48px;
       flex-shrink: 0;
+      margin-top: auto;
     }
 
     .start-btn {

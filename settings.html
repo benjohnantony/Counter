@@ -122,7 +122,8 @@
       color: var(--subtitle-text); /* #9E9E9F */
     }
 
-    .close-btn {
+    .close-btn,
+    .close-btn:visited {
       width: 40px;
       height: 40px;
       border-radius: var(--r-xs); /* 6px from Figma */
@@ -133,23 +134,22 @@
       cursor: pointer;
       flex-shrink: 0;
       text-decoration: none;
-      transition: background var(--transition), border-color var(--transition);
+      color: var(--muted-text) !important; /* Force #727287, never browser visited purple */
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
     }
 
-    .close-btn:hover {
+    .close-btn:hover,
+    .close-btn:focus-visible {
       background: #2a2a32;
       border-color: #3e3e48;
+      color: var(--primary-text) !important;
     }
 
     .close-btn svg {
       width: 16px;
       height: 16px;
-      stroke: var(--muted-text);
+      stroke: currentColor;
       transition: stroke var(--transition);
-    }
-
-    .close-btn:hover svg {
-      stroke: var(--primary-text);
     }
 
     /* ── Group C: Settings List (Scrolls inside container, Gap 16 px) ── */
