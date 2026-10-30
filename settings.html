@@ -10,7 +10,7 @@
   <style>
     /*
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     *  FIGMA DESIGN SYSTEM — EXACT SPECIFICATION (520 × 733 px)
+     *  FIGMA EXTRACTED DESIGN SYSTEM — SETTINGS SCREEN (ID: 38:5133)
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      */
 
@@ -21,29 +21,28 @@
     }
 
     :root {
-      /* Colors */
+      /* Colors directly from Figma file */
       --bg:                   #1B1B1F; /* Main surface */
-      --card-surface:         #222227; /* Setting cards, inactive tabs, icon buttons */
-      --input-surface:        #1B1B20; /* Number steppers & inactive tracks */
+      --card-surface:         #222227; /* Setting cards, icon buttons */
+      --input-surface:        #1B1B1F; /* Inactive switch track, slider track */
       --outer-border:         #28282E; /* Main container outline */
       --control-border:       #303038; /* Inactive controls, steppers, icon buttons */
-      --primary-accent:       #FF315F; /* Selected tabs and enabled switches */
-      --primary-button:       #FE3B68; /* Main call to action */
-      --white:                #FFFFFF; /* Page title, primary-button text, switch thumb */
-      --primary-text:         #F5F5F7; /* Setting labels, values, light icons */
-      --secondary-text:       #AAAABF; /* Inactive tab labels, secondary values */
-      --subtitle-text:        #9E9E9F; /* Page subtitle */
-      --muted-text:           #727287; /* Helper text and secondary icons */
-      --close-btn-surface:    rgba(0, 0, 0, 0.16);
+      --primary-accent:       #FE3B68; /* Enabled switches, play icons, primary buttons */
+      --white:                #FFFFFF; /* White icons, primary button text */
+      --primary-text:         #F5F5F7; /* Setting titles, values */
+      --secondary-text:       #AAAABF; /* Navigation card values */
+      --subtitle-text:        #9E9E9F; /* Header subtitle */
+      --muted-text:           #727287; /* Descriptions, icons, reset button */
 
       /* Typography */
       --font-heading:         'Orelega One', Georgia, serif;
       --font-body:            'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
       /* Radii */
+      --r-xs:                 6px;
       --r-sm:                 8px;
       --r-lg:                 16px;
-      --r-pill:               18px;
+      --r-pill:               360px;
 
       --transition:           0.15s ease;
     }
@@ -67,16 +66,17 @@
       padding: 16px;
     }
 
-    /* ── Main Container (Exact 520 × 733 px Reference Size) ─────── */
+    /* ── Main Container (Exact Figma: 375 × 989 px Baseline) ────── */
     .card {
       width: 100%;
-      max-width: 520px;
+      max-width: 420px;
       height: 733px;
+      max-height: calc(100dvh - 32px);
       margin: auto;
       background: var(--bg);
       border-radius: var(--r-lg); /* 16px */
       border: 1px solid var(--outer-border);
-      padding: 32px;
+      padding: 32px 20px; /* Pad: [T:32 R:20 B:32 L:20] from Figma */
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
@@ -84,21 +84,48 @@
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
     }
 
-    /* ── Header Bar (454 × 47 px) ───────────────────────────────── */
+    /* ── Group A: Header (Width 333 × 47 px, Gap 16 px) ─────────── */
     .header-bar {
       width: 100%;
       height: 47px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 16px;
       margin-bottom: 24px;
       flex-shrink: 0;
     }
 
-    .back-btn {
+    .header-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .header-title {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 31px;
+      letter-spacing: 0.4px;
+      color: var(--primary-text); /* #F5F5F7 */
+    }
+
+    .header-subtitle {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: 0.4px;
+      color: var(--subtitle-text); /* #9E9E9F */
+    }
+
+    .close-btn {
       width: 40px;
       height: 40px;
-      border-radius: var(--r-sm); /* 8px */
+      border-radius: var(--r-xs); /* 6px from Figma */
       background: var(--card-surface);
       border: 1px solid var(--control-border);
       display: grid;
@@ -109,32 +136,23 @@
       transition: background var(--transition), border-color var(--transition);
     }
 
-    .back-btn:hover {
+    .close-btn:hover {
       background: #2a2a32;
       border-color: #3e3e48;
     }
 
-    .back-btn svg {
+    .close-btn svg {
       width: 16px;
       height: 16px;
       stroke: var(--muted-text);
       transition: stroke var(--transition);
     }
 
-    .back-btn:hover svg {
+    .close-btn:hover svg {
       stroke: var(--primary-text);
     }
 
-    .header-title {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: 24px;
-      line-height: 31px;
-      letter-spacing: 0.4px;
-      color: var(--white);
-    }
-
-    /* ── Settings Group List (Smooth scroll inside fixed card) ──── */
+    /* ── Group C: Settings List (Scrolls inside container, Gap 16 px) ── */
     .settings-list {
       flex: 1;
       min-height: 0;
@@ -142,7 +160,7 @@
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 16px; /* Gap: 16px from Figma */
       padding-right: 4px;
       margin-bottom: 24px;
       scrollbar-width: thin;
@@ -162,7 +180,7 @@
       border-radius: 999px;
     }
 
-    /* ── Setting Item Card (454 × auto, Flat #222227) ───────────── */
+    /* Setting Card (Fill #222227, Radius 8px, Pad 16px, Gap 16px) */
     .setting-card {
       width: 100%;
       background: var(--card-surface); /* #222227 */
@@ -170,7 +188,7 @@
       padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
       border: none;
       box-shadow: none;
       box-sizing: border-box;
@@ -192,18 +210,22 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
+      gap: 16px;
     }
 
     .setting-info {
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      gap: 2px;
+      min-width: 0;
     }
 
     .setting-title {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 20px;
+      font-size: 16px;
       line-height: 24px;
       letter-spacing: 0.4px;
       color: var(--primary-text); /* #F5F5F7 */
@@ -216,19 +238,20 @@
       line-height: 14px;
       letter-spacing: 0.4px;
       color: var(--muted-text); /* #727287 */
-      margin-top: 2px;
     }
 
     /* Right Action in Nav Card (Chevron & Value) */
     .setting-action {
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: var(--secondary-text); /* #AAAABF */
+      gap: 4px; /* Gap: 4px from Figma */
+      color: var(--secondary-text);
       font-family: var(--font-body);
-      font-weight: 500;
+      font-weight: 600;
       font-size: 14px;
-      line-height: 14px;
+      line-height: 20px;
+      letter-spacing: 0;
+      flex-shrink: 0;
     }
 
     .chevron-icon {
@@ -247,18 +270,18 @@
       stroke: var(--primary-text);
     }
 
-    /* ── Range Slider Row ───────────────────────────────────────── */
+    /* ── Range Slider Row (Speech Speed & Volume) ───────────────── */
     .slider-row {
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin-top: 2px;
+      gap: 16px; /* Gap: 16px from Figma Frame 1707479691 */
+      width: 100%;
     }
 
     .slider-track-wrap {
       flex: 1;
       position: relative;
-      height: 24px;
+      height: 20px;
       display: flex;
       align-items: center;
     }
@@ -267,8 +290,8 @@
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
-      height: 6px;
-      border-radius: 999px;
+      height: 8px; /* Height: 8px from Figma */
+      border-radius: var(--r-pill); /* 360px */
       background: var(--input-surface);
       border: 1px solid var(--control-border);
       outline: none;
@@ -278,58 +301,59 @@
     }
 
     .custom-slider::-webkit-slider-runnable-track {
-      height: 6px;
-      border-radius: 999px;
+      height: 8px;
+      border-radius: var(--r-pill);
       background: linear-gradient(to right, var(--primary-accent) var(--slider-pct, 50%), var(--input-surface) var(--slider-pct, 50%));
     }
 
     .custom-slider::-moz-range-track {
-      height: 6px;
-      border-radius: 999px;
+      height: 8px;
+      border-radius: var(--r-pill);
       background: linear-gradient(to right, var(--primary-accent) var(--slider-pct, 50%), var(--input-surface) var(--slider-pct, 50%));
     }
 
     .custom-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 21px;
-      height: 21px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: var(--white);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.188);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
       cursor: pointer;
-      margin-top: -8px;
+      margin-top: -6px;
       transition: transform 0.1s ease;
     }
 
     .custom-slider::-moz-range-thumb {
-      width: 21px;
-      height: 21px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: var(--white);
       border: none;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.188);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
       cursor: pointer;
       transition: transform 0.1s ease;
     }
 
     .custom-slider:active::-webkit-slider-thumb {
-      transform: scale(1.1);
+      transform: scale(1.15);
     }
 
     .slider-val-label {
       font-family: var(--font-body);
-      font-weight: 500;
+      font-weight: 600;
       font-size: 14px;
-      line-height: 14px;
-      letter-spacing: 0.4px;
+      line-height: 20px;
+      letter-spacing: 0;
       color: var(--primary-text);
-      min-width: 44px;
+      min-width: 32px;
       text-align: right;
       font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
     }
 
-    /* ── Switch Pattern (Track: 52 × 28 px, Pill Radius 18px) ───── */
+    /* ── Switch Pattern (52 × 28 px, Fill #FE3B68, Thumb 20 × 20 px) ── */
     .switch-wrap {
       width: 52px;
       height: 28px;
@@ -358,7 +382,7 @@
       inset: 0;
       width: 52px;
       height: 28px;
-      border-radius: var(--r-pill); /* 18px pill shape */
+      border-radius: var(--r-pill); /* 360px */
       background: var(--input-surface);
       border: 1px solid var(--control-border);
       transition: background var(--transition), border-color var(--transition);
@@ -368,24 +392,24 @@
 
     .switch-thumb {
       position: absolute;
-      width: 21px;
-      height: 21px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: var(--white);
-      top: 3.5px;
-      left: 3.5px;
+      top: 3px;
+      left: 3px;
       transition: transform var(--transition);
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.188);
       pointer-events: none;
     }
 
     .switch-input:checked + .switch-track {
-      background: var(--primary-accent); /* #FF315F */
+      background: var(--primary-accent); /* #FE3B68 */
       border-color: var(--primary-accent);
     }
 
     .switch-input:checked + .switch-track .switch-thumb {
-      transform: translateX(23.5px); /* Position x27, y3.5 inside track */
+      transform: translateX(24px);
     }
 
     .switch-input:focus-visible + .switch-track {
@@ -393,17 +417,19 @@
       outline-offset: 2px;
     }
 
-    /* ── Primary Action Button (454 × 52 px) ─────────────────────── */
-    .preview-btn-wrap {
-      width: 100%;
-      height: 52px;
+    /* ── Group D: Bottom Action Buttons (Frame 1707479677, Gap 16 px) ── */
+    .actions-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px; /* Gap: 16px from Figma */
       flex-shrink: 0;
     }
 
-    .preview-btn {
+    /* 1. Primary Button (Test Voice Coach: 333 × 48 px, Fill #FE3B68) */
+    .btn-primary {
       width: 100%;
-      height: 52px;
-      background: var(--primary-button); /* #FE3B68 */
+      height: 48px;
+      background: var(--primary-accent); /* #FE3B68 */
       border-radius: var(--r-sm); /* 8px */
       border: none;
       box-shadow: none;
@@ -411,60 +437,91 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 8px; /* Gap: 8px */
       cursor: pointer;
       text-decoration: none;
       transition: opacity var(--transition), transform var(--transition);
       -webkit-tap-highlight-color: transparent;
     }
 
-    .preview-btn:hover {
+    .btn-primary:hover {
       opacity: 0.94;
     }
 
-    .preview-btn:active {
+    .btn-primary:active {
       transform: scale(0.99);
     }
 
-    .preview-btn svg {
-      width: 16px;
-      height: 20px;
+    /* Play Icon: 12.6 × 16 px, radius 0.8px */
+    .btn-primary svg {
+      width: 13px;
+      height: 16px;
       display: block;
       flex-shrink: 0;
     }
 
-    .preview-btn span {
+    .btn-primary span {
       font-family: var(--font-body);
       font-weight: 600;
-      font-size: 20px;
+      font-size: 14px;
       line-height: 16px;
       letter-spacing: 0;
       color: var(--white);
     }
 
-    .preview-btn.playing {
-      background: #e82956;
+    /* 2. Secondary Button (Reset to Defaults: 333 × 48 px, Stroke #727287) */
+    .btn-secondary {
+      width: 100%;
+      height: 48px;
+      background: transparent;
+      border: 1px solid var(--muted-text); /* Stroke: #727287 1.0px */
+      border-radius: var(--r-sm); /* 8px */
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px; /* Gap: 8px */
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* ── Reset Text Link ────────────────────────────────────────── */
-    .reset-btn {
+    .btn-secondary:hover {
+      background: rgba(114, 114, 135, 0.12);
+      border-color: var(--primary-text);
+      color: var(--primary-text);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.99);
+    }
+
+    .btn-secondary svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--muted-text);
+      transition: stroke var(--transition);
+      display: block;
       flex-shrink: 0;
-      background: transparent;
-      border: none;
-      color: var(--muted-text);
+    }
+
+    .btn-secondary:hover svg {
+      stroke: var(--primary-text);
+    }
+
+    .btn-secondary span {
       font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.4px;
-      text-align: center;
-      cursor: pointer;
-      padding: 8px;
-      margin-top: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 16px;
+      letter-spacing: 0;
+      color: var(--muted-text); /* #727287 */
       transition: color var(--transition);
     }
 
-    .reset-btn:hover {
-      color: var(--primary-accent);
+    .btn-secondary:hover span {
+      color: var(--primary-text);
     }
 
     /* ── Bottom Sheet Selection Modal ───────────────────────────── */
@@ -490,13 +547,13 @@
 
     .sheet-card {
       width: 100%;
-      max-width: 520px;
+      max-width: 420px;
       max-height: 80vh;
       background: var(--bg);
       border: 1px solid var(--outer-border);
       border-bottom: none;
       border-radius: var(--r-lg) var(--r-lg) 0 0;
-      padding: 16px 24px 32px;
+      padding: 16px 20px 32px;
       display: flex;
       flex-direction: column;
       transform: translateY(100%);
@@ -530,7 +587,7 @@
       font-size: 20px;
       font-weight: 400;
       letter-spacing: 0.4px;
-      color: var(--white);
+      color: var(--primary-text);
     }
 
     .sheet-close-btn {
@@ -586,7 +643,7 @@
 
     .sheet-item.selected {
       border-color: var(--primary-accent);
-      background: rgba(255, 49, 95, 0.12);
+      background: rgba(254, 59, 104, 0.12);
     }
 
     .sheet-item-left {
@@ -620,7 +677,7 @@
     }
 
     /* ── Responsive Viewports ────────────────────────────────────── */
-    @media (max-width: 540px) {
+    @media (max-width: 520px) {
       body {
         padding: 0;
         align-items: stretch;
@@ -642,16 +699,20 @@
 
 <main class="card" aria-label="Settings Configuration">
 
-  <!-- Header Bar (454 × 47 px) -->
+  <!-- Group A: Header (333 × 47 px) -->
   <header class="header-bar">
-    <a href="index.html" class="back-btn" id="back-btn" aria-label="Back" onclick="if (history.length > 1) { history.back(); return false; }">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="15 18 9 12 15 6"/>
+    <div class="header-text">
+      <h1 class="header-title">Settings</h1>
+      <p class="header-subtitle">Change your Workout Settings</p>
+    </div>
+    <a href="index.html" class="close-btn" id="back-btn" aria-label="Close settings" onclick="if (history.length > 1) { history.back(); return false; }">
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
     </a>
-    <h1 class="header-title">Settings</h1>
   </header>
 
+  <!-- Group C: Settings List -->
   <div class="settings-list">
 
     <!-- 1. Voice -->
@@ -718,7 +779,7 @@
       </div>
     </div>
 
-    <!-- 5. Keep Screen Awake / Continue in background -->
+    <!-- 5. Continue in Background -->
     <div class="setting-card">
       <div class="setting-header-row">
         <div class="setting-info">
@@ -736,7 +797,7 @@
       </div>
     </div>
 
-    <!-- 6. Voice Commands Hands-Free Control -->
+    <!-- 6. Voice Commands -->
     <div class="setting-card">
       <div class="setting-header-row">
         <div class="setting-info">
@@ -754,7 +815,7 @@
       </div>
     </div>
 
-    <!-- 7. Audio Countdown Beeps -->
+    <!-- 7. Countdown Beeps -->
     <div class="setting-card">
       <div class="setting-header-row">
         <div class="setting-info">
@@ -774,20 +835,24 @@
 
   </div><!-- /settings-list -->
 
-  <!-- Preview Sound Button (454 × 52 px) -->
-  <div class="preview-btn-wrap">
-    <button class="preview-btn" id="btn-preview-coach" aria-label="Test Voice Coach">
-      <svg viewBox="0 0 16 20" fill="none" aria-hidden="true">
-        <path d="M14.6 9.14a1 1 0 0 1 0 1.72L2.6 17.86A1 1 0 0 1 1 17V3a1 1 0 0 1 1.6-.86l12 7z" fill="#FFFFFF"/>
+  <!-- Group D: Bottom Action Buttons (Frame 1707479677, Gap 16 px) -->
+  <footer class="actions-group">
+    <!-- 1. Primary Button: Test Voice Coach -->
+    <button class="btn-primary" id="btn-preview-coach" aria-label="Test Voice Coach">
+      <svg viewBox="0 0 13 16" fill="none" aria-hidden="true">
+        <path d="M12.1 7.14a1 1 0 0 1 0 1.72L2.1 14.86A1 1 0 0 1 0.5 14V2a1 1 0 0 1 1.6-.86l10 6z" fill="#FFFFFF"/>
       </svg>
       <span id="preview-btn-text">Test Voice Coach</span>
     </button>
-  </div>
 
-  <!-- Reset Button -->
-  <button class="reset-btn" id="btn-reset" aria-label="Reset all settings to default">
-    Reset to Defaults
-  </button>
+    <!-- 2. Secondary Button: Reset to Defaults -->
+    <button class="btn-secondary" id="btn-reset" aria-label="Reset all settings to default">
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9L2 6M2 2v4h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Reset to Defaults</span>
+    </button>
+  </footer>
 
 </main>
 
@@ -799,9 +864,7 @@
       <h3 id="voice-modal-title">Select Voice</h3>
       <button class="sheet-close-btn" id="btn-close-voice" aria-label="Close voice picker">&times;</button>
     </div>
-    <div class="sheet-list" id="voice-list">
-      <!-- Populated dynamically with available browser voices -->
-    </div>
+    <div class="sheet-list" id="voice-list"></div>
   </div>
 </div>
 
@@ -813,9 +876,7 @@
       <h3 id="lang-modal-title">Select Language</h3>
       <button class="sheet-close-btn" id="btn-close-lang" aria-label="Close language picker">&times;</button>
     </div>
-    <div class="sheet-list" id="lang-list">
-      <!-- Populated dynamically -->
-    </div>
+    <div class="sheet-list" id="lang-list"></div>
   </div>
 </div>
 
@@ -916,7 +977,6 @@
     toggleBeeps.checked    = !!currentSettings.countdownBeeps;
   }
 
-  // Speed slider handler
   sliderSpeed.addEventListener('input', () => {
     const val = parseFloat(sliderSpeed.value);
     currentSettings.speed = val;
@@ -925,7 +985,6 @@
     saveSettings();
   });
 
-  // Volume slider handler
   sliderVolume.addEventListener('input', () => {
     const val = parseInt(sliderVolume.value, 10);
     currentSettings.volume = val;
@@ -934,7 +993,6 @@
     saveSettings();
   });
 
-  // Toggles
   toggleWakelock.addEventListener('change', () => {
     currentSettings.keepScreenAwake = toggleWakelock.checked;
     saveSettings();
@@ -984,7 +1042,6 @@
   function populateVoiceList() {
     voiceListEl.innerHTML = '';
 
-    // Option 1: System Default
     const defaultItem = document.createElement('div');
     defaultItem.className = `sheet-item ${currentSettings.voiceURI === 'default' ? 'selected' : ''}`;
     defaultItem.innerHTML = `
@@ -1004,7 +1061,6 @@
     };
     voiceListEl.appendChild(defaultItem);
 
-    // Filtered or all available voices
     const currentLangPrefix = currentSettings.language.split('-')[0];
     const filteredVoices = availableVoices.filter(v => v.lang.startsWith(currentLangPrefix));
     const voicesToShow = filteredVoices.length > 0 ? filteredVoices : availableVoices;
