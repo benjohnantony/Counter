@@ -6,11 +6,12 @@
   <title>Settings — Workout Timer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Orelega+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /*
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     *  FIGMA EXTRACTED DESIGN SYSTEM — SETTINGS SCREEN (ID: 38:5133)
+     *  FIGMA WORKOUT TIMER V2 — SETTINGS SCREEN (ID: 56:2194)
+     *  Brutalist Athletic High-Contrast Theme
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      */
 
@@ -21,27 +22,29 @@
     }
 
     :root {
-      /* Colors directly from Figma file */
-      --bg:                   #1B1B1F; /* Main surface */
-      --card-surface:         #222227; /* Setting cards, icon buttons */
-      --input-surface:        #1B1B1F; /* Inactive switch track, slider track */
-      --outer-border:         #28282E; /* Main container outline */
-      --control-border:       #303038; /* Inactive controls, steppers, icon buttons */
-      --primary-accent:       #FE3B68; /* Enabled switches, play icons, primary buttons */
-      --white:                #FFFFFF; /* White icons, primary button text */
-      --primary-text:         #F5F5F7; /* Setting titles, values */
-      --secondary-text:       #AAAABF; /* Navigation card values */
-      --subtitle-text:        #9E9E9F; /* Header subtitle */
-      --muted-text:           #727287; /* Descriptions, icons, reset button */
+      /* Colors directly from Figma Workout Timer v2 */
+      --bg:                   #000000; /* Main surface */
+      --card-surface:         #000000;
+      --card-border:          #FFFFFF; /* 1px solid white */
+      --control-border:       #303038;
+      --accent-green:         #99FF44; /* Neon lime */
+      --accent-red:           #F13629; /* Vibrant red */
+      --accent-red-header:    #F1372A; /* Close header button */
+      --stop-red:             #FF003B;
+      --primary-accent:       #99FF44; /* Main Action */
+      --white:                #FFFFFF;
+      --primary-text:         #F5F5F7;
+      --text-black:           #000000;
+      --secondary-text:       #9E9E9F;
+      --subtitle-text:        #727287;
+      --muted-text:           #727287;
 
       /* Typography */
-      --font-heading:         'Orelega One', Georgia, serif;
+      --font-heading:         'Anton', sans-serif;
       --font-body:            'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
       /* Radii */
-      --r-xs:                 6px;
-      --r-sm:                 8px;
-      --r-lg:                 16px;
+      --r-none:               0px;
       --r-pill:               360px;
 
       --transition:           0.15s ease;
@@ -68,7 +71,7 @@
       background: var(--bg);
     }
 
-    /* ── Main Container (Exact Figma: 375 × 989 px Baseline) ────── */
+    /* ── Main Container (Exact Figma v2: 375 × 1003 px Baseline) ── */
     .card {
       width: 100%;
       max-width: 420px;
@@ -76,82 +79,74 @@
       max-height: calc(100dvh - 32px);
       margin: 0 auto;
       background: var(--bg);
-      border-radius: var(--r-lg); /* 16px */
-      border: 1px solid var(--outer-border);
-      padding: 32px 20px; /* Pad: [T:32 R:20 B:32 L:20] from Figma */
+      border-radius: var(--r-none);
+      border: 1px solid #222227;
+      padding: 0;
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
       overflow: hidden;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
     }
 
-    /* ── Group A: Header (Width 333 × 47 px, Gap 16 px) ─────────── */
+    /* ── Group A: Header (375 × 83 px in Figma v2) ───────────────── */
     .header-bar {
       width: 100%;
-      height: 47px;
+      height: 64px;
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 24px;
+      border-bottom: 1px solid #222227;
       flex-shrink: 0;
+      background: var(--bg);
     }
 
     .header-text {
       flex: 1;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 2px;
+      align-items: center;
+      padding: 0 20px;
+      gap: 12px;
     }
 
     .header-title {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 20px;
-      line-height: 31px;
-      letter-spacing: 0.4px;
-      color: var(--primary-text); /* #F5F5F7 */
+      font-size: 24px;
+      line-height: 24px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--white);
     }
 
     .header-subtitle {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 14px;
-      letter-spacing: 0.4px;
-      color: var(--subtitle-text); /* #9E9E9F */
+      display: none;
     }
 
     .close-btn,
     .close-btn:visited {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--r-xs); /* 6px from Figma */
-      background: var(--card-surface);
-      border: 1px solid var(--control-border);
+      width: 64px;
+      height: 100%;
+      background: var(--accent-red-header); /* #F1372A */
+      border: none;
       display: grid;
       place-items: center;
       cursor: pointer;
       flex-shrink: 0;
       text-decoration: none;
-      color: var(--muted-text) !important; /* Force #727287, never browser visited purple */
-      transition: background var(--transition), border-color var(--transition), color var(--transition);
+      color: var(--white) !important;
+      transition: opacity var(--transition);
     }
 
-    .close-btn:hover,
-    .close-btn:focus-visible {
-      background: #2a2a32;
-      border-color: #3e3e48;
-      color: var(--primary-text) !important;
+    .close-btn:hover {
+      opacity: 0.9;
     }
 
     .close-btn svg {
-      width: 16px;
-      height: 16px;
-      stroke: currentColor;
-      transition: stroke var(--transition);
+      width: 22px;
+      height: 22px;
+      stroke: var(--white);
+      stroke-width: 2.2;
     }
 
     /* ── Group C: Settings List (Scrolls inside container, Gap 16 px) ── */
@@ -162,9 +157,8 @@
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      gap: 16px; /* Gap: 16px from Figma */
-      padding-right: 4px;
-      margin-bottom: 24px;
+      gap: 16px;
+      padding: 20px;
       scrollbar-width: thin;
       scrollbar-color: var(--control-border) transparent;
     }
@@ -173,25 +167,20 @@
       width: 4px;
     }
 
-    .settings-list::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
     .settings-list::-webkit-scrollbar-thumb {
       background: var(--control-border);
-      border-radius: 999px;
     }
 
-    /* Setting Card (Fill #222227, Radius 8px, Pad 16px, Gap 16px) */
+    /* Setting Card (Figma v2: 1px solid #FFFFFF, sharp) */
     .setting-card {
       width: 100%;
-      background: var(--card-surface); /* #222227 */
-      border-radius: var(--r-sm); /* 8px */
+      background: var(--card-surface); /* #000000 */
+      border: 1px solid var(--card-border); /* 1px solid #FFFFFF */
+      border-radius: var(--r-none);
       padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      border: none;
+      gap: 12px;
       box-shadow: none;
       box-sizing: border-box;
       flex-shrink: 0;
@@ -204,7 +193,7 @@
     }
 
     .setting-card.clickable:hover {
-      background: #27272d;
+      background: #111114;
     }
 
     .setting-header-row {
@@ -218,6 +207,354 @@
     .setting-info {
       flex: 1;
       display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .setting-title {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 22px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--primary-text);
+    }
+
+    .setting-desc {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      color: var(--muted-text);
+    }
+
+    .setting-action {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--secondary-text);
+    }
+
+    .setting-action svg.chevron-icon {
+      width: 16px;
+      height: 16px;
+      stroke: var(--muted-text);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* ── Switch (Figma v2: 52 × 28 px, Fill #99FF44, Thumb 20 × 20 px) ── */
+    .switch-wrap {
+      width: 52px;
+      height: 28px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .switch-pill {
+      position: relative;
+      display: block;
+      width: 52px;
+      height: 28px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .switch-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      width: 52px;
+      height: 28px;
+      border-radius: var(--r-pill);
+      background: #1B1B1F;
+      border: 1px solid var(--control-border);
+      transition: background var(--transition), border-color var(--transition);
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .switch-thumb {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--white);
+      top: 3px;
+      left: 3px;
+      transition: transform var(--transition);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      pointer-events: none;
+    }
+
+    .switch-input:checked + .switch-track {
+      background: var(--accent-green); /* #99FF44 */
+      border-color: var(--accent-green);
+    }
+
+    .switch-input:checked + .switch-track .switch-thumb {
+      transform: translateX(24px);
+    }
+
+    /* Sliders */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .slider-track-wrap {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .custom-slider {
+      width: 100%;
+      height: 6px;
+      background: #282830;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    .custom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      cursor: pointer;
+    }
+
+    .slider-val-badge {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      color: var(--white);
+      min-width: 44px;
+      text-align: right;
+    }
+
+    /* ── Bottom Actions (Figma v2 Frame 1707479702: 375 × 83 px) ─── */
+    .actions-group {
+      width: 100%;
+      height: 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: stretch;
+      flex-shrink: 0;
+      border-top: 1px solid #222227;
+      background: var(--bg);
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      height: 100%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: filter var(--transition);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-primary {
+      background: var(--accent-green); /* #99FF44 */
+      color: var(--text-black);
+    }
+
+    .btn-primary svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--text-black);
+    }
+
+    .btn-primary span {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-black);
+    }
+
+    .btn-secondary {
+      background: var(--bg);
+      border-right: 1px solid #222227;
+      color: var(--white);
+    }
+
+    .btn-secondary svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--white);
+    }
+
+    .btn-secondary span {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    /* ── Bottom Sheet Selection Modal ───────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+      z-index: 990;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sheet-card {
+      width: 100%;
+      max-width: 420px;
+      max-height: 80vh;
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-bottom: none;
+      border-radius: var(--r-none);
+      padding: 20px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-overlay.active .sheet-card {
+      transform: translateY(0);
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--control-border);
+      margin: 0 auto 16px;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #222227;
+    }
+
+    .sheet-header h3 {
+      font-family: var(--font-heading);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .sheet-close-btn {
+      background: transparent;
+      border: 1px solid var(--control-border);
+      border-radius: 0;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .sheet-list {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 55vh;
+      padding-right: 4px;
+    }
+
+    .sheet-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 1px solid var(--control-border);
+      border-radius: 0;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition);
+      color: var(--primary-text);
+      font-family: var(--font-body);
+      font-weight: 500;
+    }
+
+    .sheet-item:hover {
+      background: #111114;
+      border-color: var(--accent-green);
+    }
+
+    .sheet-item.selected {
+      border-color: var(--accent-green);
+      background: rgba(153, 255, 68, 0.12);
+      color: var(--accent-green);
+    }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      body {
+        padding: 0;
+        align-items: flex-start;
+      }
+      .card {
+        border-radius: 0;
+        border: none;
+        max-width: 100%;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+        margin: 0 auto;
+        padding: 0;
+        box-shadow: none;
+      }
+    }
       flex-direction: column;
       justify-content: center;
       gap: 2px;

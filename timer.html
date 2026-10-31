@@ -6,46 +6,40 @@
   <title>Workout Timer — Active</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Orelega+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /*
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     *  FIGMA MOBILE DESIGN SYSTEM — EXACT DESIGN TOKENS
+     *  FIGMA WORKOUT TIMER V2 — PROGRESS SCREEN (ID: 56:2273)
+     *  Brutalist Athletic High-Visibility Theme
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      */
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* Colors */
-      --bg:             #1B1B1F; /* Main surface */
-      --card-surface:   #222227; /* Setting cards, icon buttons */
-      --input-surface:  #1B1B20; /* Steppers, inactive tracks */
-      --outer-border:   #28282E; /* Main container outline */
-      --control-border: #303038; /* Inactive controls & borders */
-      --primary-accent: #FE3B68; /* Selected tabs, enabled switches, active items */
-      --primary-btn:    #FE3B68; /* Main call to action */
-      --white:          #FFFFFF; /* White */
-      --primary-text:   #F5F5F7; /* Setting labels, values */
-      --secondary-text: #AAAABF; /* Inactive tab labels */
-      --subtitle-text:  #9E9E9F; /* Page subtitles */
-      --muted-text:     #727287; /* Helper text, inactive icons */
-
-      /* Category indicators */
-      --cat-green:      #4CAF50;
-      --cat-blue:       #2196F3;
-      --cat-red:        #FF4747;
-      --cat-amber:      #FFAB00;
-      --cat-purple:     #A62CC6;
+      /* Colors directly from Figma Workout Timer v2 */
+      --bg:             #000000; /* Main surface */
+      --card-surface:   #000000;
+      --card-border:    #FFFFFF;
+      --control-border: #303038;
+      --accent-green:   #99FF44; /* Neon lime */
+      --accent-red:     #F13629; /* Vibrant red */
+      --accent-red-header: #F1372A; /* Close header button */
+      --stop-red:       #FF003B;
+      --cat-amber:      #FFAB00; /* Rest amber */
+      --white:          #FFFFFF;
+      --primary-text:   #F5F5F7;
+      --text-black:     #000000;
+      --subtitle-text:  #9E9E9F;
+      --muted-text:     #727287;
 
       /* Typography */
-      --font-heading:   'Orelega One', Georgia, serif;
+      --font-heading:   'Anton', sans-serif;
       --font-body:      'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
       /* Radii */
-      --r-xs:           6px;
-      --r-sm:           8px;
-      --r-lg:           16px;
+      --r-none:         0px;
       --r-pill:         360px;
 
       --transition:     0.15s ease;
@@ -81,107 +75,96 @@
       max-height: calc(100dvh - 32px);
       margin: 0 auto;
       background: var(--bg);
-      border-radius: var(--r-lg); /* 16px */
-      border: 1px solid var(--outer-border);
-      padding: 32px 20px; /* Pad: [T:32 R:20 B:32 L:20] from Figma */
+      border-radius: var(--r-none);
+      border: 1px solid #222227;
+      padding: 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       box-sizing: border-box;
       overflow: hidden;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
       position: relative;
     }
 
-    /* ── Top Header Section (Height 146px in Figma) ──────────────── */
+    /* ── Top Header Section (Figma v2 Frame 1707479698: 375 × 83 px) ─ */
     .top-section {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 20px;
       flex-shrink: 0;
+      background: var(--bg);
     }
 
-    /* Group A: Clock + Settings Button (Height 47px, Gap 16px) */
+    /* Group A: Clock + Close Button */
     .header-bar {
       width: 100%;
-      height: 47px;
+      height: 64px;
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: space-between;
-      gap: 16px;
+      border-bottom: 1px solid #222227;
     }
 
     .header-text {
       flex: 1;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 2px;
+      align-items: center;
+      padding: 0 20px;
+      gap: 12px;
     }
 
     .header-clock {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 20px;
-      line-height: 31px;
-      letter-spacing: 0.4px;
-      color: var(--primary-text);
+      font-size: 24px;
+      line-height: 24px;
+      letter-spacing: 1.2px;
+      color: var(--white);
       font-variant-numeric: tabular-nums;
     }
 
     .header-subtitle {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 14px;
-      letter-spacing: 0.4px;
-      color: var(--subtitle-text);
+      display: none;
     }
 
-    /* Settings Button (40 × 40 px, Radius 6px) */
-    .header-btn,
-    .header-btn:visited {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--r-xs);
-      background: var(--card-surface);
-      border: 1px solid var(--control-border);
+    /* Close Button (Red Block #F1372A) */
+    .header-btn {
+      width: 64px;
+      height: 100%;
+      background: var(--accent-red-header); /* #F1372A */
+      border: none;
       display: grid;
       place-items: center;
       cursor: pointer;
-      color: var(--muted-text) !important;
-      text-decoration: none;
+      color: var(--white);
       flex-shrink: 0;
-      padding: 12px;
-      transition: background var(--transition), border-color var(--transition), color var(--transition);
+      transition: opacity var(--transition);
       -webkit-tap-highlight-color: transparent;
     }
 
-    .header-btn:hover,
-    .header-btn:focus-visible {
-      background: #282830;
-      border-color: #3e3e48;
-      color: var(--primary-text) !important;
+    .header-btn:hover {
+      opacity: 0.9;
     }
 
     .header-btn svg {
-      width: 16px;
-      height: 16px;
-      stroke: currentColor;
+      width: 22px;
+      height: 22px;
+      stroke: var(--white);
       fill: none;
-      stroke-width: 1.8;
+      stroke-width: 2.2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
-    /* ── Progress Segments Bar (Height 4px, Gap 4px) ─────────────── */
+    /* ── Progress Segments Bar ───────────────────────────────────── */
     .progress-bar {
       width: 100%;
       height: 4px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 2px;
+      background: #111114;
     }
 
     .ex-group {
@@ -194,284 +177,245 @@
     .seg-bar {
       flex: 1;
       height: 4px;
-      border-radius: 999px;
-      background: var(--muted-text);
+      background: #303038;
       transition: background 0.25s ease;
     }
 
     .seg-bar.done,
     .seg-bar.active {
-      background: var(--primary-accent);
+      background: var(--accent-green);
     }
 
-    /* ── Workout Title (Height 31px) ─────────────────────────────── */
     .workout-title {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: 20px;
-      line-height: 31px;
-      letter-spacing: 0.4px;
-      color: var(--primary-text);
-      text-align: left;
+      display: none;
     }
 
-    /* ── Center Section: Ring & Set Info ─────────────────────────── */
+    /* ── Center Hero Stage (Figma v2 Frame 1707479700: 375 × 583 px) ─ */
     .center-section {
       width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--accent-green); /* Neon lime during HOLD */
+      transition: background 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      padding: 32px 20px 24px;
+    }
+
+    .center-section.resting {
+      background: var(--cat-amber); /* Amber yellow during REST */
+    }
+
+    .center-section.resting-sets {
+      background: #2196F3; /* Blue during SET REST */
+    }
+
+    .card.paused .center-section {
+      filter: saturate(0.7) brightness(0.85);
+    }
+
+    /* Phase Badge (HOLD / REST) */
+    .stage-phase-badge {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 28px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-black);
+      text-align: center;
+    }
+
+    /* Giant Countdown Timer (Anton 80px) */
+    .stage-timer-wrap {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
       margin: auto 0;
     }
 
+    .stage-timer-digits {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 78px;
+      line-height: 80px;
+      letter-spacing: 2px;
+      color: var(--text-black);
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+      transition: transform 0.15s ease;
+    }
+
+    .stage-timer-digits.pop {
+      transform: scale(1.08);
+    }
+
+    /* Rep status tag */
+    .stage-rep-tag {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-black);
+      text-align: center;
+    }
+
+    /* Hidden ring SVG for circular calculation & background indicator */
     .ring-wrapper {
-      position: relative;
-      width: 275px;
-      height: 275px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* Ambient glow */
-    .ring-glow {
       position: absolute;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
+      inset: 0;
+      opacity: 0.15;
       pointer-events: none;
-      transition: background 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .ring-wrapper.holding .ring-glow {
-      background: radial-gradient(circle, rgba(254, 59, 104, 0.35) 0%, transparent 70%);
-    }
-
-    .ring-wrapper.resting .ring-glow {
-      background: radial-gradient(circle, rgba(255, 171, 0, 0.35) 0%, transparent 70%);
-    }
+    .ring-glow { display: none; }
 
     .ring-svg {
-      width: 275px;
-      height: 275px;
-      transform: rotate(-90deg); /* 12 o'clock top origin */
-      overflow: visible;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
     }
 
     .ring-track {
       fill: none;
-      stroke: var(--card-surface); /* #222227 */
-      stroke-width: 12;
+      stroke: rgba(0, 0, 0, 0.15);
+      stroke-width: 14;
     }
 
     .ring-progress {
       fill: none;
-      stroke-width: 12;
-      stroke-linecap: round;
-      stroke-dasharray: 722.566; /* 2 * PI * 115 */
+      stroke-width: 14;
+      stroke: #000000;
+      stroke-linecap: square;
+      stroke-dasharray: 722.566;
       stroke-dashoffset: 722.566;
-      transition: stroke 0.25s ease;
+      transition: stroke-dashoffset 0.04s linear;
     }
 
-    .ring-wrapper.holding .ring-progress {
-      stroke: var(--primary-accent); /* #FE3B68 */
-    }
+    .ring-center { display: none; }
 
-    .ring-wrapper.resting .ring-progress {
-      stroke: var(--cat-amber); /* #FFAB00 */
-    }
-
-    /* Ring Center Typography */
-    .ring-center {
-      position: absolute;
-      inset: 0;
+    /* ── Status Banner (Figma v2 Frame 1707479699: 375 × 84 px fill #F13629) ── */
+    .set-status-banner {
+      width: 100%;
+      height: 52px;
+      background: var(--accent-red); /* #F13629 */
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      pointer-events: none;
-      user-select: none;
-      gap: 0px;
+      flex-shrink: 0;
+      padding: 0 16px;
     }
 
-    .ring-number {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 80px;
-      line-height: 81.2px;
-      letter-spacing: 2.32px;
-      color: var(--primary-text);
-      font-variant-numeric: tabular-nums;
-      transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .ring-number.pop {
-      transform: scale(1.16);
-    }
-
-    .ring-rep-label {
+    .set-status-text {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 20px;
-      line-height: 31px;
-      letter-spacing: 0.4px;
-      color: var(--primary-text);
-      margin-top: -6px;
-    }
-
-    .ring-of {
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 16px;
-      letter-spacing: 0.4px;
-      color: var(--muted-text); /* #727287 */
-    }
-
-    /* Set Info below Ring */
-    .set-info {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: 20px;
-      line-height: 31px;
-      letter-spacing: 0.4px;
-      color: var(--primary-text);
+      font-size: 18px;
+      line-height: 22px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--white);
       text-align: center;
     }
 
-    /* ── Controls Section (Height 106px in Figma, Gap 32px) ──────── */
+    /* ── Controls Section (Figma v2 Frame 1707479676: 375 × 83 px) ── */
     .controls {
       width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 32px;
+      height: 76px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      align-items: stretch;
       flex-shrink: 0;
-      padding-bottom: 4px;
+      background: var(--bg);
+      border-top: 1px solid #222227;
+      padding: 0;
     }
 
     .ctrl-col {
+      display: contents;
+    }
+
+    .ctrl-btn-block {
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-    }
-
-    /* Circle Control 52 × 52 px */
-    .ctrl-circle-52 {
-      width: 52px;
-      height: 52px;
-      border-radius: var(--r-pill);
-      background: transparent;
-      border: 1px solid var(--muted-text); /* #727287 */
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      color: var(--muted-text);
-      padding: 16px;
-      transition: background var(--transition), border-color var(--transition), color var(--transition), transform 0.1s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .ctrl-circle-52:hover {
-      background: rgba(114, 114, 135, 0.15);
-      border-color: var(--primary-text);
-      color: var(--primary-text);
-    }
-
-    .ctrl-circle-52:active {
-      transform: scale(0.94);
-    }
-
-    .ctrl-circle-52.stop {
-      border-color: var(--primary-accent);
-      color: var(--primary-accent);
-    }
-
-    .ctrl-circle-52.stop:hover {
-      background: rgba(254, 59, 104, 0.15);
-      border-color: var(--primary-accent);
-    }
-
-    .ctrl-circle-52 svg {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .ctrl-circle-52.stop svg {
-      fill: currentColor;
-      stroke: none;
-    }
-
-    /* Circle Control 80 × 80 px (Center Pause / Play) */
-    .ctrl-circle-80 {
-      width: 80px;
-      height: 80px;
-      border-radius: var(--r-pill);
-      background: var(--primary-accent); /* #FE3B68 */
+      justify-content: center;
+      gap: 6px;
+      background: var(--bg);
       border: none;
-      display: grid;
-      place-items: center;
       cursor: pointer;
       color: var(--white);
-      padding: 24.6px;
-      box-shadow: 0 4px 20px rgba(254, 59, 104, 0.4);
-      transition: background var(--transition), box-shadow var(--transition), transform 0.1s ease;
+      transition: filter var(--transition), background var(--transition);
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
-    .ctrl-circle-80:hover {
-      background: #e62e58;
-      box-shadow: 0 6px 24px rgba(254, 59, 104, 0.55);
+    .ctrl-btn-block:hover {
+      filter: brightness(1.15);
     }
 
-    .ctrl-circle-80:active {
-      transform: scale(0.95);
+    .ctrl-btn-block:active {
+      filter: brightness(0.9);
     }
 
-    .ctrl-circle-80 svg {
-      width: 28px;
-      height: 28px;
-      fill: var(--white);
-      stroke: none;
+    .ctrl-btn-block.center-play {
+      background: var(--accent-green); /* #99FF44 */
+      color: var(--text-black);
+    }
+
+    .ctrl-btn-block.center-play.paused {
+      background: var(--cat-amber);
+    }
+
+    .ctrl-btn-block.stop-col {
+      color: var(--stop-red); /* #FF003B */
+    }
+
+    .ctrl-btn-block svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .ctrl-btn-block.stop-col svg {
+      fill: var(--stop-red);
     }
 
     .ctrl-label {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 14px;
-      letter-spacing: 0.4px;
-      color: var(--muted-text);
-    }
-
-    /* Dim card when paused */
-    .card.paused .ring-wrapper {
-      opacity: 0.65;
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: inherit;
     }
 
     /* ── Voice Toast ─────────────────────────────────────────────── */
     .voice-toast {
       position: absolute;
-      top: 24px;
+      top: 76px;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
-      background: rgba(34, 34, 39, 0.95);
-      border: 1px solid var(--control-border);
-      color: var(--primary-text);
-      font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 500;
-      padding: 6px 14px;
-      border-radius: 999px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.95);
+      border: 1px solid #FFFFFF;
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-size: 14px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: var(--r-none);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease, transform 0.2s ease;
@@ -484,17 +428,17 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* ── BOTTOM OVERLAY MODAL ───────────────────────────────────── */
+    /* ── BOTTOM OVERLAY MODAL (Figma v2: 1px Solid White Border) ─── */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.72);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex;
       justify-content: center;
-      align-items: flex-end; /* Overlay from bottom as per design */
-      padding: 0 16px 16px 16px; /* Strictly equal padding on left, right, and bottom */
+      align-items: flex-end;
+      padding: 0 16px 16px 16px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
@@ -511,16 +455,16 @@
       width: 100%;
       max-width: 388px;
       box-sizing: border-box;
-      background: var(--bg); /* #1B1B1F */
-      border: 1px solid var(--outer-border); /* #28282E */
-      border-radius: var(--r-lg); /* 16px */
-      padding: 24px 16px;
+      background: var(--bg); /* #000000 */
+      border: 1px solid var(--card-border); /* 1px solid #FFFFFF */
+      border-radius: var(--r-none);
+      padding: 28px 20px;
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 28px;
       text-align: center;
-      box-shadow: 0 -8px 48px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
-      transform: translateY(100%); /* Slides in from bottom */
+      box-shadow: 0 -8px 48px rgba(0, 0, 0, 0.9);
+      transform: translateY(100%);
       transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -531,34 +475,55 @@
     .modal-text-group {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 6px;
       text-align: center;
     }
 
     .modal-title {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 20px;
-      line-height: 31px;
-      letter-spacing: 0.4px;
-      color: var(--primary-text);
+      font-size: 24px;
+      line-height: 28px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--white);
     }
 
     .modal-subtitle {
       font-family: var(--font-body);
       font-weight: 500;
-      font-size: 12px;
-      line-height: 14px;
-      letter-spacing: 0.4px;
-      color: var(--subtitle-text);
+      font-size: 13px;
+      line-height: 16px;
+      color: var(--muted-text);
     }
 
     .modal-controls {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 32px;
+      gap: 16px;
     }
+
+    .modal-btn {
+      flex: 1;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-heading);
+      font-size: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      transition: filter var(--transition);
+    }
+
+    .modal-btn:hover { filter: brightness(1.12); }
+    .modal-btn.resume { background: var(--accent-green); color: var(--text-black); }
+    .modal-btn.restart { background: #1B1B1F; border: 1px solid var(--control-border); color: var(--white); }
+    .modal-btn.home { background: var(--accent-red); color: var(--white); }
 
     /* Responsive */
     @media (max-width: 520px) {
@@ -568,6 +533,17 @@
       }
       .card {
         border-radius: 0;
+        border: none;
+        max-width: 100%;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+        margin: 0 auto;
+        padding: 0;
+        box-shadow: none;
+      }
+    }
         border: none;
         max-width: 100%;
         width: 100%;
@@ -613,64 +589,64 @@
     <h2 class="workout-title" id="workout-title">Workout 1 of 3</h2>
   </div>
 
-  <!-- ── Center Section: Ring & Set Info ───────────────────────── -->
-  <div class="center-section">
-    <div class="ring-wrapper holding" id="ring-wrapper">
-      <div class="ring-glow"></div>
+  <!-- ── Center Section: Hero Stage (Figma v2) ─────────────────── -->
+  <div class="center-section holding" id="center-section">
+    <div class="stage-phase-badge" id="stage-phase-badge">HOLD</div>
+    
+    <div class="stage-timer-wrap">
+      <span class="stage-timer-digits" id="ring-number" aria-live="polite" aria-atomic="true">10</span>
+    </div>
 
+    <div class="stage-rep-tag" id="stage-rep-tag">REP <span id="current-rep-num">1</span> OF <span id="total-reps-num">10</span></div>
+
+    <!-- Hidden ring SVG for circular calculation & background indicator -->
+    <div class="ring-wrapper holding" id="ring-wrapper">
       <svg class="ring-svg" viewBox="0 0 275 275" aria-hidden="true">
         <circle class="ring-track" cx="137.5" cy="137.5" r="115"></circle>
         <circle class="ring-progress" cx="137.5" cy="137.5" r="115" id="ring-progress"></circle>
       </svg>
-
-      <!-- Center text inside ring -->
       <div class="ring-center">
-        <span class="ring-number" id="ring-number" aria-live="polite" aria-atomic="true">1</span>
-        <span class="ring-rep-label">Rep</span>
+        <span class="ring-rep-label" id="ring-rep-label">Rep</span>
         <span class="ring-of" id="ring-of">of 10</span>
       </div>
     </div>
-
-    <!-- Set Info below Ring -->
-    <p class="set-info" id="set-info">Set 1 of 3</p>
   </div>
 
-  <!-- ── Controls Section ──────────────────────────────────────── -->
+  <!-- Status Banner (Figma v2: Red Bar) -->
+  <div class="set-status-banner">
+    <span class="set-status-text" id="set-info">WORKOUT 1 : SET 1 OF 3</span>
+  </div>
+
+  <!-- ── Controls Section (Figma v2: 3-column action strip) ───── -->
   <div class="controls">
     <!-- Repeat -->
-    <div class="ctrl-col">
-      <button class="ctrl-circle-52" id="btn-repeat" aria-label="Repeat current rep">
-        <svg viewBox="0 0 24 24">
-          <polyline points="1 4 1 10 7 10"></polyline>
-          <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
-        </svg>
-      </button>
-      <span class="ctrl-label">Repeat</span>
-    </div>
+    <button class="ctrl-btn-block" id="btn-repeat" aria-label="Repeat current rep">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="1 4 1 10 7 10"></polyline>
+        <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
+      </svg>
+      <span class="ctrl-label">REPEAT</span>
+    </button>
 
     <!-- Center Pause / Play -->
-    <div class="ctrl-col">
-      <button class="ctrl-circle-80" id="btn-pause" aria-label="Pause workout">
-        <svg id="icon-pause" viewBox="0 0 24 24">
-          <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
-          <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
-        </svg>
-        <svg id="icon-play" viewBox="0 0 24 24" style="display:none; margin-left: 3px;">
-          <polygon points="6 4 20 12 6 20 6 4"></polygon>
-        </svg>
-      </button>
-      <span class="ctrl-label" id="pause-label">Pause</span>
-    </div>
+    <button class="ctrl-btn-block center-play" id="btn-pause" aria-label="Pause workout">
+      <svg id="icon-pause" viewBox="0 0 24 24">
+        <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
+        <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
+      </svg>
+      <svg id="icon-play" viewBox="0 0 24 24" style="display:none; margin-left: 2px;">
+        <polygon points="6 4 20 12 6 20 6 4"></polygon>
+      </svg>
+      <span class="ctrl-label" id="pause-label">PAUSE</span>
+    </button>
 
     <!-- Stop -->
-    <div class="ctrl-col">
-      <button class="ctrl-circle-52 stop" id="btn-stop" aria-label="Stop workout">
-        <svg viewBox="0 0 24 24">
-          <rect x="5" y="5" width="14" height="14" rx="2"></rect>
-        </svg>
-      </button>
-      <span class="ctrl-label">Stop</span>
-    </div>
+    <button class="ctrl-btn-block stop-col" id="btn-stop" aria-label="Stop workout">
+      <svg viewBox="0 0 24 24">
+        <rect x="5" y="5" width="14" height="14" rx="2"></rect>
+      </svg>
+      <span class="ctrl-label">STOP</span>
+    </button>
   </div>
 
 </main>
@@ -684,81 +660,24 @@
     </div>
 
     <div class="modal-controls">
-      <!-- Restart -->
-      <div class="ctrl-col">
-        <button class="ctrl-circle-52" id="modal-restart-btn" aria-label="Restart entire workout">
-          <svg viewBox="0 0 24 24">
-            <polyline points="1 4 1 10 7 10"></polyline>
-            <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
-          </svg>
-        </button>
-        <span class="ctrl-label">Restart</span>
-      </div>
-
-      <!-- Resume -->
-      <div class="ctrl-col">
-        <button class="ctrl-circle-80" id="modal-resume-btn" aria-label="Resume workout">
-          <svg viewBox="0 0 24 24" style="margin-left: 3px;">
-            <polygon points="6 4 20 12 6 20 6 4"></polygon>
-          </svg>
-        </button>
-        <span class="ctrl-label">Resume</span>
-      </div>
-
-      <!-- Home -->
-      <div class="ctrl-col">
-        <button class="ctrl-circle-52 stop" id="modal-home-btn" aria-label="Go to Home">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-        </button>
-        <span class="ctrl-label">Home</span>
-      </div>
+      <button class="modal-btn restart" id="modal-restart-btn">Restart</button>
+      <button class="modal-btn resume" id="modal-resume-btn">Resume</button>
+      <button class="modal-btn home" id="modal-home-btn">Home</button>
     </div>
   </div>
 </div>
 
-<!-- ── FINISH POPUP MODAL (Exact Figma 335 × 257 px) ─────────────── -->
+<!-- ── FINISH POPUP MODAL (Figma v2) ─────────────────────────────── -->
 <div class="modal-overlay" id="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finish-title">
   <div class="modal-card">
     <div class="modal-text-group">
       <h2 class="modal-title" id="finish-title">Workout Complete</h2>
-      <p class="modal-subtitle" id="finish-subtitle">You finished all 3 exercises. Great Workout!</p>
+      <p class="modal-subtitle" id="finish-subtitle">You finished all exercises. Great Workout!</p>
     </div>
 
     <div class="modal-controls">
-      <!-- Restart -->
-      <div class="ctrl-col">
-        <button class="ctrl-circle-52" id="finish-restart-btn" aria-label="Restart entire workout">
-          <svg viewBox="0 0 24 24">
-            <polyline points="1 4 1 10 7 10"></polyline>
-            <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
-          </svg>
-        </button>
-        <span class="ctrl-label">Restart</span>
-      </div>
-
-      <!-- Home (Center Primary) -->
-      <div class="ctrl-col">
-        <button class="ctrl-circle-80" id="finish-home-btn" aria-label="Return to Home">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </button>
-        <span class="ctrl-label">Home</span>
-      </div>
-
-      <!-- Setup / Repeat -->
-      <div class="ctrl-col">
-        <button class="ctrl-circle-52 stop" id="finish-setup-btn" aria-label="Setup workout">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-        </button>
-        <span class="ctrl-label">Setup</span>
-      </div>
+      <button class="modal-btn restart" id="finish-restart-btn">Restart</button>
+      <button class="modal-btn resume" id="finish-home-btn">Home</button>
     </div>
   </div>
 </div>
@@ -1128,9 +1047,18 @@
   }
 
   /* ── Ring Arc & Glow ─────────────────────────────────────────── */
+  const centerSection = document.getElementById('center-section');
+  const stagePhaseBadge = document.getElementById('stage-phase-badge');
+  const currentRepNum = document.getElementById('current-rep-num');
+  const totalRepsNum = document.getElementById('total-reps-num');
+
   function setRingMode(mode) {
     ringWrapper.classList.remove('holding', 'resting');
     ringWrapper.classList.add(mode);
+    if (centerSection) {
+      centerSection.classList.remove('holding', 'resting', 'resting-sets');
+      centerSection.classList.add(mode);
+    }
   }
 
   function setArcFill(fraction) {
@@ -1179,11 +1107,7 @@
   }
 
   function updateWorkoutTitle() {
-    if (CFG.exercises > 1) {
-      workoutTitle.textContent = `Workout ${state.exercise} of ${CFG.exercises}`;
-    } else {
-      workoutTitle.textContent = `Workout 1 of 1`;
-    }
+    setInfoEl.textContent = `WORKOUT ${state.exercise} : SET ${state.set} OF ${CFG.sets}`;
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -1196,14 +1120,19 @@
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
 
-    setRingMode('holding'); // Red
-    setArcFill(0);          // Starts empty at 0%
+    setRingMode('holding');
+    setArcFill(0);
 
-    ringNumber.textContent = state.rep;
-    ringOf.textContent     = `of ${CFG.reps}`;
+    if (stagePhaseBadge) stagePhaseBadge.textContent = 'HOLD';
+    if (currentRepNum) currentRepNum.textContent = state.rep;
+    if (totalRepsNum) totalRepsNum.textContent = CFG.reps;
+    
+    const remSecs = Math.max(0, CFG.hold);
+    const m = Math.floor(remSecs / 60);
+    const s = remSecs % 60;
+    ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     popRepNumber();
 
-    setInfoEl.textContent = `Set ${state.set} of ${CFG.sets}`;
     updateWorkoutTitle();
     updateProgressBar();
 
@@ -1225,7 +1154,6 @@
       cueText = `repp ${repNum}`;
     }
 
-    // Bar stays empty at 0% until this voice announcement finishes
     speakPhaseCue(category, cueText);
   }
 
@@ -1235,8 +1163,15 @@
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
 
-    setRingMode('resting'); // Yellow
-    setArcFill(1);          // Starts full, drains 100% -> 0%
+    setRingMode('resting');
+    setArcFill(1);
+
+    if (stagePhaseBadge) stagePhaseBadge.textContent = 'REST';
+    const remSecs = Math.max(0, CFG.restReps);
+    const m = Math.floor(remSecs / 60);
+    const s = remSecs % 60;
+    ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    popRepNumber();
 
     speakPhaseCue('restReps', 'Rest');
   }
@@ -1247,8 +1182,15 @@
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
 
-    setRingMode('resting');
+    setRingMode('resting-sets');
     setArcFill(1);
+
+    if (stagePhaseBadge) stagePhaseBadge.textContent = 'SET REST';
+    const remSecs = Math.max(0, CFG.restSets);
+    const m = Math.floor(remSecs / 60);
+    const s = remSecs % 60;
+    ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    popRepNumber();
 
     speakPhaseCue('restSets', `Set ${state.set} complete. Rest.`);
   }
@@ -1337,9 +1279,10 @@
         try { audioCtx.resume(); } catch (e) {}
       }
       card.classList.remove('paused');
+      btnPause.classList.remove('paused');
       iconPause.style.display = '';
       iconPlay.style.display  = 'none';
-      pauseLabel.textContent  = 'Pause';
+      pauseLabel.textContent  = 'PAUSE';
       startTicker();
     }
   }
@@ -1412,6 +1355,11 @@
     if (state.phase === PHASE.HOLD) {
       setArcFill(progress);
 
+      const remSecs = Math.max(0, Math.ceil((total - state.phaseElapsed) / 1000));
+      const m = Math.floor(remSecs / 60);
+      const s = remSecs % 60;
+      ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
       // Full voice count: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
       const totalSec = Math.round(total / 1000);
       const currentSec = Math.floor(state.phaseElapsed / 1000) + 1;
@@ -1453,6 +1401,11 @@
     // ── REST: Drains 100% -> 0% in Yellow ──
     else if (state.phase === PHASE.REST_REPS || state.phase === PHASE.REST_SETS) {
       setArcFill(1 - progress);
+
+      const remSecs = Math.max(0, Math.ceil((total - state.phaseElapsed) / 1000));
+      const m = Math.floor(remSecs / 60);
+      const s = remSecs % 60;
+      ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 
       // Full voice count for rest if the sound toggle is on
       const restCategory = (state.phase === PHASE.REST_REPS) ? 'restReps' : 'restSets';
@@ -1515,9 +1468,10 @@
 
     const paused = !state.running;
     card.classList.toggle('paused', paused);
+    btnPause.classList.toggle('paused', paused);
     iconPause.style.display = paused ? 'none' : '';
     iconPlay.style.display  = paused ? ''     : 'none';
-    pauseLabel.textContent  = paused ? 'Resume' : 'Pause';
+    pauseLabel.textContent  = paused ? 'RESUME' : 'PAUSE';
     btnPause.setAttribute('aria-label', paused ? 'Resume workout' : 'Pause workout');
   }
 
@@ -1529,9 +1483,10 @@
     if (!state.running) {
       state.running = true;
       card.classList.remove('paused');
+      btnPause.classList.remove('paused');
       iconPause.style.display = '';
       iconPlay.style.display  = 'none';
-      pauseLabel.textContent  = 'Pause';
+      pauseLabel.textContent  = 'PAUSE';
       startTicker();
     }
   }

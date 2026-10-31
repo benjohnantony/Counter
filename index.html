@@ -6,12 +6,12 @@
   <title>Workout Timer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Orelega+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /*
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     *  FIGMA MOBILE-FIRST SPECIFICATION (Home Page ID: 38:5027)
-     *  Frame: 375 × 833 px · Padding: 32px 20px · Gap: 32px / 24px / 16px
+     *  FIGMA WORKOUT TIMER V2 (Section ID: 56:794 · HOME PAGE: 56:2111)
+     *  Brutalist Athletic High-Contrast Theme
      * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      */
 
@@ -22,35 +22,37 @@
     }
 
     :root {
-      /* Colors directly from Figma file */
-      --bg:                   #1B1B1F; /* Main surface */
-      --card-surface:         #222227; /* Setting cards, inactive tabs, icon buttons */
-      --input-surface:        #1B1B1F; /* Steppers and inactive tracks */
-      --outer-border:         #28282E; /* Main container outline */
-      --control-border:       #303038; /* Inactive tabs, steppers, icon buttons */
-      --primary-accent:       #FE3B68; /* Selected tabs, enabled switches, main CTA */
-      --white:                #FFFFFF; /* White text, play icon */
-      --primary-text:         #F5F5F7; /* Setting labels, values */
-      --secondary-text:       #AAAABF; /* Inactive tab labels */
-      --subtitle-text:        #9E9E9F; /* Page subtitle */
-      --muted-text:           #727287; /* Helper text and inactive icons */
-      --close-btn-surface:    rgba(0, 0, 0, 0.16); /* Tab dismiss circle */
+      /* Colors directly from Figma Workout Timer v2 */
+      --bg:                   #000000; /* Deep black surface */
+      --card-surface:         #000000;
+      --card-border:          #FFFFFF; /* 1px crisp white border */
+      --control-border:       #303038;
+      --accent-green:         #99FF44; /* Neon lime */
+      --accent-red:           #F13629; /* Vibrant red */
+      --accent-red-header:    #F1372A; /* Settings header block */
+      --stop-red:             #FF003B;
+      --primary-accent:       #99FF44; /* Main Action & Selected Tabs */
+      --white:                #FFFFFF;
+      --primary-text:         #F5F5F7;
+      --text-black:           #000000;
+      --secondary-text:       #9E9E9F;
+      --muted-text:           #727287;
+      --close-btn-surface:    #000000;
 
       /* Category indicators */
-      --cat-sets:             #4CAF50; /* green */
-      --cat-rest-sets:        #2196F3; /* blue */
-      --cat-reps:             #FF4747; /* red */
-      --cat-rest-reps:        #FFAB00; /* amber */
-      --cat-hold:             #A62CC6; /* purple */
+      --cat-sets:             #99FF44;
+      --cat-rest-sets:        #2196F3;
+      --cat-reps:             #F13629;
+      --cat-rest-reps:        #FFAB00;
+      --cat-hold:             #A62CC6;
 
       /* Typography */
-      --font-heading:         'Orelega One', Georgia, serif;
+      --font-heading:         'Anton', sans-serif;
       --font-body:            'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
       /* Radii */
-      --r-xs:                 6px;
-      --r-sm:                 8px;
-      --r-lg:                 16px;
+      --r-none:               0px;
+      --r-xs:                 4px;
       --r-pill:               360px;
 
       --transition:           0.15s ease;
@@ -85,27 +87,27 @@
       max-height: calc(100dvh - 32px);
       margin: 0 auto;
       background: var(--bg);
-      border-radius: var(--r-lg); /* 16px */
-      border: 1px solid var(--outer-border);
-      padding: 32px 20px; /* Pad: [T:32 R:20 B:32 L:20] from Figma */
+      border-radius: var(--r-none);
+      border: 1px solid #222227;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       box-sizing: border-box;
       overflow-y: auto;
       overflow-x: hidden;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
     }
 
-    /* ── Group A: Header (333 × 47 px, Gap 16 px) ───────────────── */
+    /* ── Group A: Header (Figma v2 Frame 1707479701: 375 × 83 px) ─── */
     .header {
       width: 100%;
-      height: 47px;
+      min-height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 32px; /* Exact Figma gap between Header and Tabs: 32px */
+      margin-bottom: 24px;
       flex-shrink: 0;
     }
 
@@ -120,10 +122,11 @@
     .header-text h1 {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 20px;
-      line-height: 31px;
-      letter-spacing: 0.4px;
-      color: var(--primary-text); /* #F5F5F7 */
+      font-size: 24px;
+      line-height: 24px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--white);
     }
 
     .header-text p {
@@ -132,43 +135,41 @@
       font-size: 12px;
       line-height: 14px;
       letter-spacing: 0.4px;
-      color: var(--subtitle-text); /* #9E9E9F */
+      color: var(--muted-text);
     }
 
     .settings-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--r-xs); /* 6px from Figma */
-      background: var(--card-surface);
-      border: 1px solid var(--control-border);
+      width: 52px;
+      height: 52px;
+      border-radius: var(--r-none);
+      background: var(--accent-red-header); /* #F1372A */
+      border: none;
       display: grid;
       place-items: center;
       cursor: pointer;
       flex-shrink: 0;
       text-decoration: none;
-      color: var(--muted-text) !important;
-      transition: background var(--transition), border-color var(--transition), color var(--transition);
+      color: var(--white) !important;
+      transition: opacity var(--transition);
     }
 
     .settings-btn:hover {
-      background: #2a2a32;
-      border-color: #3e3e48;
-      color: var(--primary-text) !important;
+      opacity: 0.9;
     }
 
     .settings-btn svg {
-      width: 16px;
-      height: 16px;
-      stroke: currentColor;
-      transition: stroke var(--transition);
+      width: 22px;
+      height: 22px;
+      stroke: var(--white);
+      stroke-width: 2;
     }
 
-    /* ── Group B: Exercise Tabs (Height 40 px, Gap 8 px) ────────── */
+    /* ── Group B: Exercise Tabs (Height 40 px, Gap 12 px) ────────── */
     .tabs {
       height: 40px;
       display: flex;
       align-items: center;
-      gap: 8px; /* Gap: 8px from Figma */
+      gap: 12px;
       overflow-x: auto;
       overflow-y: hidden;
       width: 100%;
@@ -177,7 +178,7 @@
       -ms-overflow-style: none;
       flex-shrink: 0;
       cursor: grab;
-      margin: 0 0 24px 0; /* Exact Figma gap between Tabs and Cards: 24px */
+      margin: 0 0 24px 0;
     }
 
     .tabs:active {
@@ -199,44 +200,44 @@
 
     .tab {
       height: 40px;
-      border-radius: var(--r-xs); /* 6px from Figma */
-      background: var(--card-surface);
+      border-radius: var(--r-none);
+      background: var(--bg);
       border: 1px solid var(--control-border);
-      padding: 8px 12px; /* Pad: [T:8 R:12 B:8 L:12] from Figma */
+      padding: 8px 12px;
       cursor: pointer;
       white-space: nowrap;
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px; /* Gap: 12px from Figma */
+      gap: 12px;
       transition: all var(--transition);
     }
 
     .tab span.tab-title {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 14px;
-      letter-spacing: 0;
-      color: var(--muted-text); /* #727287 in inactive tab */
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 20px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted-text);
     }
 
     .tab:hover {
-      border-color: #3e3e48;
+      border-color: #555562;
     }
 
-    /* Selected Tab (Fill: #FE3B68, Radius: 6px, Text: #FFFFFF) */
+    /* Selected Tab (Fill: #99FF44, Text: #000000, Anton 16px) */
     .tab.active {
-      background: var(--primary-accent); /* #FE3B68 */
-      border: 1px solid var(--primary-accent);
+      background: var(--accent-green); /* #99FF44 */
+      border: 1px solid var(--accent-green);
     }
 
     .tab.active span.tab-title {
-      font-weight: 600;
-      color: var(--white);
+      color: var(--text-black);
     }
 
-    /* Dismiss button: 24 × 24 px circular, black at 16% opacity */
+    /* Dismiss button: 24 × 24 px circular, fill #000000 */
     .tab-remove {
       display: none;
       width: 24px;
@@ -247,17 +248,17 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: var(--muted-text);
-      transition: background var(--transition), color var(--transition);
+      color: var(--primary-text);
+      transition: background var(--transition);
       flex-shrink: 0;
     }
 
     .tab.active .tab-remove {
-      color: var(--primary-text);
+      color: var(--white);
     }
 
     .tab-remove:hover {
-      background: rgba(0, 0, 0, 0.32);
+      background: rgba(0, 0, 0, 0.7);
     }
 
     .tab.has-remove .tab-remove {
@@ -265,30 +266,29 @@
     }
 
     .tab-remove svg {
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       display: block;
     }
 
-    /* Add Tab Button: 40 × 40 px, 6px radius, fill #222227, 1px #303038 */
+    /* Add Tab Button: 40 × 40 px, fill #000000, 1px #303038 */
     .tab-add {
       width: 40px;
       height: 40px;
-      border-radius: var(--r-xs); /* 6px from Figma */
-      background: var(--card-surface);
+      border-radius: var(--r-none);
+      background: var(--bg);
       border: 1px solid var(--control-border);
       flex-shrink: 0;
       display: grid;
       place-items: center;
       cursor: pointer;
-      color: var(--muted-text);
+      color: var(--white);
       transition: all var(--transition);
     }
 
     .tab-add:hover {
-      border-color: var(--primary-accent);
-      color: var(--primary-accent);
-      background: #2a2a32;
+      border-color: var(--accent-green);
+      color: var(--accent-green);
     }
 
     .tab-add svg {
@@ -297,25 +297,25 @@
       display: block;
     }
 
-    /* ── Group C: Parameter Cards (5 Cards, each 72 px, Gap 16 px) ─ */
+    /* ── Group C: Parameter Cards (Figma v2: 1px solid #FFFFFF, sharp) ── */
     .params {
       display: flex;
       flex-direction: column;
-      gap: 16px; /* Gap: 16px from Figma Frame Group C */
+      gap: 16px;
       flex-shrink: 0;
-      margin: 0 0 32px 0; /* Gap from cards to CTA button: 32px */
+      margin: 0 0 28px 0;
     }
 
     .param-row {
       width: 100%;
-      height: 72px; /* 72px from Figma */
-      background: var(--card-surface); /* #222227 */
-      border-radius: var(--r-sm); /* 8px */
-      padding: 16px; /* Pad: [T:16 R:16 B:16 L:16] */
+      min-height: 76px;
+      background: var(--card-surface); /* #000000 */
+      border-radius: var(--r-none);
+      border: 1px solid var(--card-border); /* 1px solid #FFFFFF from Figma v2 */
+      padding: 14px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border: none;
       box-shadow: none;
       box-sizing: border-box;
       gap: 12px;
@@ -324,7 +324,7 @@
     .param-label-group {
       display: flex;
       align-items: flex-start;
-      gap: 12px; /* Gap: 12px from Figma */
+      gap: 10px;
       flex: 1;
       min-width: 0;
     }
@@ -341,7 +341,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      margin-top: 9px; /* Vertically aligned with 24px title */
+      margin-top: 8px;
       flex-shrink: 0;
     }
 
@@ -349,7 +349,7 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      gap: 2px; /* Gap: 2px from Figma */
+      gap: 3px;
       min-width: 0;
       flex: 1;
     }
@@ -357,10 +357,11 @@
     .param-text-stack strong {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 16px; /* 16px from Figma */
-      line-height: 24px;
-      letter-spacing: 0.4px;
-      color: var(--primary-text); /* #F5F5F7 */
+      font-size: 16px;
+      line-height: 22px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--primary-text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -369,72 +370,73 @@
     .param-text-stack span {
       font-family: var(--font-body);
       font-weight: 500;
-      font-size: 12px; /* 12px from Figma */
+      font-size: 12px;
       line-height: 14px;
       letter-spacing: 0.4px;
-      color: var(--muted-text); /* #727287 */
+      color: var(--muted-text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* ── Stepper (Figma: 90 × 40 px, Fill #1B1B1F, 1px #303038) ─── */
+    /* ── Stepper (Figma v2: 98 × 48 px, Fill #F13629, 1px #303038) ─── */
     .stepper {
-      width: 90px;
-      height: 40px;
-      background: var(--input-surface); /* #1B1B1F */
-      border: 1px solid var(--control-border); /* #303038 */
-      border-radius: var(--r-sm); /* 8px */
+      width: 98px;
+      height: 48px;
+      background: var(--accent-red); /* #F13629 from Figma v2 */
+      border: 1px solid var(--control-border);
+      border-radius: var(--r-none);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 12px;
+      padding: 0 10px;
       flex-shrink: 0;
       box-sizing: border-box;
-      transition: border-color var(--transition);
+      transition: filter var(--transition);
     }
 
-    .stepper:focus-within {
-      border-color: #4c4c58;
+    .stepper:hover {
+      filter: brightness(1.08);
     }
 
     .stepper-btn {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       background: transparent;
       border: none;
       padding: 0;
       display: grid;
       place-items: center;
       cursor: pointer;
-      color: var(--muted-text);
-      transition: color var(--transition);
+      color: var(--white);
+      transition: opacity var(--transition);
       user-select: none;
       touch-action: manipulation;
       flex-shrink: 0;
     }
 
     .stepper-btn:hover {
-      color: var(--primary-text);
+      opacity: 0.8;
     }
 
     .stepper-btn svg {
       width: 14px;
       height: 14px;
       display: block;
+      stroke: currentColor;
     }
 
     .stepper-input {
-      width: 28px;
+      width: 32px;
       height: 40px;
       background: transparent;
       border: none;
       outline: none;
       text-align: center;
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 14px;
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 20px;
       letter-spacing: 0.4px;
       color: var(--primary-text);
       padding: 0;
@@ -448,7 +450,7 @@
       margin: 0;
     }
 
-    /* ── Switch (Figma: 52 × 28 px, Fill #FE3B68, Thumb 20 × 20 px) ── */
+    /* ── Switch (Figma v2: 52 × 28 px, Fill #99FF44, Thumb 20 × 20 px) ── */
     .switch-wrap {
       width: 52px;
       height: 28px;
@@ -477,8 +479,8 @@
       inset: 0;
       width: 52px;
       height: 28px;
-      border-radius: var(--r-pill); /* 360px */
-      background: var(--input-surface);
+      border-radius: var(--r-pill);
+      background: #1B1B1F;
       border: 1px solid var(--control-border);
       transition: background var(--transition), border-color var(--transition);
       box-sizing: border-box;
@@ -513,13 +515,13 @@
       top: 3px;
       left: 3px;
       transition: transform var(--transition);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.188);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       pointer-events: none;
     }
 
     .switch-input:checked + .switch-track {
-      background: var(--primary-accent); /* #FE3B68 */
-      border-color: var(--primary-accent);
+      background: var(--accent-green); /* #99FF44 */
+      border-color: var(--accent-green);
     }
 
     .switch-input:checked + .switch-track .switch-thumb {
@@ -528,37 +530,33 @@
 
     .switch-input:checked + .switch-track .switch-sound-icon {
       opacity: 1;
+      color: #000000;
     }
 
     .switch-input:not(:checked) + .switch-track .switch-sound-icon {
       opacity: 0.35;
     }
 
-    .switch-input:focus-visible + .switch-track {
-      outline: 2px solid var(--primary-accent);
-      outline-offset: 2px;
-    }
-
-    /* ── Group D: CTA Button (333 × 48 px, Fill #FE3B68, Radius 8px) ── */
+    /* ── Group D: CTA Button (Figma v2: Fill #99FF44, Text #000000, Anton 20px) ── */
     .start-btn-wrap {
       width: 100%;
-      height: 48px;
+      height: 56px;
       flex-shrink: 0;
       margin-top: auto;
     }
 
     .start-btn {
       width: 100%;
-      height: 48px;
-      background: var(--primary-accent); /* #FE3B68 */
-      border-radius: var(--r-sm); /* 8px */
+      height: 56px;
+      background: var(--accent-green); /* #99FF44 */
+      border-radius: var(--r-none);
       border: none;
       box-shadow: none;
       padding: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px; /* Gap: 8px */
+      gap: 10px;
       cursor: pointer;
       text-decoration: none;
       transition: opacity var(--transition), transform var(--transition);
@@ -573,22 +571,24 @@
       transform: scale(0.99);
     }
 
-    /* Play Icon: 12.6 × 16 px from Figma */
+    /* Play Icon: in Black */
     .start-btn svg {
-      width: 13px;
-      height: 16px;
+      width: 16px;
+      height: 18px;
       display: block;
       flex-shrink: 0;
+      fill: var(--text-black);
     }
 
-    /* Label: Start Workout, Onest 600, 14px, LineHeight: 16px */
+    /* Label: Start Workout, Anton 20px, Black */
     .start-btn span {
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 16px;
-      letter-spacing: 0;
-      color: var(--white);
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 20px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-black);
     }
 
     /* ── Mobile Viewports ────────────────────────────────────────── */
@@ -606,7 +606,7 @@
         height: 100dvh;
         max-height: 100dvh;
         margin: 0 auto;
-        padding: 32px 20px;
+        padding: 24px 16px;
         box-shadow: none;
       }
     }
