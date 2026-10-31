@@ -72,51 +72,50 @@
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
       min-height: 100dvh;
-      padding: 24px 16px;
+      padding: 0;
       background: var(--bg);
     }
 
     /* ── Mobile-First Container (Figma 375 × 833 px) ────────────── */
     .card {
       width: 100%;
-      max-width: 420px;
-      height: 733px;
-      max-height: calc(100dvh - 32px);
+      max-width: 375px;
+      height: 833px;
       margin: 0 auto;
       background: var(--bg);
       border-radius: var(--r-none);
-      border: 1px solid #222227;
-      padding: 24px 20px;
+      border: none;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: space-between;
       box-sizing: border-box;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden;
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
     }
 
     /* ── Group A: Header (Figma v2 Frame 1707479701: 375 × 83 px) ─── */
     .header {
       width: 100%;
-      min-height: 60px;
+      height: 83px;
+      min-height: 83px;
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 0;
       flex-shrink: 0;
+      background: #000000;
     }
 
     .header-text {
       flex: 1;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 2px;
+      align-items: center;
+      padding: 0 20px;
+      background: #000000;
     }
 
     .header-text h1 {
@@ -127,30 +126,28 @@
       letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--white);
+      margin: 0;
     }
 
     .header-text p {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 14px;
-      letter-spacing: 0.4px;
-      color: var(--muted-text);
+      display: none;
     }
 
     .settings-btn {
-      width: 52px;
-      height: 52px;
+      width: 94px;
+      height: 83px;
       border-radius: var(--r-none);
       background: var(--accent-red-header); /* #F1372A */
       border: none;
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
       text-decoration: none;
       color: var(--white) !important;
       transition: opacity var(--transition);
+      padding: 0;
     }
 
     .settings-btn:hover {
@@ -158,31 +155,29 @@
     }
 
     .settings-btn svg {
-      width: 22px;
-      height: 22px;
+      width: 32px;
+      height: 32px;
       stroke: var(--white);
-      stroke-width: 2;
+      stroke-width: 2.2;
     }
 
-    /* ── Group B: Exercise Tabs (Height 40 px, Gap 12 px) ────────── */
+    /* ── Group B: Exercise Tabs (Figma v2: 373 × 84 px) ────────── */
     .tabs {
-      height: 40px;
+      width: 100%;
+      height: 84px;
+      min-height: 84px;
       display: flex;
       align-items: center;
       gap: 12px;
+      padding: 0 20px;
+      margin: 0;
       overflow-x: auto;
       overflow-y: hidden;
-      width: 100%;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       -ms-overflow-style: none;
       flex-shrink: 0;
-      cursor: grab;
-      margin: 0 0 24px 0;
-    }
-
-    .tabs:active {
-      cursor: grabbing;
+      background: #000000;
     }
 
     .tabs::-webkit-scrollbar {
@@ -211,6 +206,7 @@
       justify-content: space-between;
       gap: 12px;
       transition: all var(--transition);
+      flex-shrink: 0;
     }
 
     .tab span.tab-title {
@@ -230,7 +226,7 @@
     /* Selected Tab (Fill: #99FF44, Text: #000000, Anton 16px) */
     .tab.active {
       background: var(--accent-green); /* #99FF44 */
-      border: 1px solid var(--accent-green);
+      border: none;
     }
 
     .tab.active span.tab-title {
@@ -243,22 +239,14 @@
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: var(--close-btn-surface);
+      background: #000000;
       border: none;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: var(--primary-text);
-      transition: background var(--transition);
-      flex-shrink: 0;
-    }
-
-    .tab.active .tab-remove {
       color: var(--white);
-    }
-
-    .tab-remove:hover {
-      background: rgba(0, 0, 0, 0.7);
+      flex-shrink: 0;
+      padding: 0;
     }
 
     .tab.has-remove .tab-remove {
@@ -266,9 +254,11 @@
     }
 
     .tab-remove svg {
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
       display: block;
+      stroke: #F5F5F7;
+      stroke-width: 1.4;
     }
 
     /* Add Tab Button: 40 × 40 px, fill #000000, 1px #303038 */
@@ -292,64 +282,69 @@
     }
 
     .tab-add svg {
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       display: block;
+      stroke: #FFFFFF;
+      stroke-width: 1.9;
     }
 
-    /* ── Group C: Parameter Cards (Figma v2: 1px solid #FFFFFF, sharp) ── */
+    /* ── Group C: Parameter Cards (Figma v2 Frame 56:2129: 375 × 583 px) ── */
     .params {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      flex-shrink: 0;
-      margin: 0 0 28px 0;
+      gap: 20px;
+      padding: 0 20px 20px 20px;
+      margin: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      box-sizing: border-box;
+      background: #000000;
+    }
+
+    .params::-webkit-scrollbar {
+      display: none;
     }
 
     .param-row {
       width: 100%;
-      min-height: 76px;
-      background: var(--card-surface); /* #000000 */
+      min-height: 96px;
+      height: 96px;
+      background: transparent;
       border-radius: var(--r-none);
       border: 1px solid var(--card-border); /* 1px solid #FFFFFF from Figma v2 */
-      padding: 14px 16px;
+      padding: 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
       box-shadow: none;
       box-sizing: border-box;
-      gap: 12px;
+      flex-shrink: 0;
     }
 
     .param-label-group {
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
+      align-items: center;
       flex: 1;
       min-width: 0;
     }
 
     .param-marker-col {
-      width: 6px;
-      height: 40px;
-      display: flex;
-      align-items: flex-start;
-      flex-shrink: 0;
+      display: none;
     }
 
     .category-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      margin-top: 8px;
-      flex-shrink: 0;
+      display: none;
     }
 
     .param-text-stack {
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      gap: 3px;
+      justify-content: center;
+      gap: 5px;
       min-width: 0;
       flex: 1;
     }
@@ -358,7 +353,7 @@
       font-family: var(--font-heading);
       font-weight: 400;
       font-size: 16px;
-      line-height: 22px;
+      line-height: 24px;
       letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--primary-text);
@@ -379,17 +374,18 @@
       text-overflow: ellipsis;
     }
 
-    /* ── Stepper (Figma v2: 98 × 48 px, Fill #F13629, 1px #303038) ─── */
+    /* ── Stepper (Figma v2: 98 × 52 px, Fill #F13629, 1px #303038) ─── */
     .stepper {
       width: 98px;
-      height: 48px;
+      height: 52px;
       background: var(--accent-red); /* #F13629 from Figma v2 */
       border: 1px solid var(--control-border);
       border-radius: var(--r-none);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
+      padding: 16px 12px;
+      gap: 16px;
       flex-shrink: 0;
       box-sizing: border-box;
       transition: filter var(--transition);
@@ -400,8 +396,8 @@
     }
 
     .stepper-btn {
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       background: transparent;
       border: none;
       padding: 0;
@@ -420,15 +416,15 @@
     }
 
     .stepper-btn svg {
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       display: block;
       stroke: currentColor;
     }
 
     .stepper-input {
-      width: 32px;
-      height: 40px;
+      width: 34px;
+      height: 32px;
       background: transparent;
       border: none;
       outline: none;
@@ -450,113 +446,34 @@
       margin: 0;
     }
 
-    /* ── Switch (Figma v2: 52 × 28 px, Fill #99FF44, Thumb 20 × 20 px) ── */
+    /* ── Switch (Hidden on Home Page to match Figma 56:2111) ── */
     .switch-wrap {
-      width: 52px;
-      height: 28px;
-      position: relative;
-      flex-shrink: 0;
+      display: none !important;
     }
 
-    .switch-pill {
-      position: relative;
-      display: block;
-      width: 52px;
-      height: 28px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .switch-input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .switch-track {
-      position: absolute;
-      inset: 0;
-      width: 52px;
-      height: 28px;
-      border-radius: var(--r-pill);
-      background: #1B1B1F;
-      border: 1px solid var(--control-border);
-      transition: background var(--transition), border-color var(--transition);
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-
-    .switch-sound-icon {
-      position: absolute;
-      left: 6px;
-      top: 7px;
-      width: 13px;
-      height: 13px;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity var(--transition);
-    }
-
-    .switch-sound-icon svg {
-      width: 13px;
-      height: 13px;
-      display: block;
-    }
-
-    .switch-thumb {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--white);
-      top: 3px;
-      left: 3px;
-      transition: transform var(--transition);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-      pointer-events: none;
-    }
-
-    .switch-input:checked + .switch-track {
-      background: var(--accent-green); /* #99FF44 */
-      border-color: var(--accent-green);
-    }
-
-    .switch-input:checked + .switch-track .switch-thumb {
-      transform: translateX(24px);
-    }
-
-    .switch-input:checked + .switch-track .switch-sound-icon {
-      opacity: 1;
-      color: #000000;
-    }
-
-    .switch-input:not(:checked) + .switch-track .switch-sound-icon {
-      opacity: 0.35;
-    }
-
-    /* ── Group D: CTA Button (Figma v2: Fill #99FF44, Text #000000, Anton 20px) ── */
+    /* ── Group D: CTA Button (Figma v2 Frame 1707479676: 375 × 83 px) ── */
     .start-btn-wrap {
       width: 100%;
-      height: 56px;
+      height: 83px;
+      min-height: 83px;
       flex-shrink: 0;
-      margin-top: auto;
+      margin: 0;
+      padding: 0;
+      background: var(--accent-green);
     }
 
     .start-btn {
       width: 100%;
-      height: 56px;
+      height: 83px;
       background: var(--accent-green); /* #99FF44 */
       border-radius: var(--r-none);
       border: none;
       box-shadow: none;
-      padding: 16px;
+      padding: 0;
+      margin: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
       cursor: pointer;
       text-decoration: none;
       transition: opacity var(--transition), transform var(--transition);
@@ -571,42 +488,35 @@
       transform: scale(0.99);
     }
 
-    /* Play Icon: in Black */
+    /* Play Icon: 23.4 × 29.8 px in Black */
     .start-btn svg {
-      width: 16px;
-      height: 18px;
+      width: 23.4px;
+      height: 29.8px;
       display: block;
       flex-shrink: 0;
       fill: var(--text-black);
     }
 
-    /* Label: Start Workout, Anton 20px, Black */
+    /* Label: Hidden in Figma v2 */
     .start-btn span {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: 20px;
-      line-height: 20px;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: var(--text-black);
+      display: none;
     }
 
     /* ── Mobile Viewports ────────────────────────────────────────── */
-    @media (max-width: 520px) {
+    @media (max-width: 480px) {
       body {
         padding: 0;
-        align-items: flex-start;
       }
       .card {
         border-radius: 0;
         border: none;
-        max-width: 100%;
-        width: 100%;
+        max-width: 100vw;
+        width: 100vw;
         height: 100vh;
         height: 100dvh;
         max-height: 100dvh;
         margin: 0 auto;
-        padding: 24px 16px;
+        padding: 0;
         box-shadow: none;
       }
     }
@@ -854,13 +764,12 @@
 
   </section>
 
-  <!-- Group D: CTA Button (333 × 48 px, Fill #FE3B68) -->
+  <!-- Group D: CTA Button (Figma v2 Frame 1707479676: 375 × 83 px) -->
   <footer class="start-btn-wrap">
-    <button class="start-btn" id="start-btn" aria-label="Start Workout">
-      <svg viewBox="0 0 13 16" fill="none" aria-hidden="true">
-        <path d="M12.1 7.14a1 1 0 0 1 0 1.72L2.1 14.86A1 1 0 0 1 0.5 14V2a1 1 0 0 1 1.6-.86l10 6z" fill="#FFFFFF"/>
+    <button class="start-btn" id="start-btn" aria-label="Start Workout" title="Start Workout">
+      <svg viewBox="0 0 24 30" width="24" height="30" aria-hidden="true">
+        <path d="M0 0L24 15L0 30V0Z" fill="#000000"/>
       </svg>
-      <span>Start Workout</span>
     </button>
   </footer>
 

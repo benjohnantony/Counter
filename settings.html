@@ -64,23 +64,23 @@
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
       min-height: 100dvh;
-      padding: 24px 16px;
+      padding: 0;
       background: var(--bg);
     }
 
     /* ── Main Container (Exact Figma v2: 375 × 1003 px Baseline) ── */
     .card {
       width: 100%;
-      max-width: 420px;
-      height: 733px;
-      max-height: calc(100dvh - 32px);
+      max-width: 375px;
+      height: 1003px;
+      max-height: 100dvh;
       margin: 0 auto;
       background: var(--bg);
       border-radius: var(--r-none);
-      border: 1px solid #222227;
+      border: none;
       padding: 0;
       display: flex;
       flex-direction: column;
@@ -89,16 +89,17 @@
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
     }
 
-    /* ── Group A: Header (375 × 83 px in Figma v2) ───────────────── */
+    /* ── Group A: Header (375 × 83 px in Figma v2 Frame 1707479701) ── */
     .header-bar {
       width: 100%;
-      height: 64px;
+      height: 83px;
+      min-height: 83px;
       display: flex;
       align-items: stretch;
       justify-content: space-between;
-      border-bottom: 1px solid #222227;
+      border: none;
       flex-shrink: 0;
-      background: var(--bg);
+      background: #000000;
     }
 
     .header-text {
@@ -106,7 +107,7 @@
       display: flex;
       align-items: center;
       padding: 0 20px;
-      gap: 12px;
+      background: #000000;
     }
 
     .header-title {
@@ -117,6 +118,7 @@
       letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--white);
+      margin: 0;
     }
 
     .header-subtitle {
@@ -125,17 +127,19 @@
 
     .close-btn,
     .close-btn:visited {
-      width: 64px;
-      height: 100%;
+      width: 93px;
+      height: 83px;
       background: var(--accent-red-header); /* #F1372A */
       border: none;
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
       text-decoration: none;
       color: var(--white) !important;
       transition: opacity var(--transition);
+      padding: 0;
     }
 
     .close-btn:hover {
@@ -143,13 +147,13 @@
     }
 
     .close-btn svg {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       stroke: var(--white);
       stroke-width: 2.2;
     }
 
-    /* ── Group C: Settings List (Scrolls inside container, Gap 16 px) ── */
+    /* ── Group C: Settings List (Figma v2 Frame 56:2204: 375 × 837 px) ── */
     .settings-list {
       flex: 1;
       min-height: 0;
@@ -157,30 +161,30 @@
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      padding: 20px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--control-border) transparent;
+      gap: 20px;
+      padding: 0 20px 20px 20px;
+      scrollbar-width: none;
+      box-sizing: border-box;
+      background: #000000;
     }
 
     .settings-list::-webkit-scrollbar {
-      width: 4px;
+      display: none;
     }
 
-    .settings-list::-webkit-scrollbar-thumb {
-      background: var(--control-border);
-    }
-
-    /* Setting Card (Figma v2: 1px solid #FFFFFF, sharp) */
+    /* Setting Card (Figma v2: 335 × 96 px, 1px solid #FFFFFF, sharp) */
     .setting-card {
       width: 100%;
-      background: var(--card-surface); /* #000000 */
+      min-height: 96px;
+      height: 96px;
+      background: transparent;
       border: 1px solid var(--card-border); /* 1px solid #FFFFFF */
       border-radius: var(--r-none);
-      padding: 16px;
+      padding: 0 20px;
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
       box-shadow: none;
       box-sizing: border-box;
       flex-shrink: 0;
@@ -208,17 +212,23 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      justify-content: center;
+      gap: 5px;
+      min-width: 0;
     }
 
     .setting-title {
       font-family: var(--font-heading);
       font-weight: 400;
       font-size: 16px;
-      line-height: 22px;
+      line-height: 24px;
       letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--primary-text);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .setting-desc {
@@ -226,7 +236,12 @@
       font-weight: 500;
       font-size: 12px;
       line-height: 14px;
+      letter-spacing: 0.4px;
       color: var(--muted-text);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .setting-action {
@@ -237,6 +252,7 @@
       font-weight: 600;
       font-size: 14px;
       color: var(--secondary-text);
+      flex-shrink: 0;
     }
 
     .setting-action svg.chevron-icon {
@@ -310,8 +326,9 @@
     .slider-row {
       display: flex;
       align-items: center;
-      gap: 16px;
-      width: 100%;
+      gap: 12px;
+      width: 120px;
+      flex-shrink: 0;
     }
 
     .slider-track-wrap {
@@ -332,51 +349,76 @@
 
     .custom-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: var(--accent-green);
       cursor: pointer;
     }
 
-    .slider-val-badge {
+    .slider-val-label {
       font-family: var(--font-heading);
       font-size: 16px;
       color: var(--white);
-      min-width: 44px;
+      min-width: 38px;
       text-align: right;
     }
 
     /* ── Bottom Actions (Figma v2 Frame 1707479702: 375 × 83 px) ─── */
     .actions-group {
       width: 100%;
-      height: 64px;
+      height: 83px;
+      min-height: 83px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: stretch;
       flex-shrink: 0;
-      border-top: 1px solid #222227;
-      background: var(--bg);
+      border: none;
+      background: #000000;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
     }
 
-    .btn-primary,
-    .btn-secondary {
-      height: 100%;
+    .btn-secondary,
+    .btn-primary {
+      height: 83px;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       cursor: pointer;
       text-decoration: none;
       transition: filter var(--transition);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      padding: 0;
     }
 
-    .btn-primary:hover,
+    .btn-secondary {
+      background: #000000;
+      color: var(--white);
+    }
+
     .btn-secondary:hover {
-      filter: brightness(1.1);
+      filter: brightness(1.2);
+    }
+
+    .btn-secondary svg {
+      width: 32px;
+      height: 18px;
+      fill: none;
+      stroke: #FFFFFF;
+    }
+
+    .btn-secondary span {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 16px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--white);
     }
 
     .btn-primary {
@@ -384,40 +426,18 @@
       color: var(--text-black);
     }
 
+    .btn-primary:hover {
+      filter: brightness(1.08);
+    }
+
     .btn-primary svg {
-      width: 16px;
-      height: 16px;
-      fill: var(--text-black);
+      width: 23.4px;
+      height: 29.8px;
+      fill: #000000;
     }
 
     .btn-primary span {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: 16px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--text-black);
-    }
-
-    .btn-secondary {
-      background: var(--bg);
-      border-right: 1px solid #222227;
-      color: var(--white);
-    }
-
-    .btn-secondary svg {
-      width: 16px;
-      height: 16px;
-      stroke: var(--white);
-    }
-
-    .btn-secondary span {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: 16px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--white);
+      display: none;
     }
 
     /* ── Bottom Sheet Selection Modal ───────────────────────────── */
@@ -443,7 +463,7 @@
 
     .sheet-card {
       width: 100%;
-      max-width: 420px;
+      max-width: 375px;
       max-height: 80vh;
       background: var(--bg);
       border: 1px solid var(--card-border);
@@ -455,6 +475,7 @@
       transform: translateY(100%);
       transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.9);
+      box-sizing: border-box;
     }
 
     .modal-overlay.active .sheet-card {
@@ -537,16 +558,15 @@
     }
 
     /* Responsive */
-    @media (max-width: 520px) {
+    @media (max-width: 480px) {
       body {
         padding: 0;
-        align-items: flex-start;
       }
       .card {
         border-radius: 0;
         border: none;
-        max-width: 100%;
-        width: 100%;
+        max-width: 100vw;
+        width: 100vw;
         height: 100vh;
         height: 100dvh;
         max-height: 100dvh;
@@ -555,499 +575,21 @@
         box-shadow: none;
       }
     }
-      flex-direction: column;
-      justify-content: center;
-      gap: 2px;
-      min-width: 0;
-    }
-
-    .setting-title {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 24px;
-      letter-spacing: 0.4px;
-      color: var(--primary-text); /* #F5F5F7 */
-    }
-
-    .setting-desc {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 14px;
-      letter-spacing: 0.4px;
-      color: var(--muted-text); /* #727287 */
-    }
-
-    /* Right Action in Nav Card (Chevron & Value) */
-    .setting-action {
-      display: flex;
-      align-items: center;
-      gap: 4px; /* Gap: 4px from Figma */
-      color: var(--secondary-text);
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 20px;
-      letter-spacing: 0;
-      flex-shrink: 0;
-    }
-
-    .chevron-icon {
-      width: 16px;
-      height: 16px;
-      stroke: var(--muted-text);
-      fill: none;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      transition: transform var(--transition), stroke var(--transition);
-    }
-
-    .setting-card.clickable:hover .chevron-icon {
-      transform: translateX(2px);
-      stroke: var(--primary-text);
-    }
-
-    /* ── Range Slider Row (Speech Speed & Volume) ───────────────── */
-    .slider-row {
-      display: flex;
-      align-items: center;
-      gap: 16px; /* Gap: 16px from Figma Frame 1707479691 */
-      width: 100%;
-    }
-
-    .slider-track-wrap {
-      flex: 1;
-      position: relative;
-      height: 20px;
-      display: flex;
-      align-items: center;
-    }
-
-    .custom-slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 8px; /* Height: 8px from Figma */
-      border-radius: var(--r-pill); /* 360px */
-      background: var(--input-surface);
-      border: 1px solid var(--control-border);
-      outline: none;
-      cursor: pointer;
-      position: relative;
-      margin: 0;
-    }
-
-    .custom-slider::-webkit-slider-runnable-track {
-      height: 8px;
-      border-radius: var(--r-pill);
-      background: linear-gradient(to right, var(--primary-accent) var(--slider-pct, 50%), var(--input-surface) var(--slider-pct, 50%));
-    }
-
-    .custom-slider::-moz-range-track {
-      height: 8px;
-      border-radius: var(--r-pill);
-      background: linear-gradient(to right, var(--primary-accent) var(--slider-pct, 50%), var(--input-surface) var(--slider-pct, 50%));
-    }
-
-    .custom-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--white);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-      cursor: pointer;
-      margin-top: -6px;
-      transition: transform 0.1s ease;
-    }
-
-    .custom-slider::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--white);
-      border: none;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-      cursor: pointer;
-      transition: transform 0.1s ease;
-    }
-
-    .custom-slider:active::-webkit-slider-thumb {
-      transform: scale(1.15);
-    }
-
-    .slider-val-label {
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 20px;
-      letter-spacing: 0;
-      color: var(--primary-text);
-      min-width: 32px;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-      flex-shrink: 0;
-    }
-
-    /* ── Switch Pattern (52 × 28 px, Fill #FE3B68, Thumb 20 × 20 px) ── */
-    .switch-wrap {
-      width: 52px;
-      height: 28px;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .switch-pill {
-      position: relative;
-      display: block;
-      width: 52px;
-      height: 28px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .switch-input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .switch-track {
-      position: absolute;
-      inset: 0;
-      width: 52px;
-      height: 28px;
-      border-radius: var(--r-pill); /* 360px */
-      background: var(--input-surface);
-      border: 1px solid var(--control-border);
-      transition: background var(--transition), border-color var(--transition);
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-
-    .switch-thumb {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--white);
-      top: 3px;
-      left: 3px;
-      transition: transform var(--transition);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.188);
-      pointer-events: none;
-    }
-
-    .switch-input:checked + .switch-track {
-      background: var(--primary-accent); /* #FE3B68 */
-      border-color: var(--primary-accent);
-    }
-
-    .switch-input:checked + .switch-track .switch-thumb {
-      transform: translateX(24px);
-    }
-
-    .switch-input:focus-visible + .switch-track {
-      outline: 2px solid var(--primary-accent);
-      outline-offset: 2px;
-    }
-
-    /* ── Group D: Bottom Action Buttons (Frame 1707479677, Gap 16 px) ── */
-    .actions-group {
-      display: flex;
-      flex-direction: column;
-      gap: 16px; /* Gap: 16px from Figma */
-      flex-shrink: 0;
-    }
-
-    /* 1. Primary Button (Test Voice Coach: 333 × 48 px, Fill #FE3B68) */
-    .btn-primary {
-      width: 100%;
-      height: 48px;
-      background: var(--primary-accent); /* #FE3B68 */
-      border-radius: var(--r-sm); /* 8px */
-      border: none;
-      box-shadow: none;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px; /* Gap: 8px */
-      cursor: pointer;
-      text-decoration: none;
-      transition: opacity var(--transition), transform var(--transition);
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .btn-primary:hover {
-      opacity: 0.94;
-    }
-
-    .btn-primary:active {
-      transform: scale(0.99);
-    }
-
-    /* Play Icon: 12.6 × 16 px, radius 0.8px */
-    .btn-primary svg {
-      width: 13px;
-      height: 16px;
-      display: block;
-      flex-shrink: 0;
-    }
-
-    .btn-primary span {
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 16px;
-      letter-spacing: 0;
-      color: var(--white);
-    }
-
-    /* 2. Secondary Button (Reset to Defaults: 333 × 48 px, Stroke #727287) */
-    .btn-secondary {
-      width: 100%;
-      height: 48px;
-      background: transparent;
-      border: 1px solid var(--muted-text); /* Stroke: #727287 1.0px */
-      border-radius: var(--r-sm); /* 8px */
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px; /* Gap: 8px */
-      cursor: pointer;
-      text-decoration: none;
-      transition: background var(--transition), border-color var(--transition), color var(--transition);
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(114, 114, 135, 0.12);
-      border-color: var(--primary-text);
-      color: var(--primary-text);
-    }
-
-    .btn-secondary:active {
-      transform: scale(0.99);
-    }
-
-    .btn-secondary svg {
-      width: 16px;
-      height: 16px;
-      stroke: var(--muted-text);
-      transition: stroke var(--transition);
-      display: block;
-      flex-shrink: 0;
-    }
-
-    .btn-secondary:hover svg {
-      stroke: var(--primary-text);
-    }
-
-    .btn-secondary span {
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 16px;
-      letter-spacing: 0;
-      color: var(--muted-text); /* #727287 */
-      transition: color var(--transition);
-    }
-
-    .btn-secondary:hover span {
-      color: var(--primary-text);
-    }
-
-    /* ── Bottom Sheet Selection Modal ───────────────────────────── */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.72);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.28s ease;
-      z-index: 990;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-    }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .sheet-card {
-      width: 100%;
-      max-width: 420px;
-      max-height: 80vh;
-      background: var(--bg);
-      border: 1px solid var(--outer-border);
-      border-bottom: none;
-      border-radius: var(--r-lg) var(--r-lg) 0 0;
-      padding: 16px 20px 32px;
-      display: flex;
-      flex-direction: column;
-      transform: translateY(100%);
-      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.8);
-    }
-
-    .modal-overlay.active .sheet-card {
-      transform: translateY(0);
-    }
-
-    .sheet-handle {
-      width: 40px;
-      height: 4px;
-      border-radius: 999px;
-      background: var(--control-border);
-      margin: 0 auto 16px;
-    }
-
-    .sheet-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--outer-border);
-    }
-
-    .sheet-header h3 {
-      font-family: var(--font-heading);
-      font-size: 20px;
-      font-weight: 400;
-      letter-spacing: 0.4px;
-      color: var(--primary-text);
-    }
-
-    .sheet-close-btn {
-      background: var(--card-surface);
-      border: 1px solid var(--control-border);
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      display: grid;
-      place-items: center;
-      color: var(--muted-text);
-      cursor: pointer;
-      font-size: 1.1rem;
-      line-height: 1;
-      transition: all var(--transition);
-    }
-
-    .sheet-close-btn:hover {
-      color: var(--white);
-      border-color: var(--primary-accent);
-    }
-
-    .sheet-list {
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 55vh;
-      padding-right: 4px;
-    }
-
-    .sheet-list::-webkit-scrollbar { width: 4px; }
-    .sheet-list::-webkit-scrollbar-track { background: transparent; }
-    .sheet-list::-webkit-scrollbar-thumb { background: var(--control-border); border-radius: 999px; }
-
-    .sheet-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      background: var(--card-surface);
-      border: 1px solid var(--control-border);
-      border-radius: var(--r-sm);
-      cursor: pointer;
-      transition: background var(--transition), border-color var(--transition);
-      color: var(--primary-text);
-    }
-
-    .sheet-item:hover {
-      background: #27272d;
-      border-color: #3e3e48;
-    }
-
-    .sheet-item.selected {
-      border-color: var(--primary-accent);
-      background: rgba(254, 59, 104, 0.12);
-    }
-
-    .sheet-item-left {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .sheet-item-name {
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--primary-text);
-    }
-
-    .sheet-item-sub {
-      font-family: var(--font-body);
-      font-size: 12px;
-      color: var(--muted-text);
-    }
-
-    .sheet-item-check {
-      color: var(--primary-accent);
-      font-weight: 700;
-      font-size: 1.1rem;
-      display: none;
-    }
-
-    .sheet-item.selected .sheet-item-check {
-      display: block;
-    }
-
-    /* ── Responsive Viewports ────────────────────────────────────── */
-    @media (max-width: 520px) {
-      body {
-        padding: 0;
-        align-items: flex-start;
-      }
-      .card {
-        border-radius: 0;
-        border: none;
-        max-width: 100%;
-        height: 100vh;
-        height: 100dvh;
-        max-height: 100dvh;
-        margin: 0 auto;
-        padding: 32px 20px;
-        box-shadow: none;
-      }
-    }
-  </style>
+    </style>
 </head>
 <body>
 
 <main class="card" aria-label="Settings Configuration">
 
-  <!-- Group A: Header (333 × 47 px) -->
+  <!-- Group A: Header (Figma v2 Frame 1707479701: 375 × 83 px) -->
   <header class="header-bar">
     <div class="header-text">
       <h1 class="header-title">Settings</h1>
-      <p class="header-subtitle">Change your Workout Settings</p>
     </div>
-    <a href="index.html" class="close-btn" id="back-btn" aria-label="Close settings" onclick="if (history.length > 1) { history.back(); return false; }">
-      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    <a href="index.html" class="close-btn" id="back-btn" aria-label="Close settings" title="Close" onclick="if (history.length > 1) { history.back(); return false; }">
+      <svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true">
+        <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
       </svg>
     </a>
   </header>
@@ -1175,22 +717,22 @@
 
   </div><!-- /settings-list -->
 
-  <!-- Group D: Bottom Action Buttons (Frame 1707479677, Gap 16 px) -->
+  <!-- Group D: Bottom Action Buttons (Figma v2 Frame 1707479702: 375 × 83 px) -->
   <footer class="actions-group">
-    <!-- 1. Primary Button: Test Voice Coach -->
-    <button class="btn-primary" id="btn-preview-coach" aria-label="Test Voice Coach">
-      <svg viewBox="0 0 13 16" fill="none" aria-hidden="true">
-        <path d="M12.1 7.14a1 1 0 0 1 0 1.72L2.1 14.86A1 1 0 0 1 0.5 14V2a1 1 0 0 1 1.6-.86l10 6z" fill="#FFFFFF"/>
+    <!-- Left: Test Voice Coach (Repeat Icon) -->
+    <button class="btn-secondary" id="btn-preview-coach" aria-label="Test Voice Coach" title="Test Voice Coach">
+      <svg viewBox="0 0 32 18" width="32" height="18" fill="none" aria-hidden="true">
+        <path d="M6 1V5H22C25.3137 5 28 7.68629 28 11C28 14.3137 25.3137 17 22 17H4" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M8 9L3 5L8 1" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span id="preview-btn-text">Test Voice Coach</span>
+      <span id="preview-btn-text">Test Coach</span>
     </button>
 
-    <!-- 2. Secondary Button: Reset to Defaults -->
-    <button class="btn-secondary" id="btn-reset" aria-label="Reset all settings to default">
-      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9L2 6M2 2v4h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Right: Save / Return to Home (Play Icon) -->
+    <button class="btn-primary" id="btn-save-done" aria-label="Save and Return" title="Save & Return" onclick="if (history.length > 1) { history.back(); } else { window.location.href = 'index.html'; }">
+      <svg viewBox="0 0 24 30" width="24" height="30" aria-hidden="true">
+        <path d="M0 0L24 15L0 30V0Z" fill="#000000"/>
       </svg>
-      <span>Reset to Defaults</span>
     </button>
   </footer>
 
@@ -1546,14 +1088,16 @@
   /* ══════════════════════════════════════════════════════════════
    *  RESET TO DEFAULTS
    * ══════════════════════════════════════════════════════════════ */
-  btnReset.addEventListener('click', () => {
-    if (confirm('Reset all settings to default values?')) {
-      currentSettings = { ...DEFAULT_SETTINGS };
-      saveSettings();
-      syncUI();
-      testVoiceCue('Settings have been reset to default.');
-    }
-  });
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      if (confirm('Reset all settings to default values?')) {
+        currentSettings = { ...DEFAULT_SETTINGS };
+        saveSettings();
+        syncUI();
+        testVoiceCue('Settings have been reset to default.');
+      }
+    });
+  }
 
   /* ══════════════════════════════════════════════════════════════
    *  INIT

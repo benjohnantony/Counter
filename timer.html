@@ -60,23 +60,22 @@
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
       min-height: 100dvh;
-      padding: 24px 16px;
+      padding: 0;
       background: var(--bg);
     }
 
-    /* ── Mobile Container (Figma 375 × 833 px Frame) ─────────────── */
+    /* ── Mobile Container (Figma 375 × 833 px Frame: 56:2273) ─────── */
     .card {
       width: 100%;
-      max-width: 420px;
-      height: 733px;
-      max-height: calc(100dvh - 32px);
+      max-width: 375px;
+      height: 833px;
       margin: 0 auto;
       background: var(--bg);
       border-radius: var(--r-none);
-      border: 1px solid #222227;
+      border: none;
       padding: 0;
       display: flex;
       flex-direction: column;
@@ -99,19 +98,21 @@
     /* Group A: Clock + Close Button */
     .header-bar {
       width: 100%;
-      height: 64px;
+      height: 83px;
+      min-height: 83px;
       display: flex;
       align-items: stretch;
       justify-content: space-between;
-      border-bottom: 1px solid #222227;
+      border: none;
+      background: #000000;
     }
 
     .header-text {
       flex: 1;
       display: flex;
       align-items: center;
-      padding: 0 20px;
-      gap: 12px;
+      padding: 0 32px 0 20px;
+      background: #000000;
     }
 
     .header-clock {
@@ -122,23 +123,26 @@
       letter-spacing: 1.2px;
       color: var(--white);
       font-variant-numeric: tabular-nums;
+      margin: 0;
     }
 
     .header-subtitle {
       display: none;
     }
 
-    /* Close Button (Red Block #F1372A) */
+    /* Close Button (Red Block #F1372A, 93 × 83 px) */
     .header-btn {
-      width: 64px;
-      height: 100%;
+      width: 93px;
+      height: 83px;
       background: var(--accent-red-header); /* #F1372A */
       border: none;
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       color: var(--white);
       flex-shrink: 0;
+      padding: 0;
       transition: opacity var(--transition);
       -webkit-tap-highlight-color: transparent;
     }
@@ -148,8 +152,8 @@
     }
 
     .header-btn svg {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       stroke: var(--white);
       fill: none;
       stroke-width: 2.2;
@@ -160,7 +164,7 @@
     /* ── Progress Segments Bar ───────────────────────────────────── */
     .progress-bar {
       width: 100%;
-      height: 4px;
+      height: 3px;
       display: flex;
       align-items: center;
       gap: 2px;
@@ -169,14 +173,14 @@
 
     .ex-group {
       flex: 1;
-      height: 4px;
+      height: 3px;
       display: flex;
       gap: 1px;
     }
 
     .seg-bar {
       flex: 1;
-      height: 4px;
+      height: 3px;
       background: #303038;
       transition: background 0.25s ease;
     }
@@ -193,6 +197,8 @@
     /* ── Center Hero Stage (Figma v2 Frame 1707479700: 375 × 583 px) ─ */
     .center-section {
       width: 100%;
+      height: 583px;
+      min-height: 583px;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -202,7 +208,8 @@
       transition: background 0.3s ease;
       position: relative;
       overflow: hidden;
-      padding: 32px 20px 24px;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     .center-section.resting {
@@ -218,12 +225,24 @@
     }
 
     /* Phase Badge (HOLD / REST) */
+    .stage-upper-wrap {
+      width: 100%;
+      height: 499px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding-top: 32px;
+      box-sizing: border-box;
+    }
+
     .stage-phase-badge {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 22px;
-      line-height: 28px;
-      letter-spacing: 1.2px;
+      font-size: 20px;
+      line-height: 31px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       color: var(--text-black);
       text-align: center;
@@ -235,14 +254,13 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin: auto 0;
     }
 
     .stage-timer-digits {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 78px;
-      line-height: 80px;
+      font-size: 80px;
+      line-height: 81.2px;
       letter-spacing: 2px;
       color: var(--text-black);
       font-variant-numeric: tabular-nums;
@@ -255,12 +273,22 @@
     }
 
     /* Rep status tag */
+    .stage-lower-wrap {
+      width: 100%;
+      height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
     .stage-rep-tag {
       font-family: var(--font-heading);
       font-weight: 400;
       font-size: 20px;
-      line-height: 24px;
-      letter-spacing: 1.2px;
+      line-height: 31px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       color: var(--text-black);
       text-align: center;
@@ -306,21 +334,23 @@
     /* ── Status Banner (Figma v2 Frame 1707479699: 375 × 84 px fill #F13629) ── */
     .set-status-banner {
       width: 100%;
-      height: 52px;
+      height: 84px;
+      min-height: 84px;
       background: var(--accent-red); /* #F13629 */
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      padding: 0 16px;
+      padding: 10px;
+      box-sizing: border-box;
     }
 
     .set-status-text {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 18px;
-      line-height: 22px;
-      letter-spacing: 1.2px;
+      font-size: 20px;
+      line-height: 31px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       color: var(--white);
       text-align: center;
@@ -329,14 +359,17 @@
     /* ── Controls Section (Figma v2 Frame 1707479676: 375 × 83 px) ── */
     .controls {
       width: 100%;
-      height: 76px;
+      height: 83px;
+      min-height: 83px;
       display: grid;
-      grid-template-columns: 1fr 1.2fr 1fr;
+      grid-template-columns: 125px 125px 125px;
       align-items: stretch;
       flex-shrink: 0;
-      background: var(--bg);
-      border-top: 1px solid #222227;
+      background: #000000;
+      border: none;
       padding: 0;
+      margin: 0;
+      box-sizing: border-box;
     }
 
     .ctrl-col {
@@ -344,16 +377,17 @@
     }
 
     .ctrl-btn-block {
-      height: 100%;
+      width: 125px;
+      height: 83px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      background: var(--bg);
+      background: #000000;
       border: none;
       cursor: pointer;
       color: var(--white);
+      padding: 0;
+      margin: 0;
       transition: filter var(--transition), background var(--transition);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
@@ -376,34 +410,26 @@
       background: var(--cat-amber);
     }
 
-    .ctrl-btn-block.stop-col {
-      color: var(--stop-red); /* #FF003B */
-    }
-
     .ctrl-btn-block svg {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       fill: currentColor;
     }
 
     .ctrl-btn-block.stop-col svg {
-      fill: var(--stop-red);
+      fill: var(--stop-red); /* #FF003B */
+      width: 24px;
+      height: 24px;
     }
 
     .ctrl-label {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 16px;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: inherit;
+      display: none;
     }
 
     /* ── Voice Toast ─────────────────────────────────────────────── */
     .voice-toast {
       position: absolute;
-      top: 76px;
+      top: 96px;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
       background: rgba(0, 0, 0, 0.95);
@@ -437,8 +463,8 @@
       -webkit-backdrop-filter: blur(8px);
       display: flex;
       justify-content: center;
-      align-items: flex-end;
-      padding: 0 16px 16px 16px;
+      align-items: center;
+      padding: 20px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
@@ -453,23 +479,23 @@
 
     .modal-card {
       width: 100%;
-      max-width: 388px;
+      max-width: 335px;
       box-sizing: border-box;
       background: var(--bg); /* #000000 */
       border: 1px solid var(--card-border); /* 1px solid #FFFFFF */
       border-radius: var(--r-none);
-      padding: 28px 20px;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 20px;
       text-align: center;
-      box-shadow: 0 -8px 48px rgba(0, 0, 0, 0.9);
-      transform: translateY(100%);
-      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9);
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .modal-overlay.active .modal-card {
-      transform: translateY(0);
+      transform: scale(1);
     }
 
     .modal-text-group {
@@ -501,7 +527,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .modal-btn {
@@ -526,32 +552,20 @@
     .modal-btn.home { background: var(--accent-red); color: var(--white); }
 
     /* Responsive */
-    @media (max-width: 520px) {
+    @media (max-width: 480px) {
       body {
         padding: 0;
-        align-items: flex-start;
       }
       .card {
         border-radius: 0;
         border: none;
-        max-width: 100%;
-        width: 100%;
+        max-width: 100vw;
+        width: 100vw;
         height: 100vh;
         height: 100dvh;
         max-height: 100dvh;
         margin: 0 auto;
         padding: 0;
-        box-shadow: none;
-      }
-    }
-        border: none;
-        max-width: 100%;
-        width: 100%;
-        height: 100vh;
-        height: 100dvh;
-        max-height: 100dvh;
-        margin: 0 auto;
-        padding: 32px 20px;
         box-shadow: none;
       }
     }
@@ -573,9 +587,10 @@
         <p class="header-subtitle">Workout in progress...</p>
       </div>
 
-      <button class="header-btn" id="header-stop-btn" aria-label="Close workout">
-        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <button class="header-btn" id="header-stop-btn" aria-label="Close workout" title="Close">
+        <svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true">
+          <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
@@ -589,15 +604,18 @@
     <h2 class="workout-title" id="workout-title">Workout 1 of 3</h2>
   </div>
 
-  <!-- ── Center Section: Hero Stage (Figma v2) ─────────────────── -->
+  <!-- ── Center Section: Hero Stage (Figma v2 Frame 1707479700: 375 × 583 px) ─── -->
   <div class="center-section holding" id="center-section">
-    <div class="stage-phase-badge" id="stage-phase-badge">HOLD</div>
-    
-    <div class="stage-timer-wrap">
-      <span class="stage-timer-digits" id="ring-number" aria-live="polite" aria-atomic="true">10</span>
+    <div class="stage-upper-wrap">
+      <div class="stage-phase-badge" id="stage-phase-badge">HOLD</div>
+      <div class="stage-timer-wrap">
+        <span class="stage-timer-digits" id="ring-number" aria-live="polite" aria-atomic="true">00:00:10</span>
+      </div>
     </div>
 
-    <div class="stage-rep-tag" id="stage-rep-tag">REP <span id="current-rep-num">1</span> OF <span id="total-reps-num">10</span></div>
+    <div class="stage-lower-wrap">
+      <div class="stage-rep-tag" id="stage-rep-tag">REP <span id="current-rep-num">1</span> OF <span id="total-reps-num">10</span></div>
+    </div>
 
     <!-- Hidden ring SVG for circular calculation & background indicator -->
     <div class="ring-wrapper holding" id="ring-wrapper">
@@ -612,40 +630,37 @@
     </div>
   </div>
 
-  <!-- Status Banner (Figma v2: Red Bar) -->
+  <!-- Status Banner (Figma v2 Frame 1707479699: 375 × 84 px Red Bar) -->
   <div class="set-status-banner">
     <span class="set-status-text" id="set-info">WORKOUT 1 : SET 1 OF 3</span>
   </div>
 
-  <!-- ── Controls Section (Figma v2: 3-column action strip) ───── -->
+  <!-- ── Controls Section (Figma v2 Frame 1707479676: 375 × 83 px) ───── -->
   <div class="controls">
     <!-- Repeat -->
-    <button class="ctrl-btn-block" id="btn-repeat" aria-label="Repeat current rep">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="1 4 1 10 7 10"></polyline>
-        <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
+    <button class="ctrl-btn-block" id="btn-repeat" aria-label="Repeat current rep" title="Repeat">
+      <svg viewBox="0 0 32 18" width="32" height="18" fill="none" aria-hidden="true">
+        <path d="M6 1V5H22C25.3137 5 28 7.68629 28 11C28 14.3137 25.3137 17 22 17H4" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M8 9L3 5L8 1" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span class="ctrl-label">REPEAT</span>
     </button>
 
     <!-- Center Pause / Play -->
-    <button class="ctrl-btn-block center-play" id="btn-pause" aria-label="Pause workout">
-      <svg id="icon-pause" viewBox="0 0 24 24">
-        <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
-        <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
+    <button class="ctrl-btn-block center-play" id="btn-pause" aria-label="Pause workout" title="Pause / Resume">
+      <svg id="icon-pause" viewBox="0 0 24 30" width="24" height="30" aria-hidden="true">
+        <rect x="2" y="2" width="7" height="26" fill="#000000"/>
+        <rect x="15" y="2" width="7" height="26" fill="#000000"/>
       </svg>
-      <svg id="icon-play" viewBox="0 0 24 24" style="display:none; margin-left: 2px;">
-        <polygon points="6 4 20 12 6 20 6 4"></polygon>
+      <svg id="icon-play" viewBox="0 0 24 30" width="24" height="30" style="display:none;" aria-hidden="true">
+        <polygon points="2 2 22 15 2 28" fill="#000000"/>
       </svg>
-      <span class="ctrl-label" id="pause-label">PAUSE</span>
     </button>
 
     <!-- Stop -->
-    <button class="ctrl-btn-block stop-col" id="btn-stop" aria-label="Stop workout">
-      <svg viewBox="0 0 24 24">
-        <rect x="5" y="5" width="14" height="14" rx="2"></rect>
+    <button class="ctrl-btn-block stop-col" id="btn-stop" aria-label="Stop workout" title="Stop">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+        <rect x="0" y="0" width="24" height="24" fill="#FF003B"/>
       </svg>
-      <span class="ctrl-label">STOP</span>
     </button>
   </div>
 
