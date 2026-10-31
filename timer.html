@@ -161,39 +161,6 @@
       stroke-linejoin: round;
     }
 
-    /* ── Progress Segments Bar ───────────────────────────────────── */
-    .progress-bar {
-      width: 100%;
-      height: 3px;
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      background: #111114;
-    }
-
-    .ex-group {
-      flex: 1;
-      height: 3px;
-      display: flex;
-      gap: 1px;
-    }
-
-    .seg-bar {
-      flex: 1;
-      height: 3px;
-      background: #303038;
-      transition: background 0.25s ease;
-    }
-
-    .seg-bar.done,
-    .seg-bar.active {
-      background: var(--accent-green);
-    }
-
-    .workout-title {
-      display: none;
-    }
-
     /* ── Center Hero Stage (Figma v2 Frame 1707479700: 375 × 583 px) ─ */
     .center-section {
       width: 100%;
@@ -204,27 +171,48 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      background: var(--accent-green); /* Neon lime during HOLD */
-      transition: background 0.3s ease;
+      background-color: #7FD736; /* Olive lime base during HOLD */
       position: relative;
       overflow: hidden;
       padding: 0;
       box-sizing: border-box;
+      transition: background-color 0.25s ease;
     }
 
     .center-section.resting {
-      background: var(--cat-amber); /* Amber yellow during REST */
+      background-color: #C78500; /* Deep amber during REST */
     }
 
     .center-section.resting-sets {
-      background: #2196F3; /* Blue during SET REST */
+      background-color: #1565C0; /* Blue during SET REST */
     }
 
     .card.paused .center-section {
       filter: saturate(0.7) brightness(0.85);
     }
 
-    /* Phase Badge (HOLD / REST) */
+    /* Background overlay filling as per time moving in the background */
+    .stage-fill-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background-color: var(--accent-green); /* Neon lime #99FF44 */
+      pointer-events: none;
+      z-index: 1;
+      transition: height 0.04s linear, background-color 0.25s ease;
+    }
+
+    .center-section.resting .stage-fill-overlay {
+      background-color: #FFAB00; /* Amber fill */
+    }
+
+    .center-section.resting-sets .stage-fill-overlay {
+      background-color: #2196F3; /* Cyan fill */
+    }
+
+    /* Phase Badge (HOLD / REST) & Giant Timer */
     .stage-upper-wrap {
       width: 100%;
       height: 499px;
@@ -235,14 +223,16 @@
       gap: 4px;
       padding-top: 32px;
       box-sizing: border-box;
+      position: relative;
+      z-index: 2;
     }
 
     .stage-phase-badge {
       font-family: var(--font-heading);
       font-weight: 400;
       font-size: 20px;
-      line-height: 31px;
-      letter-spacing: 0.4px;
+      line-height: 24px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--text-black);
       text-align: center;
@@ -260,8 +250,8 @@
       font-family: var(--font-heading);
       font-weight: 400;
       font-size: 80px;
-      line-height: 81.2px;
-      letter-spacing: 2px;
+      line-height: 84px;
+      letter-spacing: 1px;
       color: var(--text-black);
       font-variant-numeric: tabular-nums;
       text-align: center;
@@ -269,18 +259,45 @@
     }
 
     .stage-timer-digits.pop {
-      transform: scale(1.08);
+      transform: scale(1.05);
     }
 
-    /* Rep status tag */
+    /* Rep status & navigation row (Figma Frame 1707479701: 375 × 84 px) */
     .stage-lower-wrap {
       width: 100%;
       height: 84px;
+      min-height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 2;
+    }
+
+    .rep-nav-btn {
+      width: 44px;
+      height: 44px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px;
-      box-sizing: border-box;
+      padding: 0;
+      color: var(--text-black);
+      -webkit-tap-highlight-color: transparent;
+      transition: transform var(--transition), opacity var(--transition);
+    }
+
+    .rep-nav-btn:hover {
+      opacity: 0.8;
+      transform: scale(1.1);
+    }
+
+    .rep-nav-btn:active {
+      transform: scale(0.95);
     }
 
     .stage-rep-tag {
@@ -288,48 +305,11 @@
       font-weight: 400;
       font-size: 20px;
       line-height: 31px;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
       color: var(--text-black);
       text-align: center;
     }
-
-    /* Hidden ring SVG for circular calculation & background indicator */
-    .ring-wrapper {
-      position: absolute;
-      inset: 0;
-      opacity: 0.15;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .ring-glow { display: none; }
-
-    .ring-svg {
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
-
-    .ring-track {
-      fill: none;
-      stroke: rgba(0, 0, 0, 0.15);
-      stroke-width: 14;
-    }
-
-    .ring-progress {
-      fill: none;
-      stroke-width: 14;
-      stroke: #000000;
-      stroke-linecap: square;
-      stroke-dasharray: 722.566;
-      stroke-dashoffset: 722.566;
-      transition: stroke-dashoffset 0.04s linear;
-    }
-
-    .ring-center { display: none; }
 
     /* ── Status Banner (Figma v2 Frame 1707479699: 375 × 84 px fill #F13629) ── */
     .set-status-banner {
@@ -578,34 +558,28 @@
   <!-- Voice Toast Feedback -->
   <div class="voice-toast" id="voice-toast">🎙️ Command Recognized</div>
 
-  <!-- ── Top Section (Header + Progress Bar + Workout Title) ───── -->
+  <!-- ── Top Section (Header: 375 × 83 px) ──────────────────────── -->
   <div class="top-section">
-    <!-- Header: Clock + Settings Button -->
+    <!-- Header: Clock + Close Button -->
     <div class="header-bar">
       <div class="header-text">
         <h1 class="header-clock" id="workout-clock">00:00:00</h1>
-        <p class="header-subtitle">Workout in progress...</p>
       </div>
 
       <button class="header-btn" id="header-stop-btn" aria-label="Close workout" title="Close">
         <svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true">
-          <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
-          <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+          <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
-
-    <!-- Progress Segments -->
-    <div class="progress-bar" id="progress-bar" role="progressbar" aria-label="Workout progress">
-      <!-- Generated dynamically based on exercises & sets -->
-    </div>
-
-    <!-- Workout Title (e.g. Workout 1 of 3) -->
-    <h2 class="workout-title" id="workout-title">Workout 1 of 3</h2>
   </div>
 
   <!-- ── Center Section: Hero Stage (Figma v2 Frame 1707479700: 375 × 583 px) ─── -->
   <div class="center-section holding" id="center-section">
+    <!-- Background overlay filling as per time moving in the background -->
+    <div class="stage-fill-overlay" id="stage-fill-overlay"></div>
+
     <div class="stage-upper-wrap">
       <div class="stage-phase-badge" id="stage-phase-badge">HOLD</div>
       <div class="stage-timer-wrap">
@@ -614,19 +588,17 @@
     </div>
 
     <div class="stage-lower-wrap">
+      <button class="rep-nav-btn prev" id="rep-prev-btn" aria-label="Previous Rep" title="Previous Rep">
+        <svg viewBox="0 0 18 16" width="18" height="16" fill="none" aria-hidden="true">
+          <path d="M11 2L5 8L11 14M6 2L0 8L6 14" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
       <div class="stage-rep-tag" id="stage-rep-tag">REP <span id="current-rep-num">1</span> OF <span id="total-reps-num">10</span></div>
-    </div>
-
-    <!-- Hidden ring SVG for circular calculation & background indicator -->
-    <div class="ring-wrapper holding" id="ring-wrapper">
-      <svg class="ring-svg" viewBox="0 0 275 275" aria-hidden="true">
-        <circle class="ring-track" cx="137.5" cy="137.5" r="115"></circle>
-        <circle class="ring-progress" cx="137.5" cy="137.5" r="115" id="ring-progress"></circle>
-      </svg>
-      <div class="ring-center">
-        <span class="ring-rep-label" id="ring-rep-label">Rep</span>
-        <span class="ring-of" id="ring-of">of 10</span>
-      </div>
+      <button class="rep-nav-btn next" id="rep-next-btn" aria-label="Next Rep" title="Next Rep">
+        <svg viewBox="0 0 18 16" width="18" height="16" fill="none" aria-hidden="true">
+          <path d="M7 2L13 8L7 14M12 2L18 8L12 14" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -975,8 +947,11 @@
   const ringProgress    = document.getElementById('ring-progress');
   const ringNumber      = document.getElementById('ring-number');
   const ringOf          = document.getElementById('ring-of');
-  const setInfoEl       = document.getElementById('set-info');
-  const voiceToast      = document.getElementById('voice-toast');
+  const setInfoEl        = document.getElementById('set-info');
+  const voiceToast       = document.getElementById('voice-toast');
+  const stageFillOverlay = document.getElementById('stage-fill-overlay');
+  const repPrevBtn       = document.getElementById('rep-prev-btn');
+  const repNextBtn       = document.getElementById('rep-next-btn');
 
   const btnRepeat       = document.getElementById('btn-repeat');
   const btnPause        = document.getElementById('btn-pause');
@@ -996,9 +971,6 @@
   const finishRestartBtn= document.getElementById('finish-restart-btn');
   const finishHomeBtn   = document.getElementById('finish-home-btn');
   const finishSetupBtn  = document.getElementById('finish-setup-btn');
-
-  const CIRCUMFERENCE = 2 * Math.PI * 115; // 722.566 px
-  ringProgress.style.strokeDasharray = String(CIRCUMFERENCE);
 
   const PHASE = {
     HOLD:      'HOLD',
@@ -1058,25 +1030,39 @@
     workoutClock.textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
   }
 
-  /* ── Ring Arc & Glow ─────────────────────────────────────────── */
+  /* ── Stage Modes & Overlay Fill ─────────────────────────────── */
   const centerSection = document.getElementById('center-section');
   const stagePhaseBadge = document.getElementById('stage-phase-badge');
   const currentRepNum = document.getElementById('current-rep-num');
   const totalRepsNum = document.getElementById('total-reps-num');
 
-  function setRingMode(mode) {
-    ringWrapper.classList.remove('holding', 'resting');
-    ringWrapper.classList.add(mode);
-    if (centerSection) {
-      centerSection.classList.remove('holding', 'resting', 'resting-sets');
-      centerSection.classList.add(mode);
+  function setStageMode(mode) {
+    if (!centerSection) return;
+    centerSection.classList.remove('holding', 'resting', 'resting-sets');
+    centerSection.classList.add(mode);
+    if (stageFillOverlay) {
+      if (mode === 'holding') {
+        centerSection.style.backgroundColor = '#7FD736';
+        stageFillOverlay.style.backgroundColor = '#99FF44';
+      } else if (mode === 'resting') {
+        centerSection.style.backgroundColor = '#C78500';
+        stageFillOverlay.style.backgroundColor = '#FFAB00';
+      } else if (mode === 'resting-sets') {
+        centerSection.style.backgroundColor = '#1565C0';
+        stageFillOverlay.style.backgroundColor = '#2196F3';
+      }
     }
+  }
+
+  function setRingMode(mode) {
+    setStageMode(mode);
   }
 
   function setArcFill(fraction) {
     const clamped = Math.max(0, Math.min(1, fraction));
-    const offset = CIRCUMFERENCE * (1 - clamped);
-    ringProgress.style.strokeDashoffset = String(offset);
+    if (stageFillOverlay) {
+      stageFillOverlay.style.height = `${clamped * 100}%`;
+    }
   }
 
   function popRepNumber() {
@@ -1085,37 +1071,12 @@
     ringNumber.classList.add('pop');
   }
 
-  /* ── Progress Segments Bar ───────────────────────────────────── */
   function buildProgressBar() {
-    progressBar.innerHTML = '';
-    for (let e = 1; e <= CFG.exercises; e++) {
-      const exGroup = document.createElement('div');
-      exGroup.className = 'ex-group';
-      exGroup.id = `ex-group-${e}`;
-
-      for (let s = 1; s <= CFG.sets; s++) {
-        const seg = document.createElement('div');
-        seg.className = 'seg-bar';
-        seg.id = `seg-${e}-${s}`;
-        exGroup.appendChild(seg);
-      }
-      progressBar.appendChild(exGroup);
-    }
+    // Top progress bar removed in v2 redesign
   }
 
   function updateProgressBar() {
-    for (let e = 1; e <= CFG.exercises; e++) {
-      for (let s = 1; s <= CFG.sets; s++) {
-        const seg = document.getElementById(`seg-${e}-${s}`);
-        if (!seg) continue;
-        seg.classList.remove('done', 'active');
-        if (e < state.exercise || (e === state.exercise && s < state.set)) {
-          seg.classList.add('done');
-        } else if (e === state.exercise && s === state.set) {
-          seg.classList.add('active');
-        }
-      }
-    }
+    // Top progress bar removed in v2 redesign
   }
 
   function updateWorkoutTitle() {
@@ -1177,7 +1138,7 @@
     state.spokenCounts  = {};
 
     setRingMode('resting');
-    setArcFill(1);
+    setArcFill(0);
 
     if (stagePhaseBadge) stagePhaseBadge.textContent = 'REST';
     const remSecs = Math.max(0, CFG.restReps);
@@ -1196,7 +1157,7 @@
     state.spokenCounts  = {};
 
     setRingMode('resting-sets');
-    setArcFill(1);
+    setArcFill(0);
 
     if (stagePhaseBadge) stagePhaseBadge.textContent = 'SET REST';
     const remSecs = Math.max(0, CFG.restSets);
@@ -1236,7 +1197,8 @@
     setRingMode('holding');
     setArcFill(1);
     ringNumber.textContent = '✓';
-    ringOf.textContent     = 'Done!';
+    if (ringOf) ringOf.textContent = 'Done!';
+    if (pauseLabel) pauseLabel.textContent = 'PAUSE';
 
     finishSubtitle.textContent = `You finished all ${CFG.exercises} exercise${CFG.exercises > 1 ? 's' : ''}. Great Workout!`;
     finishModal.classList.add('active');
@@ -1256,7 +1218,7 @@
     card.classList.remove('paused');
     iconPause.style.display = '';
     iconPlay.style.display  = 'none';
-    pauseLabel.textContent  = 'Pause';
+    if (pauseLabel) pauseLabel.textContent = 'PAUSE';
     buildProgressBar();
     startHold(1, true, true);
     startTicker();
@@ -1414,9 +1376,9 @@
       }
     }
 
-    // ── REST: Drains 100% -> 0% in Yellow ──
+    // ── REST: Fills 0% -> 100% in Amber ──
     else if (state.phase === PHASE.REST_REPS || state.phase === PHASE.REST_SETS) {
-      setArcFill(1 - progress);
+      setArcFill(progress);
 
       const remSecs = Math.max(0, Math.ceil((total - state.phaseElapsed) / 1000));
       const m = Math.floor(remSecs / 60);
@@ -1483,7 +1445,7 @@
     btnPause.classList.toggle('paused', paused);
     iconPause.style.display = paused ? 'none' : '';
     iconPlay.style.display  = paused ? ''     : 'none';
-    pauseLabel.textContent  = paused ? 'RESUME' : 'PAUSE';
+    if (pauseLabel) pauseLabel.textContent  = paused ? 'RESUME' : 'PAUSE';
     btnPause.setAttribute('aria-label', paused ? 'Resume workout' : 'Pause workout');
   }
 
@@ -1498,13 +1460,43 @@
       btnPause.classList.remove('paused');
       iconPause.style.display = '';
       iconPlay.style.display  = 'none';
-      pauseLabel.textContent  = 'PAUSE';
+      if (pauseLabel) pauseLabel.textContent  = 'PAUSE';
       startTicker();
     }
   }
 
   btnRepeat.addEventListener('click', repeatCurrentRep);
   btnStop.addEventListener('click', openStopModal);
+
+  // Chevron navigation for previous / next rep
+  if (repPrevBtn) {
+    repPrevBtn.addEventListener('click', () => {
+      if (state.finished) return;
+      if (state.rep > 1) {
+        startHold(state.rep - 1);
+      } else {
+        startHold(1);
+      }
+    });
+  }
+
+  if (repNextBtn) {
+    repNextBtn.addEventListener('click', () => {
+      if (state.finished) return;
+      if (state.rep < CFG.reps) {
+        startHold(state.rep + 1);
+      } else if (state.set < CFG.sets) {
+        state.set++;
+        startHold(1, true);
+      } else if (state.exercise < CFG.exercises) {
+        state.exercise++;
+        state.set = 1;
+        startHold(1, true, true);
+      } else {
+        showWorkoutCompleteModal();
+      }
+    });
+  }
 
   /* ══════════════════════════════════════════════════════════════
    *  VOICE COMMANDS ENGINE (Hands-Free Control)
