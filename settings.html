@@ -661,7 +661,25 @@
       </div>
     </div>
 
-    <!-- 5. Continue in Background -->
+    <!-- 5. Preparation Time (0 to 60s, default 0s) -->
+    <div class="setting-card">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Preparation Time</span>
+          <span class="setting-desc">Countdown before workout starts</span>
+        </div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-track-wrap">
+          <input type="range" class="custom-slider" id="slider-prep"
+                 min="0" max="60" step="1" value="0"
+                 aria-label="Preparation time in seconds" />
+        </div>
+        <span class="slider-val-label" id="val-prep">0s</span>
+      </div>
+    </div>
+
+    <!-- 6. Continue in Background -->
     <div class="setting-card">
       <div class="setting-header-row">
         <div class="setting-info">
@@ -775,6 +793,7 @@
     languageLabel:   'English',
     speed:           1.0,
     volume:          80,
+    prepTime:        0,
     keepScreenAwake: true,
     voiceCommands:   true,
     countdownBeeps:  true,
@@ -821,6 +840,8 @@
   const valSpeed         = document.getElementById('val-speed');
   const sliderVolume     = document.getElementById('slider-volume');
   const valVolume        = document.getElementById('val-volume');
+  const sliderPrep       = document.getElementById('slider-prep');
+  const valPrep          = document.getElementById('val-prep');
   const toggleWakelock   = document.getElementById('toggle-wakelock');
   const toggleCommands   = document.getElementById('toggle-voice-commands');
   const toggleBeeps      = document.getElementById('toggle-beeps');
@@ -854,6 +875,10 @@
     valVolume.textContent = `${currentSettings.volume}%`;
     updateSliderFill(sliderVolume);
 
+    sliderPrep.value = typeof currentSettings.prepTime === 'number' ? currentSettings.prepTime : 0;
+    valPrep.textContent = `${sliderPrep.value}s`;
+    updateSliderFill(sliderPrep);
+
     toggleWakelock.checked = !!currentSettings.keepScreenAwake;
     toggleCommands.checked = !!currentSettings.voiceCommands;
     toggleBeeps.checked    = !!currentSettings.countdownBeeps;
@@ -872,6 +897,14 @@
     currentSettings.volume = val;
     valVolume.textContent = `${val}%`;
     updateSliderFill(sliderVolume);
+    saveSettings();
+  });
+
+  sliderPrep.addEventListener('input', () => {
+    const val = parseInt(sliderPrep.value, 10);
+    currentSettings.prepTime = val;
+    valPrep.textContent = `${val}s`;
+    updateSliderFill(sliderPrep);
     saveSettings();
   });
 

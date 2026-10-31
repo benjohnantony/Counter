@@ -166,24 +166,11 @@
       width: 100%;
       flex: 1;
       min-height: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #7FD736; /* Olive lime base during HOLD */
       position: relative;
       overflow: hidden;
       padding: 0;
       box-sizing: border-box;
-      transition: background-color 0.25s ease;
-    }
-
-    .center-section.resting {
-      background-color: #C78500; /* Deep amber during REST */
-    }
-
-    .center-section.resting-sets {
-      background-color: #1565C0; /* Blue during SET REST */
+      background-color: #000000;
     }
 
     /* Do not fade or desaturate colors when paused */
@@ -191,25 +178,52 @@
       /* preserved original high contrast */
     }
 
-    /* Background overlay filling as per time moving in the background (rises up from bottom) */
-    .stage-fill-overlay {
+    /* Two-layer brutalist liquid stage:
+       Layer 1 (.empty): Deep black background with Neon Volt Green & White typography.
+       Layer 2 (.fill): Neon Volt Green #99FF44 background with Pure Black typography.
+       The fill layer is clipped via clip-path, rising during HOLD (filling) and falling during REST (emptying). */
+    .stage-layer {
       position: absolute;
-      bottom: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
-      height: 0%;
-      background-color: var(--accent-green); /* Neon lime #99FF44 */
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
       pointer-events: none;
+    }
+
+    .stage-layer.empty {
+      background-color: #000000;
       z-index: 1;
-      transition: height 0.04s linear, background-color 0.25s ease;
     }
 
-    .center-section.resting .stage-fill-overlay {
-      background-color: #FFAB00; /* Amber fill */
+    .stage-layer.empty .stage-phase-badge {
+      color: var(--accent-green); /* Neon volt green */
     }
 
-    .center-section.resting-sets .stage-fill-overlay {
-      background-color: #2196F3; /* Cyan fill */
+    .stage-layer.empty .stage-timer-digits {
+      color: var(--white); /* Pure crisp white */
+    }
+
+    .stage-layer.empty .stage-rep-tag {
+      color: var(--subtitle-text); /* #9E9E9F */
+    }
+
+    .stage-layer.fill {
+      background-color: var(--accent-green); /* Neon volt green #99FF44 */
+      z-index: 2;
+      clip-path: inset(100% 0 0 0); /* Starts empty */
+      will-change: clip-path;
+      transition: clip-path 0.04s linear;
+    }
+
+    .stage-layer.fill .stage-phase-badge,
+    .stage-layer.fill .stage-timer-digits,
+    .stage-layer.fill .stage-rep-tag {
+      color: var(--text-black); /* Pure black on neon volt green */
     }
 
     /* Phase Badge (HOLD / REST) & Giant Timer */
@@ -224,8 +238,6 @@
       gap: 4px;
       padding-top: 16px;
       box-sizing: border-box;
-      position: relative;
-      z-index: 2;
     }
 
     .stage-phase-badge {
@@ -235,7 +247,6 @@
       line-height: 24px;
       letter-spacing: 1.2px;
       text-transform: uppercase;
-      color: var(--text-black);
       text-align: center;
     }
 
@@ -253,7 +264,6 @@
       font-size: clamp(54px, 18vw, 80px);
       line-height: 1.05;
       letter-spacing: 1px;
-      color: var(--text-black);
       font-variant-numeric: tabular-nums;
       text-align: center;
       transition: transform 0.15s ease;
@@ -263,44 +273,17 @@
       transform: scale(1.05);
     }
 
-    /* Rep status & navigation row (Figma Frame 1707479701: 375 × 84 px) */
+    /* Rep status row (Centered, no arrows as in Figma) */
     .stage-lower-wrap {
       width: 100%;
       height: 72px;
       min-height: 72px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       padding: 0 20px;
       box-sizing: border-box;
-      position: relative;
-      z-index: 2;
       flex-shrink: 0;
-    }
-
-    .rep-nav-btn {
-      width: 44px;
-      height: 44px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      color: var(--text-black);
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-      transition: transform var(--transition), opacity var(--transition);
-    }
-
-    .rep-nav-btn:hover {
-      opacity: 0.8;
-      transform: scale(1.1);
-    }
-
-    .rep-nav-btn:active {
-      transform: scale(0.95);
     }
 
     .stage-rep-tag {
@@ -310,7 +293,6 @@
       line-height: 31px;
       letter-spacing: 0.8px;
       text-transform: uppercase;
-      color: var(--text-black);
       text-align: center;
     }
 
@@ -400,6 +382,10 @@
     .ctrl-btn-block svg {
       width: 24px;
       height: 24px;
+      display: block;
+    }
+
+    .ctrl-btn-block svg:not([fill="none"]) {
       fill: currentColor;
     }
 
@@ -582,45 +568,47 @@
     </div>
   </div>
 
-  <!-- ── Center Section: Hero Stage (Figma v2 Frame 1707479700: 375 × 583 px) ─── -->
-  <div class="center-section holding" id="center-section">
-    <!-- Background overlay filling as per time moving in the background -->
-    <div class="stage-fill-overlay" id="stage-fill-overlay"></div>
-
-    <div class="stage-upper-wrap">
-      <div class="stage-phase-badge" id="stage-phase-badge">HOLD</div>
-      <div class="stage-timer-wrap">
-        <span class="stage-timer-digits" id="ring-number" aria-live="polite" aria-atomic="true">00:00:10</span>
+  <!-- ── Center Section: Hero Stage (Two-layer liquid fill & empty) ─── -->
+  <div class="center-section" id="center-section">
+    <!-- Layer 1: Dark / Empty background (Black #000000, Volt & White Text) -->
+    <div class="stage-layer empty">
+      <div class="stage-upper-wrap">
+        <div class="stage-phase-badge">HOLD</div>
+        <div class="stage-timer-wrap">
+          <span class="stage-timer-digits">00:00:10</span>
+        </div>
+      </div>
+      <div class="stage-lower-wrap">
+        <div class="stage-rep-tag">REP <span class="current-rep-num">1</span> OF <span class="total-reps-num">10</span></div>
       </div>
     </div>
 
-    <div class="stage-lower-wrap">
-      <button class="rep-nav-btn prev" id="rep-prev-btn" aria-label="Previous Rep" title="Previous Rep">
-        <svg viewBox="0 0 18 16" width="18" height="16" fill="none" aria-hidden="true">
-          <path d="M11 2L5 8L11 14M6 2L0 8L6 14" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <div class="stage-rep-tag" id="stage-rep-tag">REP <span id="current-rep-num">1</span> OF <span id="total-reps-num">10</span></div>
-      <button class="rep-nav-btn next" id="rep-next-btn" aria-label="Next Rep" title="Next Rep">
-        <svg viewBox="0 0 18 16" width="18" height="16" fill="none" aria-hidden="true">
-          <path d="M7 2L13 8L7 14M12 2L18 8L12 14" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+    <!-- Layer 2: Filled background (Neon Volt Green #99FF44, Black Text, clipped) -->
+    <div class="stage-layer fill" id="stage-fill-overlay">
+      <div class="stage-upper-wrap">
+        <div class="stage-phase-badge">HOLD</div>
+        <div class="stage-timer-wrap">
+          <span class="stage-timer-digits">00:00:10</span>
+        </div>
+      </div>
+      <div class="stage-lower-wrap">
+        <div class="stage-rep-tag">REP <span class="current-rep-num">1</span> OF <span class="total-reps-num">10</span></div>
+      </div>
     </div>
   </div>
 
   <!-- Status Banner (Figma v2 Frame 1707479699: 375 × 84 px Red Bar) -->
   <div class="set-status-banner">
-    <span class="set-status-text" id="set-info">WORKOUT 1 : SET 1 OF 3</span>
+    <span class="set-status-text" id="set-info">SET 1 OF 3</span>
   </div>
 
   <!-- ── Controls Section (Figma v2 Frame 1707479676: 375 × 83 px) ───── -->
   <div class="controls">
     <!-- Repeat -->
     <button class="ctrl-btn-block" id="btn-repeat" aria-label="Repeat current rep" title="Repeat">
-      <svg viewBox="0 0 32 18" width="32" height="18" fill="none" aria-hidden="true">
-        <path d="M6 1V5H22C25.3137 5 28 7.68629 28 11C28 14.3137 25.3137 17 22 17H4" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="M8 9L3 5L8 1" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+        <polyline points="3 3 3 8 8 8"/>
       </svg>
     </button>
 
@@ -692,7 +680,28 @@
 
 <script>
   /* ══════════════════════════════════════════════════════════════
-   *  CONFIG — read from URL params
+   *  LOAD USER SETTINGS
+   * ══════════════════════════════════════════════════════════════ */
+  const SETTINGS_STORAGE_KEY = 'workout_timer_settings';
+  let SETTINGS = {
+    voiceURI:        'default',
+    language:        'en-US',
+    speed:           1.0,
+    volume:          80,
+    prepTime:        0,
+    keepScreenAwake: true,
+    voiceCommands:   true,
+    countdownBeeps:  true,
+  };
+  try {
+    const rawSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (rawSettings) SETTINGS = { ...SETTINGS, ...JSON.parse(rawSettings) };
+  } catch (e) {
+    console.warn('Failed to load settings:', e);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+   *  CONFIG — read from URL params (fallback to settings/defaults)
    * ══════════════════════════════════════════════════════════════ */
   const p = new URLSearchParams(location.search);
   function getPositiveInt(val, fallback) {
@@ -704,8 +713,9 @@
     return (!isNaN(n) && n >= 0) ? n : fallback;
   }
 
+  const prepParam = p.get('prep');
   const CFG = {
-    prep:          getNonNegativeInt(p.get('prep'), 5),
+    prep:          prepParam !== null ? getNonNegativeInt(prepParam, 0) : getNonNegativeInt(SETTINGS.prepTime, 0),
     sets:          getPositiveInt(p.get('sets'), 3),
     reps:          getPositiveInt(p.get('reps'), 10),
     restSets:      getNonNegativeInt(p.get('restSets'), 10),
@@ -738,26 +748,6 @@
     }));
   } catch (e) {
     console.warn('LocalStorage save error:', e);
-  }
-
-  /* ══════════════════════════════════════════════════════════════
-   *  LOAD USER SETTINGS
-   * ══════════════════════════════════════════════════════════════ */
-  const SETTINGS_STORAGE_KEY = 'workout_timer_settings';
-  let SETTINGS = {
-    voiceURI:        'default',
-    language:        'en-US',
-    speed:           1.0,
-    volume:          80,
-    keepScreenAwake: true,
-    voiceCommands:   true,
-    countdownBeeps:  true,
-  };
-  try {
-    const rawSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (rawSettings) SETTINGS = { ...SETTINGS, ...JSON.parse(rawSettings) };
-  } catch (e) {
-    console.warn('Failed to load settings:', e);
   }
 
   // Keep screen awake
@@ -973,17 +963,9 @@
    * ══════════════════════════════════════════════════════════════ */
   const card            = document.getElementById('card');
   const workoutClock    = document.getElementById('workout-clock');
-  const workoutTitle    = document.getElementById('workout-title');
-  const progressBar     = document.getElementById('progress-bar');
-  const ringWrapper     = document.getElementById('ring-wrapper');
-  const ringProgress    = document.getElementById('ring-progress');
-  const ringNumber      = document.getElementById('ring-number');
-  const ringOf          = document.getElementById('ring-of');
-  const setInfoEl        = document.getElementById('set-info');
-  const voiceToast       = document.getElementById('voice-toast');
-  const stageFillOverlay = document.getElementById('stage-fill-overlay');
-  const repPrevBtn       = document.getElementById('rep-prev-btn');
-  const repNextBtn       = document.getElementById('rep-next-btn');
+  const setInfoEl       = document.getElementById('set-info');
+  const voiceToast      = document.getElementById('voice-toast');
+  const stageFillOverlay= document.getElementById('stage-fill-overlay');
 
   const btnRepeat       = document.getElementById('btn-repeat');
   const btnPause        = document.getElementById('btn-pause');
@@ -1071,57 +1053,45 @@
     workoutClock.textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
   }
 
-  /* ── Stage Modes & Overlay Fill ─────────────────────────────── */
-  const centerSection = document.getElementById('center-section');
-  const stagePhaseBadge = document.getElementById('stage-phase-badge');
-  const currentRepNum = document.getElementById('current-rep-num');
-  const totalRepsNum = document.getElementById('total-reps-num');
-
-  function setStageMode(mode) {
-    if (!centerSection) return;
-    centerSection.classList.remove('holding', 'resting', 'resting-sets');
-    centerSection.classList.add(mode);
-    if (stageFillOverlay) {
-      if (mode === 'holding') {
-        centerSection.style.backgroundColor = '#7FD736';
-        stageFillOverlay.style.backgroundColor = '#99FF44';
-      } else if (mode === 'resting') {
-        centerSection.style.backgroundColor = '#C78500';
-        stageFillOverlay.style.backgroundColor = '#FFAB00';
-      } else if (mode === 'resting-sets') {
-        centerSection.style.backgroundColor = '#1565C0';
-        stageFillOverlay.style.backgroundColor = '#2196F3';
-      }
-    }
+  /* ── Stage Display & Liquid Loader Helpers ───────────────────── */
+  function setStageBadge(text) {
+    document.querySelectorAll('.stage-phase-badge').forEach(el => el.textContent = text);
   }
 
-  function setRingMode(mode) {
-    setStageMode(mode);
+  function setStageDigits(text) {
+    document.querySelectorAll('.stage-timer-digits').forEach(el => el.textContent = text);
   }
 
-  function setArcFill(fraction) {
-    const clamped = Math.max(0, Math.min(1, fraction));
-    if (stageFillOverlay) {
-      stageFillOverlay.style.height = `${clamped * 100}%`;
-    }
+  function setStageReps(current, total) {
+    document.querySelectorAll('.current-rep-num').forEach(el => el.textContent = current);
+    document.querySelectorAll('.total-reps-num').forEach(el => el.textContent = total);
   }
 
   function popRepNumber() {
-    ringNumber.classList.remove('pop');
-    void ringNumber.offsetWidth;
-    ringNumber.classList.add('pop');
+    document.querySelectorAll('.stage-timer-digits').forEach(el => {
+      el.classList.remove('pop');
+      void el.offsetWidth;
+      el.classList.add('pop');
+    });
   }
 
-  function buildProgressBar() {
-    // Top progress bar removed in v2 redesign
-  }
-
-  function updateProgressBar() {
-    // Top progress bar removed in v2 redesign
+  /* Liquid fill:
+     fraction = 0 -> inset(100% 0 0 0) [Completely empty]
+     fraction = 1 -> inset(0% 0 0 0)   [Completely filled]
+  */
+  function setArcFill(fraction) {
+    const clamped = Math.max(0, Math.min(1, fraction));
+    if (stageFillOverlay) {
+      stageFillOverlay.style.clipPath = `inset(${(1 - clamped) * 100}% 0 0 0)`;
+    }
   }
 
   function updateWorkoutTitle() {
-    setInfoEl.textContent = `WORKOUT ${state.exercise} : SET ${state.set} OF ${CFG.sets}`;
+    if (CFG.exercises > 1) {
+      setInfoEl.textContent = `WORKOUT ${state.exercise} : SET ${state.set} OF ${CFG.sets}`;
+    } else {
+      setInfoEl.textContent = `SET ${state.set} OF ${CFG.sets}`;
+    }
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -1134,17 +1104,14 @@
     state.spokenCounts  = {};
     state.isCueSpeaking = false;
 
-    setRingMode('resting-sets');
-    setArcFill(1);
-
-    if (stagePhaseBadge) stagePhaseBadge.textContent = 'PREPARATION';
-    if (currentRepNum) currentRepNum.textContent = '1';
-    if (totalRepsNum) totalRepsNum.textContent = String(CFG.reps);
+    setArcFill(0); // Starts empty
+    setStageBadge('PREPARATION');
+    setStageReps(1, CFG.reps);
 
     const remSecs = Math.max(0, CFG.prep);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
-    ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
 
     updateWorkoutTitle();
@@ -1158,30 +1125,26 @@
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
 
-    setRingMode('holding');
-    setArcFill(0);
+    setArcFill(0); // Section background starts empty, fills up to 100% during hold
 
-    if (stagePhaseBadge) stagePhaseBadge.textContent = 'HOLD';
-    if (currentRepNum) currentRepNum.textContent = state.rep;
-    if (totalRepsNum) totalRepsNum.textContent = CFG.reps;
+    setStageBadge('HOLD');
+    setStageReps(state.rep, CFG.reps);
     
     const remSecs = Math.max(0, CFG.hold);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
-    ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
 
     updateWorkoutTitle();
-    updateProgressBar();
 
     // Voice announcement cue: strictly "repp" (phonetic), never "repetition" or "representative"
-    // Flow: Workout 1 > Set 1 > Rep 1 > (Hold count) > Rest(No need to count)
     let cueText = '';
     let category = 'reps';
 
     if (isFirstOfExercise && state.exercise === 1) {
       category = 'sets';
-      cueText = 'Workout 1. Set 1. repp 1.';
+      cueText = CFG.exercises > 1 ? 'Workout 1. Set 1. repp 1.' : 'Set 1. repp 1.';
     } else if (isFirstOfExercise && state.exercise > 1) {
       category = 'sets';
       cueText = `Workout ${state.exercise}. Set 1. repp 1.`;
@@ -1217,14 +1180,13 @@
     state.spokenCounts  = {};
     state.isCueSpeaking = false;
 
-    setRingMode('resting');
-    setArcFill(1); // Starts at 100% and drains back down towards 0%
+    setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
-    if (stagePhaseBadge) stagePhaseBadge.textContent = 'REST';
+    setStageBadge('REST');
     const remSecs = Math.max(0, CFG.restReps);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
-    ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
 
     speakPhaseCue('restReps', 'Rest');
@@ -1237,14 +1199,13 @@
     state.spokenCounts  = {};
     state.isCueSpeaking = false;
 
-    setRingMode('resting-sets');
-    setArcFill(1); // Starts at 100% and drains back down towards 0%
+    setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
-    if (stagePhaseBadge) stagePhaseBadge.textContent = 'SET REST';
+    setStageBadge('SET REST');
     const remSecs = Math.max(0, CFG.restSets);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
-    ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
 
     speakPhaseCue('restSets', `Set ${state.set} complete. Rest.`);
@@ -1306,21 +1267,14 @@
     updateClockDisplay();
     speakRaw('Workout complete. Fantastic job!');
 
-    // Mark all segments done
-    for (let e = 1; e <= CFG.exercises; e++) {
-      for (let s = 1; s <= CFG.sets; s++) {
-        const seg = document.getElementById(`seg-${e}-${s}`);
-        if (seg) seg.classList.add('done');
-      }
-    }
-
-    setRingMode('holding');
     setArcFill(1);
-    ringNumber.textContent = '✓';
-    if (ringOf) ringOf.textContent = 'Done!';
-    if (pauseLabel) pauseLabel.textContent = 'PAUSE';
+    setStageDigits('✓');
 
-    finishSubtitle.textContent = `You finished all ${CFG.exercises} exercise${CFG.exercises > 1 ? 's' : ''}. Great Workout!`;
+    if (CFG.exercises > 1) {
+      finishSubtitle.textContent = `You finished all ${CFG.exercises} exercises. Great Workout!`;
+    } else {
+      finishSubtitle.textContent = `You finished all ${CFG.sets} sets. Great Workout!`;
+    }
     finishModal.classList.add('active');
   }
 
@@ -1340,7 +1294,6 @@
     iconPause.style.display = '';
     iconPlay.style.display  = 'none';
     if (pauseLabel) pauseLabel.textContent = 'PAUSE';
-    buildProgressBar();
     startTicker();
     if (CFG.prep > 0) {
       startPrep();
@@ -1458,7 +1411,7 @@
       const remSecs = Math.max(0, Math.ceil((total - state.phaseElapsed) / 1000));
       const m = Math.floor(remSecs / 60);
       const s = remSecs % 60;
-      ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
 
       if (remSecs > 0 && remSecs <= 3 && !state.spokenCounts[remSecs]) {
         state.spokenCounts[remSecs] = true;
@@ -1490,7 +1443,7 @@
       const remSecs = Math.max(0, Math.ceil((total - state.phaseElapsed) / 1000));
       const m = Math.floor(remSecs / 60);
       const s = remSecs % 60;
-      ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
 
       // Full voice count: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
       const totalSec = Math.round(total / 1000);
@@ -1540,7 +1493,7 @@
       const remSecs = Math.max(0, Math.ceil((total - state.phaseElapsed) / 1000));
       const m = Math.floor(remSecs / 60);
       const s = remSecs % 60;
-      ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
 
       // User requirement: "Rest(No need to count)"
       // Voice coach stays silent and does not count seconds during rest
@@ -1624,34 +1577,6 @@
 
   btnRepeat.addEventListener('click', repeatCurrentRep);
   btnStop.addEventListener('click', openStopModal);
-
-  // Chevron navigation for previous / next rep
-  if (repPrevBtn) {
-    repPrevBtn.addEventListener('click', () => {
-      if (state.finished) return;
-      if (state.rep > 1) {
-        startHold(state.rep - 1);
-      } else {
-        startHold(1);
-      }
-    });
-  }
-
-  if (repNextBtn) {
-    repNextBtn.addEventListener('click', () => {
-      if (state.finished) return;
-      if (state.rep < CFG.reps) {
-        startHold(state.rep + 1);
-      } else if (state.set < CFG.sets) {
-        state.set++;
-        startHold(1, true);
-      } else if (state.exercise < CFG.exercises) {
-        showNextWorkoutPrompt();
-      } else {
-        showWorkoutCompleteModal();
-      }
-    });
-  }
 
   /* ══════════════════════════════════════════════════════════════
    *  VOICE COMMANDS ENGINE (Hands-Free Control)
@@ -1767,25 +1692,16 @@
    *  INITIALIZATION
    * ══════════════════════════════════════════════════════════════ */
   function init() {
-    buildProgressBar();
     updateWorkoutTitle();
     startWorkoutClock();
 
-    if (CFG.prep > 0) {
-      setStageMode('resting-sets');
-      setArcFill(1);
-    } else {
-      setStageMode('holding');
-      setArcFill(0);
-    }
+    setArcFill(0);
 
     const initSecs = CFG.prep > 0 ? CFG.prep : CFG.hold;
     const m = Math.floor(initSecs / 60);
     const s = initSecs % 60;
-    if (ringNumber) ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    if (currentRepNum) currentRepNum.textContent = '1';
-    if (totalRepsNum) totalRepsNum.textContent = String(CFG.reps);
-    if (setInfoEl) setInfoEl.textContent = `WORKOUT 1 : SET 1 OF ${CFG.sets}`;
+    setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
+    setStageReps(1, CFG.reps);
 
     requestWakeLock();
     setupVoiceRecognition();

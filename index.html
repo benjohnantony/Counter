@@ -514,27 +514,8 @@
 
   </div>
 
-  <!-- Group C: Setting Cards (6 Cards) -->
+  <!-- Group C: Setting Cards (5 Cards) -->
   <section class="params" id="params" aria-label="Workout Parameters">
-
-    <!-- 0. PREPARATION TIME (Default: 5 SEC) -->
-    <div class="card-row" data-target="prep">
-      <button class="card-action-btn minus" data-target="prep" data-dir="-1" aria-label="Decrease preparation time">
-        <span class="glyph-minus" aria-hidden="true"></span>
-      </button>
-      <div class="card-center">
-        <span class="card-label">PREPARATION TIME (SEC)</span>
-        <span class="card-value" id="prep-val-display">5</span>
-      </div>
-      <button class="card-action-btn plus" data-target="prep" data-dir="1" aria-label="Increase preparation time">
-        <span class="glyph-plus" aria-hidden="true">
-          <svg viewBox="0 0 18 18" fill="none">
-            <path d="M9 2.5v13M2.5 9h13"/>
-          </svg>
-        </span>
-      </button>
-      <input type="number" id="prep-val" value="5" min="0" max="60" style="display:none;" />
-    </div>
 
     <!-- 1. SETS (Default: 3) -->
     <div class="card-row" data-target="sets">
@@ -654,7 +635,6 @@
 <script>
   // ── State ────────────────────────────────────────────────────
   const state = {
-    prep:        { value: 5,  min: 0, max: 60  },
     sets:        { value: 3,  min: 1, max: 99  },
     'rest-sets': { value: 10, min: 0, max: 600 },
     reps:        { value: 10, min: 1, max: 99  },
@@ -669,7 +649,6 @@
     try {
       const exerciseCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
       const config = {
-        prep:          state['prep'].value,
         sets:          state['sets'].value,
         restSets:      state['rest-sets'].value,
         reps:          state['reps'].value,
@@ -694,7 +673,6 @@
       if (!raw) return;
       const cfg = JSON.parse(raw);
 
-      if (typeof cfg.prep === 'number')      updateValue('prep', cfg.prep);
       if (typeof cfg.sets === 'number')      updateValue('sets', cfg.sets);
       if (typeof cfg.restSets === 'number')  updateValue('rest-sets', cfg.restSets);
       if (typeof cfg.reps === 'number')      updateValue('reps', cfg.reps);
@@ -916,8 +894,18 @@
     saveConfig();
     const workoutCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
 
+    // Read prep time from settings (default 0)
+    let prepSec = 0;
+    try {
+      const rawS = localStorage.getItem('workout_timer_settings');
+      if (rawS) {
+        const s = JSON.parse(rawS);
+        if (typeof s.prepTime === 'number') prepSec = s.prepTime;
+      }
+    } catch (e) {}
+
     const p = new URLSearchParams({
-      prep:          state['prep'].value,
+      prep:          prepSec,
       sets:          state['sets'].value,
       reps:          state['reps'].value,
       restSets:      state['rest-sets'].value,
