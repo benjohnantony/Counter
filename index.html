@@ -381,16 +381,17 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 12px;
       text-align: center;
-      width: 190px;
+      width: 240px;
+      max-width: 250px;
     }
 
     .card-label {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 15px;
-      line-height: 15px;
+      font-size: 14px;
+      line-height: 16px;
       letter-spacing: 1px;
       text-transform: uppercase;
       color: var(--text-grey);
@@ -513,8 +514,27 @@
 
   </div>
 
-  <!-- Group C: Setting Cards (5 Cards, each 116 px) -->
+  <!-- Group C: Setting Cards (6 Cards) -->
   <section class="params" id="params" aria-label="Workout Parameters">
+
+    <!-- 0. PREPARATION TIME (Default: 5 SEC) -->
+    <div class="card-row" data-target="prep">
+      <button class="card-action-btn minus" data-target="prep" data-dir="-1" aria-label="Decrease preparation time">
+        <span class="glyph-minus" aria-hidden="true"></span>
+      </button>
+      <div class="card-center">
+        <span class="card-label">PREPARATION TIME (SEC)</span>
+        <span class="card-value" id="prep-val-display">5</span>
+      </div>
+      <button class="card-action-btn plus" data-target="prep" data-dir="1" aria-label="Increase preparation time">
+        <span class="glyph-plus" aria-hidden="true">
+          <svg viewBox="0 0 18 18" fill="none">
+            <path d="M9 2.5v13M2.5 9h13"/>
+          </svg>
+        </span>
+      </button>
+      <input type="number" id="prep-val" value="5" min="0" max="60" style="display:none;" />
+    </div>
 
     <!-- 1. SETS (Default: 3) -->
     <div class="card-row" data-target="sets">
@@ -535,13 +555,13 @@
       <input type="number" id="sets-val" value="3" min="1" max="99" style="display:none;" />
     </div>
 
-    <!-- 2. REST BETWEEN SETS (Default: 10) -->
+    <!-- 2. REST BETWEEN SETS (Default: 10 SEC) -->
     <div class="card-row" data-target="rest-sets">
       <button class="card-action-btn minus" data-target="rest-sets" data-dir="-1" aria-label="Decrease rest between sets">
         <span class="glyph-minus" aria-hidden="true"></span>
       </button>
       <div class="card-center">
-        <span class="card-label">REST BETWEEN SETS</span>
+        <span class="card-label">REST BETWEEN SETS (SEC)</span>
         <span class="card-value" id="rest-sets-val-display">10</span>
       </div>
       <button class="card-action-btn plus" data-target="rest-sets" data-dir="1" aria-label="Increase rest between sets">
@@ -573,13 +593,13 @@
       <input type="number" id="reps-val" value="10" min="1" max="99" style="display:none;" />
     </div>
 
-    <!-- 4. REST BETWEEN REPS (Default: 5) -->
+    <!-- 4. REST BETWEEN REPS (Default: 5 SEC) -->
     <div class="card-row" data-target="rest-reps">
       <button class="card-action-btn minus" data-target="rest-reps" data-dir="-1" aria-label="Decrease rest between reps">
         <span class="glyph-minus" aria-hidden="true"></span>
       </button>
       <div class="card-center">
-        <span class="card-label">REST BETWEEN REPS</span>
+        <span class="card-label">REST BETWEEN REPS (SEC)</span>
         <span class="card-value" id="rest-reps-val-display">5</span>
       </div>
       <button class="card-action-btn plus" data-target="rest-reps" data-dir="1" aria-label="Increase rest between reps">
@@ -592,13 +612,13 @@
       <input type="number" id="rest-reps-val" value="5" min="0" max="300" style="display:none;" />
     </div>
 
-    <!-- 5. HOLD TIME (Default: 10) -->
+    <!-- 5. HOLD TIME (Default: 10 SEC) -->
     <div class="card-row" data-target="hold">
       <button class="card-action-btn minus" data-target="hold" data-dir="-1" aria-label="Decrease hold time">
         <span class="glyph-minus" aria-hidden="true"></span>
       </button>
       <div class="card-center">
-        <span class="card-label">HOLD TIME</span>
+        <span class="card-label">HOLD TIME (SEC)</span>
         <span class="card-value" id="hold-val-display">10</span>
       </div>
       <button class="card-action-btn plus" data-target="hold" data-dir="1" aria-label="Increase hold time">
@@ -634,6 +654,7 @@
 <script>
   // ── State ────────────────────────────────────────────────────
   const state = {
+    prep:        { value: 5,  min: 0, max: 60  },
     sets:        { value: 3,  min: 1, max: 99  },
     'rest-sets': { value: 10, min: 0, max: 600 },
     reps:        { value: 10, min: 1, max: 99  },
@@ -648,6 +669,7 @@
     try {
       const exerciseCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
       const config = {
+        prep:          state['prep'].value,
         sets:          state['sets'].value,
         restSets:      state['rest-sets'].value,
         reps:          state['reps'].value,
@@ -672,6 +694,7 @@
       if (!raw) return;
       const cfg = JSON.parse(raw);
 
+      if (typeof cfg.prep === 'number')      updateValue('prep', cfg.prep);
       if (typeof cfg.sets === 'number')      updateValue('sets', cfg.sets);
       if (typeof cfg.restSets === 'number')  updateValue('rest-sets', cfg.restSets);
       if (typeof cfg.reps === 'number')      updateValue('reps', cfg.reps);
@@ -894,6 +917,7 @@
     const workoutCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
 
     const p = new URLSearchParams({
+      prep:          state['prep'].value,
       sets:          state['sets'].value,
       reps:          state['reps'].value,
       restSets:      state['rest-sets'].value,

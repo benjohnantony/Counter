@@ -186,14 +186,15 @@
       background-color: #1565C0; /* Blue during SET REST */
     }
 
+    /* Do not fade or desaturate colors when paused */
     .card.paused .center-section {
-      filter: saturate(0.7) brightness(0.85);
+      /* preserved original high contrast */
     }
 
-    /* Background overlay filling as per time moving in the background */
+    /* Background overlay filling as per time moving in the background (rises up from bottom) */
     .stage-fill-overlay {
       position: absolute;
-      top: 0;
+      bottom: 0;
       left: 0;
       width: 100%;
       height: 0%;
@@ -387,12 +388,13 @@
     }
 
     .ctrl-btn-block.center-play {
-      background: var(--accent-green); /* #99FF44 */
+      background: var(--accent-green); /* Neon volt green #99FF44 */
       color: var(--text-black);
     }
 
+    /* Pause button remains volt green #99FF44 matching theme */
     .ctrl-btn-block.center-play.paused {
-      background: var(--cat-amber);
+      background: var(--accent-green);
     }
 
     .ctrl-btn-block svg {
@@ -659,6 +661,20 @@
   </div>
 </div>
 
+<!-- ── NEXT WORKOUT POPUP MODAL ──────────────────────────────────── -->
+<div class="modal-overlay" id="next-workout-modal" role="dialog" aria-modal="true" aria-labelledby="next-workout-title">
+  <div class="modal-card">
+    <div class="modal-text-group">
+      <h2 class="modal-title" id="next-workout-title">Workout 1 Complete!</h2>
+      <p class="modal-subtitle" id="next-workout-subtitle">Ready for Workout 2? Take your time to get ready.</p>
+    </div>
+
+    <div class="modal-controls">
+      <button class="modal-btn resume" id="next-workout-start-btn" style="flex: 1; height: 52px; background: var(--accent-green); color: var(--text-black);">START WORKOUT 2</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── FINISH POPUP MODAL (Figma v2) ─────────────────────────────── -->
 <div class="modal-overlay" id="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finish-title">
   <div class="modal-card">
@@ -689,6 +705,7 @@
   }
 
   const CFG = {
+    prep:          getNonNegativeInt(p.get('prep'), 5),
     sets:          getPositiveInt(p.get('sets'), 3),
     reps:          getPositiveInt(p.get('reps'), 10),
     restSets:      getNonNegativeInt(p.get('restSets'), 10),
@@ -706,6 +723,7 @@
   const STORAGE_KEY = 'workout_timer_saved_config';
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      prep:          CFG.prep,
       sets:          CFG.sets,
       restSets:      CFG.restSets,
       reps:          CFG.reps,
@@ -980,6 +998,11 @@
   const modalResumeBtn  = document.getElementById('modal-resume-btn');
   const modalHomeBtn    = document.getElementById('modal-home-btn');
 
+  const nextWorkoutModal    = document.getElementById('next-workout-modal');
+  const nextWorkoutTitle    = document.getElementById('next-workout-title');
+  const nextWorkoutSubtitle = document.getElementById('next-workout-subtitle');
+  const nextWorkoutStartBtn = document.getElementById('next-workout-start-btn');
+
   const finishModal     = document.getElementById('finish-modal');
   const finishSubtitle  = document.getElementById('finish-subtitle');
   const finishRestartBtn= document.getElementById('finish-restart-btn');
@@ -987,6 +1010,7 @@
   const finishSetupBtn  = document.getElementById('finish-setup-btn');
 
   const PHASE = {
+    PREP:      'PREP',
     HOLD:      'HOLD',
     REST_REPS: 'REST_REPS',
     REST_SETS: 'REST_SETS',
@@ -997,21 +1021,24 @@
     exercise:          1,
     set:               1,
     rep:               1,
-    phase:             PHASE.HOLD,
-    phaseDuration:     CFG.hold * 1000,
+    phase:             CFG.prep > 0 ? PHASE.PREP : PHASE.HOLD,
+    phaseDuration:     (CFG.prep > 0 ? CFG.prep : CFG.hold) * 1000,
     phaseElapsed:      0,
     running:           true,
     finished:          false,
     lastTickTime:      null,
     spokenCounts:      {},
     isWaitingForVoice: false,
+    isCueSpeaking:     false,
     preModalState:     false,
   };
 
   function calculateTotalWorkoutDuration() {
     const setDuration = (CFG.reps * CFG.hold) + (Math.max(0, CFG.reps - 1) * CFG.restReps);
     const exerciseDuration = (CFG.sets * setDuration) + (Math.max(0, CFG.sets - 1) * CFG.restSets);
-    return Math.max(1, CFG.exercises * exerciseDuration);
+    const totalExercises = CFG.exercises * exerciseDuration;
+    const totalPrep = (CFG.prep || 0) * CFG.exercises;
+    return Math.max(1, totalExercises + totalPrep);
   }
 
   let tickerId = null;
@@ -1100,6 +1127,30 @@
   /* ══════════════════════════════════════════════════════════════
    *  PHASE TRANSITIONS (With Audio Sequencing)
    * ══════════════════════════════════════════════════════════════ */
+  function startPrep() {
+    state.phase         = PHASE.PREP;
+    state.phaseDuration = CFG.prep * 1000;
+    state.phaseElapsed  = 0;
+    state.spokenCounts  = {};
+    state.isCueSpeaking = false;
+
+    setRingMode('resting-sets');
+    setArcFill(1);
+
+    if (stagePhaseBadge) stagePhaseBadge.textContent = 'PREPARATION';
+    if (currentRepNum) currentRepNum.textContent = '1';
+    if (totalRepsNum) totalRepsNum.textContent = String(CFG.reps);
+
+    const remSecs = Math.max(0, CFG.prep);
+    const m = Math.floor(remSecs / 60);
+    const s = remSecs % 60;
+    ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    popRepNumber();
+
+    updateWorkoutTitle();
+    speakRaw('Get ready.');
+  }
+
   function startHold(repNum, isFirstOfSet = false, isFirstOfExercise = false) {
     state.rep           = repNum;
     state.phase         = PHASE.HOLD;
@@ -1136,13 +1187,27 @@
       cueText = `Workout ${state.exercise}. Set 1. repp 1.`;
     } else if (isFirstOfSet && state.set > 1) {
       category = 'sets';
-      cueText = `Set ${state.set}. repp ${repNum}`;
+      cueText = `Set ${state.set}. repp ${repNum}.`;
     } else {
       category = 'reps';
-      cueText = `repp ${repNum}`;
+      cueText = `repp ${repNum}.`;
     }
 
-    speakPhaseCue(category, cueText);
+    state.isCueSpeaking = true;
+    let cueFinished = false;
+    const onCueDone = () => {
+      if (cueFinished) return;
+      cueFinished = true;
+      state.isCueSpeaking = false;
+      state.phaseElapsed = 0;
+      state.lastTickTime = performance.now();
+    };
+
+    speakPhaseCue(category, cueText, onCueDone);
+
+    // Fallback timer: word count estimate + buffer
+    const wordCount = cueText.trim().split(/\s+/).filter(Boolean).length;
+    setTimeout(onCueDone, Math.max(1600, wordCount * 550 + 400));
   }
 
   function startRestReps() {
@@ -1150,9 +1215,10 @@
     state.phaseDuration = CFG.restReps * 1000;
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
+    state.isCueSpeaking = false;
 
     setRingMode('resting');
-    setArcFill(0);
+    setArcFill(1); // Starts at 100% and drains back down towards 0%
 
     if (stagePhaseBadge) stagePhaseBadge.textContent = 'REST';
     const remSecs = Math.max(0, CFG.restReps);
@@ -1169,9 +1235,10 @@
     state.phaseDuration = CFG.restSets * 1000;
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
+    state.isCueSpeaking = false;
 
     setRingMode('resting-sets');
-    setArcFill(0);
+    setArcFill(1); // Starts at 100% and drains back down towards 0%
 
     if (stagePhaseBadge) stagePhaseBadge.textContent = 'SET REST';
     const remSecs = Math.max(0, CFG.restSets);
@@ -1184,8 +1251,47 @@
   }
 
   /* ══════════════════════════════════════════════════════════════
-   *  FINISH / COMPLETE MODAL
+   *  TRANSITION / COMPLETE MODALS
    * ══════════════════════════════════════════════════════════════ */
+  function showNextWorkoutPrompt() {
+    state.running = false;
+    stopTicker();
+    stopAllAudio();
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    const nextNum = state.exercise + 1;
+    if (nextWorkoutTitle) nextWorkoutTitle.textContent = `WORKOUT ${state.exercise} COMPLETE!`;
+    if (nextWorkoutSubtitle) nextWorkoutSubtitle.textContent = `Ready for Workout ${nextNum} of ${CFG.exercises}? Take your time to get ready.`;
+    if (nextWorkoutStartBtn) nextWorkoutStartBtn.textContent = `START WORKOUT ${nextNum}`;
+
+    if (nextWorkoutModal) nextWorkoutModal.classList.add('active');
+    speakRaw(`Workout ${state.exercise} complete. Ready for Workout ${nextNum}.`);
+  }
+
+  if (nextWorkoutStartBtn) {
+    nextWorkoutStartBtn.onclick = () => {
+      if (nextWorkoutModal) nextWorkoutModal.classList.remove('active');
+      state.exercise++;
+      state.set = 1;
+      state.rep = 1;
+      state.running = true;
+      card.classList.remove('paused');
+      btnPause.classList.remove('paused');
+      iconPause.style.display = '';
+      iconPlay.style.display  = 'none';
+      if (pauseLabel) pauseLabel.textContent = 'PAUSE';
+
+      startTicker();
+      if (CFG.prep > 0) {
+        startPrep();
+      } else {
+        startHold(1, true, true);
+      }
+    };
+  }
+
   function showWorkoutCompleteModal() {
     state.finished = true;
     state.running  = false;
@@ -1230,12 +1336,17 @@
       try { audioCtx.resume(); } catch (e) {}
     }
     card.classList.remove('paused');
+    btnPause.classList.remove('paused');
     iconPause.style.display = '';
     iconPlay.style.display  = 'none';
     if (pauseLabel) pauseLabel.textContent = 'PAUSE';
     buildProgressBar();
-    startHold(1, true, true);
     startTicker();
+    if (CFG.prep > 0) {
+      startPrep();
+    } else {
+      startHold(1, true, true);
+    }
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -1335,13 +1446,45 @@
 
     const delta = now - state.lastTickTime;
     state.lastTickTime = now;
-    state.phaseElapsed += delta;
 
-    const total = state.phaseDuration;
-    const progress = total > 0 ? Math.min(1, state.phaseElapsed / total) : 1;
+    // ── PREPARATION: Drains from 100% -> 0% ──
+    if (state.phase === PHASE.PREP) {
+      state.phaseElapsed += delta;
+      const total = state.phaseDuration;
+      const progress = total > 0 ? Math.min(1, state.phaseElapsed / total) : 1;
 
-    // ── HOLD: Fills 0% -> 100% in Red ──
+      setArcFill(1 - progress);
+
+      const remSecs = Math.max(0, Math.ceil((total - state.phaseElapsed) / 1000));
+      const m = Math.floor(remSecs / 60);
+      const s = remSecs % 60;
+      ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+      if (remSecs > 0 && remSecs <= 3 && !state.spokenCounts[remSecs]) {
+        state.spokenCounts[remSecs] = true;
+        speakRaw(String(remSecs));
+        if (SETTINGS.countdownBeeps && state.running) playTone(880, 0.08);
+      }
+
+      if (progress >= 1) {
+        if (SETTINGS.countdownBeeps && state.running) playTone(1760, 0.2);
+        startHold(1, true, true);
+      }
+      return;
+    }
+
+    // ── HOLD: Fills 0% -> 100% (Goes UP from bottom) ──
     if (state.phase === PHASE.HOLD) {
+      if (state.isCueSpeaking) {
+        // While introductory voice cue (e.g. "Workout 1. Set 1. Rep 1.") is speaking,
+        // do not advance hold count or speak seconds yet!
+        return;
+      }
+
+      state.phaseElapsed += delta;
+      const total = state.phaseDuration;
+      const progress = total > 0 ? Math.min(1, state.phaseElapsed / total) : 1;
+
       setArcFill(progress);
 
       const remSecs = Math.max(0, Math.ceil((total - state.phaseElapsed) / 1000));
@@ -1378,18 +1521,21 @@
             startHold(1, true);
           }
         } else if (!isLastExercise) {
-          state.exercise++;
-          state.set = 1;
-          startHold(1, true, true);
+          showNextWorkoutPrompt();
         } else {
           showWorkoutCompleteModal();
         }
       }
+      return;
     }
 
-    // ── REST: Fills 0% -> 100% in Amber ──
-    else if (state.phase === PHASE.REST_REPS || state.phase === PHASE.REST_SETS) {
-      setArcFill(progress);
+    // ── REST: Drains from 100% -> 0% (Comes back down from hold) ──
+    if (state.phase === PHASE.REST_REPS || state.phase === PHASE.REST_SETS) {
+      state.phaseElapsed += delta;
+      const total = state.phaseDuration;
+      const progress = total > 0 ? Math.min(1, state.phaseElapsed / total) : 1;
+
+      setArcFill(1 - progress);
 
       const remSecs = Math.max(0, Math.ceil((total - state.phaseElapsed) / 1000));
       const m = Math.floor(remSecs / 60);
@@ -1500,9 +1646,7 @@
         state.set++;
         startHold(1, true);
       } else if (state.exercise < CFG.exercises) {
-        state.exercise++;
-        state.set = 1;
-        startHold(1, true, true);
+        showNextWorkoutPrompt();
       } else {
         showWorkoutCompleteModal();
       }
@@ -1627,12 +1771,17 @@
     updateWorkoutTitle();
     startWorkoutClock();
 
-    setStageMode('holding');
-    setArcFill(0);
+    if (CFG.prep > 0) {
+      setStageMode('resting-sets');
+      setArcFill(1);
+    } else {
+      setStageMode('holding');
+      setArcFill(0);
+    }
 
-    const remSecs = Math.max(0, CFG.hold);
-    const m = Math.floor(remSecs / 60);
-    const s = remSecs % 60;
+    const initSecs = CFG.prep > 0 ? CFG.prep : CFG.hold;
+    const m = Math.floor(initSecs / 60);
+    const s = initSecs % 60;
     if (ringNumber) ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     if (currentRepNum) currentRepNum.textContent = '1';
     if (totalRepsNum) totalRepsNum.textContent = String(CFG.reps);
@@ -1642,7 +1791,11 @@
     setupVoiceRecognition();
 
     startTicker();
-    startHold(1, true, true);
+    if (CFG.prep > 0) {
+      startPrep();
+    } else {
+      startHold(1, true, true);
+    }
   }
 
   if (document.readyState === 'loading') {
