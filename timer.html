@@ -24,6 +24,7 @@
       --card-border:    #FFFFFF;
       --control-border: #303038;
       --accent-green:   #99FF44; /* Neon lime */
+      --accent-yellow:  #FFE600; /* Vibrant athletic yellow for REST */
       --accent-red:     #F13629; /* Vibrant red */
       --accent-red-header: #F1372A; /* Close header button */
       --stop-red:       #FF003B;
@@ -170,11 +171,16 @@
       overflow: hidden;
       padding: 0;
       box-sizing: border-box;
-      background-color: var(--accent-green); /* Neon Volt Green base #99FF44 */
+      background-color: var(--accent-green); /* Neon Volt Green base #99FF44 for HOLD */
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      transition: background-color 0.25s ease;
+    }
+
+    .center-section.resting {
+      background-color: var(--accent-yellow); /* Vibrant Yellow base #FFE600 for REST */
     }
 
     /* Do not fade or desaturate colors when paused */
@@ -934,6 +940,7 @@
    *  DOM REFS & STATE
    * ══════════════════════════════════════════════════════════════ */
   const card            = document.getElementById('card');
+  const centerSection   = document.getElementById('center-section');
   const workoutClock    = document.getElementById('workout-clock');
   const setInfoEl       = document.getElementById('set-info');
   const voiceToast      = document.getElementById('voice-toast');
@@ -1076,6 +1083,8 @@
     state.spokenCounts  = {};
     state.isCueSpeaking = false;
 
+    if (centerSection) centerSection.classList.remove('resting');
+
     setArcFill(0); // Starts empty
     setStageBadge('PREPARATION');
     setStageReps(1, CFG.reps);
@@ -1096,6 +1105,8 @@
     state.phaseDuration = CFG.hold * 1000;
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
+
+    if (centerSection) centerSection.classList.remove('resting');
 
     setArcFill(0); // Section background starts empty, fills up to 100% during hold
 
@@ -1150,7 +1161,8 @@
     state.phaseDuration = CFG.restReps * 1000;
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
-    state.isCueSpeaking = false;
+
+    if (centerSection) centerSection.classList.add('resting');
 
     setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
@@ -1161,7 +1173,18 @@
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
 
-    speakPhaseCue('restReps', 'Rest');
+    state.isCueSpeaking = true;
+    let cueFinished = false;
+    const onCueDone = () => {
+      if (cueFinished) return;
+      cueFinished = true;
+      state.isCueSpeaking = false;
+      state.phaseElapsed = 0;
+      state.lastTickTime = performance.now();
+    };
+
+    speakPhaseCue('restReps', 'Rest', onCueDone);
+    setTimeout(onCueDone, 1200);
   }
 
   function startRestSets() {
@@ -1169,7 +1192,8 @@
     state.phaseDuration = CFG.restSets * 1000;
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
-    state.isCueSpeaking = false;
+
+    if (centerSection) centerSection.classList.add('resting');
 
     setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
@@ -1180,7 +1204,21 @@
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
 
-    speakPhaseCue('restSets', `Set ${state.set} complete. Rest.`);
+    state.isCueSpeaking = true;
+    let cueFinished = false;
+    const onCueDone = () => {
+      if (cueFinished) return;
+      cueFinished = true;
+      state.isCueSpeaking = false;
+      state.phaseElapsed = 0;
+      state.lastTickTime = performance.now();
+    };
+
+    const cueText = `Set ${state.set} complete. Rest.`;
+    speakPhaseCue('restSets', cueText, onCueDone);
+
+    const wordCount = cueText.trim().split(/\s+/).filter(Boolean).length;
+    setTimeout(onCueDone, Math.max(1600, wordCount * 550 + 400));
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -1456,6 +1494,12 @@
 
     // ── REST: Drains from 100% -> 0% (Comes back down from hold) ──
     if (state.phase === PHASE.REST_REPS || state.phase === PHASE.REST_SETS) {
+      if (state.isCueSpeaking) {
+        // While introductory voice cue (e.g. "Set 1 complete. Rest.") is speaking,
+        // do not advance rest countdown yet!
+        return;
+      }
+
       state.phaseElapsed += delta;
       const total = state.phaseDuration;
       const progress = total > 0 ? Math.min(1, state.phaseElapsed / total) : 1;
