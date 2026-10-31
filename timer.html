@@ -1260,7 +1260,7 @@
       btnPause.classList.remove('paused');
       iconPause.style.display = '';
       iconPlay.style.display  = 'none';
-      pauseLabel.textContent  = 'PAUSE';
+      if (pauseLabel) pauseLabel.textContent = 'PAUSE';
       startTicker();
     }
   }
@@ -1296,10 +1296,12 @@
     location.href = 'index.html';
   };
 
-  finishSetupBtn.onclick = () => {
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    location.href = 'index.html';
-  };
+  if (finishSetupBtn) {
+    finishSetupBtn.onclick = () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      location.href = 'index.html';
+    };
+  }
 
   /* ══════════════════════════════════════════════════════════════
    *  MAIN TICK LOOP (Smooth 40ms interval)
@@ -1616,13 +1618,16 @@
     updateWorkoutTitle();
     startWorkoutClock();
 
-    setRingMode('holding');
+    setStageMode('holding');
     setArcFill(0);
 
-    ringNumber.textContent = '1';
-    ringOf.textContent     = `of ${CFG.reps}`;
-    setInfoEl.textContent  = `Set 1 of ${CFG.sets}`;
-    updateProgressBar();
+    const remSecs = Math.max(0, CFG.hold);
+    const m = Math.floor(remSecs / 60);
+    const s = remSecs % 60;
+    if (ringNumber) ringNumber.textContent = `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    if (currentRepNum) currentRepNum.textContent = '1';
+    if (totalRepsNum) totalRepsNum.textContent = String(CFG.reps);
+    if (setInfoEl) setInfoEl.textContent = `WORKOUT 1 : SET 1 OF ${CFG.sets}`;
 
     requestWakeLock();
     setupVoiceRecognition();
