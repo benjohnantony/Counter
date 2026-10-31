@@ -161,8 +161,8 @@
       overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      padding: 0 20px 20px 20px;
+      gap: 16px;
+      padding: 16px 20px 24px 20px;
       scrollbar-width: none;
       box-sizing: border-box;
       background: #000000;
@@ -172,13 +172,13 @@
       display: none;
     }
 
-    /* Setting Card (Figma v2: 335 × 96 px, 1px solid #FFFFFF, sharp) */
+    /* Setting Card (Figma v2: 335 × 96 px, dotted white border, sharp) */
     .setting-card {
       width: 100%;
       min-height: 96px;
       height: 96px;
       background: transparent;
-      border: 1px solid var(--card-border); /* 1px solid #FFFFFF */
+      border: 1.5px dotted var(--card-border); /* Outer stroke is dotted lines */
       border-radius: var(--r-none);
       padding: 0 20px;
       display: flex;
@@ -189,6 +189,44 @@
       box-sizing: border-box;
       flex-shrink: 0;
       transition: background var(--transition);
+    }
+
+    .setting-card.slider-card {
+      height: auto;
+      min-height: 104px;
+      padding: 18px 20px 20px 20px;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .slider-card .setting-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 16px;
+    }
+
+    .slider-card .slider-val-label {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 24px;
+      color: var(--white);
+      letter-spacing: 0.8px;
+      text-align: right;
+      min-width: 48px;
+      flex-shrink: 0;
+    }
+
+    .slider-full-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     .setting-card.clickable {
@@ -322,46 +360,76 @@
       transform: translateX(24px);
     }
 
-    /* Sliders */
-    .slider-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 120px;
-      flex-shrink: 0;
-    }
-
-    .slider-track-wrap {
-      flex: 1;
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
+    /* Sliders: Selected range is neon volt green, track is dark, circle thumb is pure white */
     .custom-slider {
       width: 100%;
       height: 6px;
-      background: #282830;
+      border-radius: var(--r-pill);
+      background: linear-gradient(
+        to right,
+        var(--accent-green) 0%,
+        var(--accent-green) var(--slider-pct, 0%),
+        #303038 var(--slider-pct, 0%),
+        #303038 100%
+      );
       outline: none;
       -webkit-appearance: none;
+      appearance: none;
       cursor: pointer;
+      margin: 0;
+    }
+
+    .custom-slider::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: var(--r-pill);
+      background: transparent;
+      border: none;
     }
 
     .custom-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
+      appearance: none;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      background: var(--accent-green);
+      background: #FFFFFF; /* Pure white circle thumb */
       cursor: pointer;
+      margin-top: -7px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+      border: none;
+      transition: transform var(--transition);
     }
 
-    .slider-val-label {
-      font-family: var(--font-heading);
-      font-size: 16px;
-      color: var(--white);
-      min-width: 38px;
-      text-align: right;
+    .custom-slider::-webkit-slider-thumb:active {
+      transform: scale(1.15);
+    }
+
+    .custom-slider::-moz-range-track {
+      height: 6px;
+      border-radius: var(--r-pill);
+      background: #303038;
+      border: none;
+    }
+
+    .custom-slider::-moz-range-progress {
+      height: 6px;
+      border-radius: var(--r-pill);
+      background: var(--accent-green);
+    }
+
+    .custom-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #FFFFFF; /* Pure white circle thumb */
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+      border: none;
+      transition: transform var(--transition);
+    }
+
+    .custom-slider::-moz-range-thumb:active {
+      transform: scale(1.15);
     }
 
     /* ── Bottom Actions (Figma v2 Frame 1707479702: 375 × 83 px) ─── */
@@ -626,56 +694,50 @@
     </div>
 
     <!-- 3. Speech Speed -->
-    <div class="setting-card">
+    <div class="setting-card slider-card">
       <div class="setting-header-row">
         <div class="setting-info">
           <span class="setting-title">Speech Speed</span>
           <span class="setting-desc">Adjust coach counting speed</span>
         </div>
-      </div>
-      <div class="slider-row">
-        <div class="slider-track-wrap">
-          <input type="range" class="custom-slider" id="slider-speed"
-                 min="0.6" max="1.6" step="0.1" value="1.0"
-                 aria-label="Speech speed" />
-        </div>
         <span class="slider-val-label" id="val-speed">1.0x</span>
+      </div>
+      <div class="slider-full-row">
+        <input type="range" class="custom-slider" id="slider-speed"
+               min="0.6" max="1.6" step="0.1" value="1.0"
+               aria-label="Speech speed" />
       </div>
     </div>
 
     <!-- 4. Volume -->
-    <div class="setting-card">
+    <div class="setting-card slider-card">
       <div class="setting-header-row">
         <div class="setting-info">
           <span class="setting-title">Volume</span>
           <span class="setting-desc">Adjust audio voice volume</span>
         </div>
-      </div>
-      <div class="slider-row">
-        <div class="slider-track-wrap">
-          <input type="range" class="custom-slider" id="slider-volume"
-                 min="0" max="100" step="5" value="80"
-                 aria-label="Volume" />
-        </div>
         <span class="slider-val-label" id="val-volume">80%</span>
+      </div>
+      <div class="slider-full-row">
+        <input type="range" class="custom-slider" id="slider-volume"
+               min="0" max="100" step="5" value="80"
+               aria-label="Volume" />
       </div>
     </div>
 
     <!-- 5. Preparation Time (0 to 60s, default 0s) -->
-    <div class="setting-card">
+    <div class="setting-card slider-card">
       <div class="setting-header-row">
         <div class="setting-info">
           <span class="setting-title">Preparation Time</span>
           <span class="setting-desc">Countdown before workout starts</span>
         </div>
-      </div>
-      <div class="slider-row">
-        <div class="slider-track-wrap">
-          <input type="range" class="custom-slider" id="slider-prep"
-                 min="0" max="60" step="1" value="0"
-                 aria-label="Preparation time in seconds" />
-        </div>
         <span class="slider-val-label" id="val-prep">0s</span>
+      </div>
+      <div class="slider-full-row">
+        <input type="range" class="custom-slider" id="slider-prep"
+               min="0" max="60" step="1" value="0"
+               aria-label="Preparation time in seconds" />
       </div>
     </div>
 

@@ -170,7 +170,11 @@
       overflow: hidden;
       padding: 0;
       box-sizing: border-box;
-      background-color: #000000;
+      background-color: var(--accent-green); /* Neon Volt Green base #99FF44 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
     }
 
     /* Do not fade or desaturate colors when paused */
@@ -178,52 +182,22 @@
       /* preserved original high contrast */
     }
 
-    /* Two-layer brutalist liquid stage:
-       Layer 1 (.empty): Deep black background with Neon Volt Green & White typography.
-       Layer 2 (.fill): Neon Volt Green #99FF44 background with Pure Black typography.
-       The fill layer is clipped via clip-path, rising during HOLD (filling) and falling during REST (emptying). */
-    .stage-layer {
+    /* Progress Overlay:
+       Black overlay with 20% opacity.
+       Initially at 0% (at the bottom).
+       Fills upward during HOLD (0% -> 100%).
+       Empties downward during REST (100% -> 0%). */
+    .stage-progress-overlay {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      box-sizing: border-box;
+      background-color: rgba(0, 0, 0, 0.2);
       pointer-events: none;
-    }
-
-    .stage-layer.empty {
-      background-color: #000000;
       z-index: 1;
-    }
-
-    .stage-layer.empty .stage-phase-badge {
-      color: var(--accent-green); /* Neon volt green */
-    }
-
-    .stage-layer.empty .stage-timer-digits {
-      color: var(--white); /* Pure crisp white */
-    }
-
-    .stage-layer.empty .stage-rep-tag {
-      color: var(--subtitle-text); /* #9E9E9F */
-    }
-
-    .stage-layer.fill {
-      background-color: var(--accent-green); /* Neon volt green #99FF44 */
-      z-index: 2;
-      clip-path: inset(100% 0 0 0); /* Starts empty */
+      clip-path: inset(100% 0 0 0); /* Starts at bottom (0% fill) */
       will-change: clip-path;
       transition: clip-path 0.04s linear;
-    }
-
-    .stage-layer.fill .stage-phase-badge,
-    .stage-layer.fill .stage-timer-digits,
-    .stage-layer.fill .stage-rep-tag {
-      color: var(--text-black); /* Pure black on neon volt green */
     }
 
     /* Phase Badge (HOLD / REST) & Giant Timer */
@@ -238,6 +212,8 @@
       gap: 4px;
       padding-top: 16px;
       box-sizing: border-box;
+      position: relative;
+      z-index: 2;
     }
 
     .stage-phase-badge {
@@ -248,6 +224,7 @@
       letter-spacing: 1.2px;
       text-transform: uppercase;
       text-align: center;
+      color: var(--text-black); /* Pure black on neon volt green */
     }
 
     /* Giant Countdown Timer (Anton 80px) */
@@ -256,6 +233,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      position: relative;
+      z-index: 2;
     }
 
     .stage-timer-digits {
@@ -266,7 +245,9 @@
       letter-spacing: 1px;
       font-variant-numeric: tabular-nums;
       text-align: center;
+      color: var(--text-black); /* Pure black on neon volt green */
       transition: transform 0.15s ease;
+      will-change: transform;
     }
 
     .stage-timer-digits.pop {
@@ -284,6 +265,8 @@
       padding: 0 20px;
       box-sizing: border-box;
       flex-shrink: 0;
+      position: relative;
+      z-index: 2;
     }
 
     .stage-rep-tag {
@@ -294,6 +277,8 @@
       letter-spacing: 0.8px;
       text-transform: uppercase;
       text-align: center;
+      color: var(--text-black); /* Pure black on neon volt green */
+      user-select: none;
     }
 
     /* ── Status Banner (Figma v2 Frame 1707479699: 375 × 84 px fill #F13629) ── */
@@ -568,32 +553,19 @@
     </div>
   </div>
 
-  <!-- ── Center Section: Hero Stage (Two-layer liquid fill & empty) ─── -->
+  <!-- ── Center Section: Hero Stage (Neon Volt Green with 20% Black Overlay) ─── -->
   <div class="center-section" id="center-section">
-    <!-- Layer 1: Dark / Empty background (Black #000000, Volt & White Text) -->
-    <div class="stage-layer empty">
-      <div class="stage-upper-wrap">
-        <div class="stage-phase-badge">HOLD</div>
-        <div class="stage-timer-wrap">
-          <span class="stage-timer-digits">00:00:10</span>
-        </div>
-      </div>
-      <div class="stage-lower-wrap">
-        <div class="stage-rep-tag">REP <span class="current-rep-num">1</span> OF <span class="total-reps-num">10</span></div>
+    <!-- 20% Black Progress Overlay rising on Hold and emptying on Rest -->
+    <div class="stage-progress-overlay" id="stage-fill-overlay"></div>
+
+    <div class="stage-upper-wrap">
+      <div class="stage-phase-badge">HOLD</div>
+      <div class="stage-timer-wrap">
+        <span class="stage-timer-digits">00:00:10</span>
       </div>
     </div>
-
-    <!-- Layer 2: Filled background (Neon Volt Green #99FF44, Black Text, clipped) -->
-    <div class="stage-layer fill" id="stage-fill-overlay">
-      <div class="stage-upper-wrap">
-        <div class="stage-phase-badge">HOLD</div>
-        <div class="stage-timer-wrap">
-          <span class="stage-timer-digits">00:00:10</span>
-        </div>
-      </div>
-      <div class="stage-lower-wrap">
-        <div class="stage-rep-tag">REP <span class="current-rep-num">1</span> OF <span class="total-reps-num">10</span></div>
-      </div>
+    <div class="stage-lower-wrap">
+      <div class="stage-rep-tag">REP <span class="current-rep-num">1</span> OF <span class="total-reps-num">10</span></div>
     </div>
   </div>
 
