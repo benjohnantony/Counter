@@ -709,23 +709,43 @@
 
   // Sync to LocalStorage
   const STORAGE_KEY = 'workout_timer_saved_config';
+  let workoutsList = [];
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      prep:          CFG.prep,
-      sets:          CFG.sets,
-      restSets:      CFG.restSets,
-      reps:          CFG.reps,
-      restReps:      CFG.restReps,
-      hold:          CFG.hold,
-      exerciseCount: CFG.exercises,
-      soundSets:     CFG.soundSets,
-      soundRestSets: CFG.soundRestSets,
-      soundReps:     CFG.soundReps,
-      soundRestReps: CFG.soundRestReps,
-      soundHold:     CFG.soundHold,
-    }));
+    const workoutsParam = p.get('workouts');
+    if (workoutsParam) {
+      workoutsList = JSON.parse(workoutsParam);
+    } else {
+      const rawStored = localStorage.getItem(STORAGE_KEY);
+      if (rawStored) {
+        const parsed = JSON.parse(rawStored);
+        if (Array.isArray(parsed.workouts) && parsed.workouts.length > 0) {
+          workoutsList = parsed.workouts;
+        }
+      }
+    }
   } catch (e) {
-    console.warn('LocalStorage save error:', e);
+    console.warn('Error parsing workouts list:', e);
+  }
+
+  function getWorkoutConfig(exIndex) {
+    const idx = (exIndex || (state && state.exercise) || 1) - 1;
+    if (workoutsList[idx]) {
+      const w = workoutsList[idx];
+      return {
+        sets:     typeof w.sets === 'number' ? w.sets : CFG.sets,
+        reps:     typeof w.reps === 'number' ? w.reps : CFG.reps,
+        restSets: typeof w.restSets === 'number' ? w.restSets : CFG.restSets,
+        restReps: typeof w.restReps === 'number' ? w.restReps : CFG.restReps,
+        hold:     typeof w.hold === 'number' ? w.hold : CFG.hold,
+      };
+    }
+    return {
+      sets:     CFG.sets,
+      reps:     CFG.reps,
+      restSets: CFG.restSets,
+      restReps: CFG.restReps,
+      hold:     CFG.hold,
+    };
   }
 
   // Keep screen awake
@@ -995,11 +1015,16 @@
   };
 
   function calculateTotalWorkoutDuration() {
-    const setDuration = (CFG.reps * CFG.hold) + (Math.max(0, CFG.reps - 1) * CFG.restReps);
-    const exerciseDuration = (CFG.sets * setDuration) + (Math.max(0, CFG.sets - 1) * CFG.restSets);
-    const totalExercises = CFG.exercises * exerciseDuration;
-    const totalPrep = (CFG.prep || 0) * CFG.exercises;
-    return Math.max(1, totalExercises + totalPrep);
+    let totalSec = 0;
+    const totalExercises = Math.max(1, CFG.exercises);
+    for (let e = 1; e <= totalExercises; e++) {
+      const exCfg = getWorkoutConfig(e);
+      const setDuration = (exCfg.reps * exCfg.hold) + (Math.max(0, exCfg.reps - 1) * exCfg.restReps);
+      const exerciseDuration = (exCfg.sets * setDuration) + (Math.max(0, exCfg.sets - 1) * exCfg.restSets);
+      totalSec += exerciseDuration;
+    }
+    const totalPrep = (CFG.prep || 0) * totalExercises;
+    return Math.max(1, totalSec + totalPrep);
   }
 
   let tickerId = null;
@@ -1066,10 +1091,11 @@
   }
 
   function updateWorkoutTitle() {
+    const exCfg = getWorkoutConfig(state.exercise);
     if (CFG.exercises > 1) {
-      setInfoEl.textContent = `WORKOUT ${state.exercise} : SET ${state.set} OF ${CFG.sets}`;
+      setInfoEl.textContent = `WORKOUT ${state.exercise} : SET ${state.set} OF ${exCfg.sets}`;
     } else {
-      setInfoEl.textContent = `SET ${state.set} OF ${CFG.sets}`;
+      setInfoEl.textContent = `SET ${state.set} OF ${exCfg.sets}`;
     }
   }
 
@@ -1087,7 +1113,8 @@
 
     setArcFill(0); // Starts empty
     setStageBadge('PREPARATION');
-    setStageReps(1, CFG.reps);
+    const exCfg = getWorkoutConfig(1);
+    setStageReps(1, exCfg.reps);
 
     const remSecs = Math.max(0, CFG.prep);
     const m = Math.floor(remSecs / 60);
@@ -1102,7 +1129,8 @@
   function startHold(repNum, isFirstOfSet = false, isFirstOfExercise = false) {
     state.rep           = repNum;
     state.phase         = PHASE.HOLD;
-    state.phaseDuration = CFG.hold * 1000;
+    const exCfg         = getWorkoutConfig(state.exercise);
+    state.phaseDuration = exCfg.hold * 1000;
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
 
@@ -1111,9 +1139,9 @@
     setArcFill(0); // Section background starts empty, fills up to 100% during hold
 
     setStageBadge('HOLD');
-    setStageReps(state.rep, CFG.reps);
+    setStageReps(state.rep, exCfg.reps);
     
-    const remSecs = Math.max(0, CFG.hold);
+    const remSecs = Math.max(0, exCfg.hold);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
@@ -1158,7 +1186,8 @@
 
   function startRestReps() {
     state.phase         = PHASE.REST_REPS;
-    state.phaseDuration = CFG.restReps * 1000;
+    const exCfg         = getWorkoutConfig(state.exercise);
+    state.phaseDuration = exCfg.restReps * 1000;
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
 
@@ -1167,7 +1196,7 @@
     setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
     setStageBadge('REST');
-    const remSecs = Math.max(0, CFG.restReps);
+    const remSecs = Math.max(0, exCfg.restReps);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
@@ -1189,7 +1218,8 @@
 
   function startRestSets() {
     state.phase         = PHASE.REST_SETS;
-    state.phaseDuration = CFG.restSets * 1000;
+    const exCfg         = getWorkoutConfig(state.exercise);
+    state.phaseDuration = exCfg.restSets * 1000;
     state.phaseElapsed  = 0;
     state.spokenCounts  = {};
 
@@ -1198,7 +1228,7 @@
     setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
     setStageBadge('SET REST');
-    const remSecs = Math.max(0, CFG.restSets);
+    const remSecs = Math.max(0, exCfg.restSets);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
@@ -1455,29 +1485,28 @@
       const s = remSecs % 60;
       setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
 
-      // Full voice count: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-      const totalSec = Math.round(total / 1000);
-      const currentSec = Math.floor(state.phaseElapsed / 1000) + 1;
-      if (currentSec <= totalSec && !state.spokenCounts[currentSec]) {
-        state.spokenCounts[currentSec] = true;
-        speakCountdown('hold', String(currentSec));
+      // Voice countdown matching display going backwards (e.g. 5, 4, 3, 2, 1)
+      if (remSecs > 0 && !state.spokenCounts[remSecs]) {
+        state.spokenCounts[remSecs] = true;
+        speakCountdown('hold', String(remSecs));
         if (SETTINGS.countdownBeeps && state.running) playTone(880, 0.08);
       }
 
+      const exCfg = getWorkoutConfig(state.exercise);
       if (progress >= 1) {
         if (SETTINGS.countdownBeeps && state.running) playTone(1760, 0.2);
-        const isLastRepOfSet = state.rep >= CFG.reps;
-        const isLastSetOfEx  = state.set >= CFG.sets;
+        const isLastRepOfSet = state.rep >= exCfg.reps;
+        const isLastSetOfEx  = state.set >= exCfg.sets;
         const isLastExercise = state.exercise >= CFG.exercises;
 
         if (!isLastRepOfSet) {
-          if (CFG.restReps > 0) {
+          if (exCfg.restReps > 0) {
             startRestReps();
           } else {
             startHold(state.rep + 1);
           }
         } else if (!isLastSetOfEx) {
-          if (CFG.restSets > 0) {
+          if (exCfg.restSets > 0) {
             startRestSets();
           } else {
             state.set++;
@@ -1713,11 +1742,12 @@
 
     setArcFill(0);
 
-    const initSecs = CFG.prep > 0 ? CFG.prep : CFG.hold;
+    const exCfg = getWorkoutConfig(1);
+    const initSecs = CFG.prep > 0 ? CFG.prep : exCfg.hold;
     const m = Math.floor(initSecs / 60);
     const s = initSecs % 60;
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
-    setStageReps(1, CFG.reps);
+    setStageReps(1, exCfg.reps);
 
     requestWakeLock();
     setupVoiceRecognition();

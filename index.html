@@ -633,33 +633,75 @@
 </main>
 
 <script>
-  // ── State ────────────────────────────────────────────────────
-  const state = {
-    sets:        { value: 3,  min: 1, max: 99  },
-    'rest-sets': { value: 10, min: 0, max: 600 },
-    reps:        { value: 10, min: 1, max: 99  },
-    'rest-reps': { value: 5,  min: 0, max: 300 },
-    hold:        { value: 10, min: 0, max: 300 },
+  // ── Multi-Workout State Management ───────────────────────────
+  function createDefaultWorkout(id = 1) {
+    return {
+      id:       id,
+      sets:     3,
+      restSets: 10,
+      reps:     10,
+      restReps: 5,
+      hold:     10,
+    };
+  }
+
+  let workouts = [ createDefaultWorkout(1) ];
+  let activeWorkoutIndex = 0;
+
+  const TARGET_KEY_MAP = {
+    'sets':      'sets',
+    'rest-sets': 'restSets',
+    'reps':      'reps',
+    'rest-reps': 'restReps',
+    'hold':      'hold',
+  };
+
+  const LIMITS = {
+    sets:        { min: 1, max: 99  },
+    'rest-sets': { min: 0, max: 600 },
+    reps:        { min: 1, max: 99  },
+    'rest-reps': { min: 0, max: 300 },
+    hold:        { min: 0, max: 300 },
   };
 
   const STORAGE_KEY = 'workout_timer_saved_config';
 
+  function getActiveWorkout() {
+    if (!workouts[activeWorkoutIndex]) {
+      workouts[activeWorkoutIndex] = createDefaultWorkout(activeWorkoutIndex + 1);
+    }
+    return workouts[activeWorkoutIndex];
+  }
+
+  function loadActiveWorkoutToUI() {
+    const w = getActiveWorkout();
+    for (const [target, key] of Object.entries(TARGET_KEY_MAP)) {
+      const fallback = (key === 'sets' ? 3 : key === 'restSets' ? 10 : key === 'reps' ? 10 : key === 'restReps' ? 5 : 10);
+      const val = typeof w[key] === 'number' ? w[key] : fallback;
+      const display = document.getElementById(`${target}-val-display`);
+      if (display) display.textContent = val;
+      const input = document.getElementById(`${target}-val`);
+      if (input) input.value = val;
+    }
+  }
+
   // ── Persistence Helpers ──────────────────────────────────────
   function saveConfig() {
     try {
-      const exerciseCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
       const config = {
-        sets:          state['sets'].value,
-        restSets:      state['rest-sets'].value,
-        reps:          state['reps'].value,
-        restReps:      state['rest-reps'].value,
-        hold:          state['hold'].value,
-        exerciseCount: Math.max(1, exerciseCount),
-        soundSets:     true,
-        soundRestSets: true,
-        soundReps:     true,
-        soundRestReps: true,
-        soundHold:     true,
+        activeWorkoutIndex: activeWorkoutIndex,
+        workouts:           workouts,
+        exerciseCount:      workouts.length,
+        sets:               workouts[0]?.sets || 3,
+        restSets:           workouts[0]?.restSets || 10,
+        reps:               workouts[0]?.reps || 10,
+        restReps:           workouts[0]?.restReps || 5,
+        hold:               workouts[0]?.hold || 10,
+        soundSets:          true,
+        soundRestSets:      true,
+        soundReps:          true,
+        soundRestReps:      true,
+        soundHold:          true,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
     } catch (e) {
@@ -670,34 +712,63 @@
   function loadConfig() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
+      if (!raw) {
+        loadActiveWorkoutToUI();
+        renumberTabs();
+        return;
+      }
       const cfg = JSON.parse(raw);
 
-      if (typeof cfg.sets === 'number')      updateValue('sets', cfg.sets);
-      if (typeof cfg.restSets === 'number')  updateValue('rest-sets', cfg.restSets);
-      if (typeof cfg.reps === 'number')      updateValue('reps', cfg.reps);
-      if (typeof cfg.restReps === 'number')  updateValue('rest-reps', cfg.restReps);
-      if (typeof cfg.hold === 'number')      updateValue('hold', cfg.hold);
-
-      // Restore saved exercise tabs
-      if (cfg.exerciseCount && cfg.exerciseCount > 1) {
-        tabsContainer.querySelectorAll('.tab-wrapper').forEach(w => w.remove());
-        for (let i = 1; i <= cfg.exerciseCount; i++) {
-          createWorkoutTab(i, i === 1);
+      if (Array.isArray(cfg.workouts) && cfg.workouts.length > 0) {
+        workouts = cfg.workouts.map((w, idx) => ({
+          id:       idx + 1,
+          sets:     typeof w.sets === 'number' ? w.sets : 3,
+          restSets: typeof w.restSets === 'number' ? w.restSets : 10,
+          reps:     typeof w.reps === 'number' ? w.reps : 10,
+          restReps: typeof w.restReps === 'number' ? w.restReps : 5,
+          hold:     typeof w.hold === 'number' ? w.hold : 10,
+        }));
+      } else if (typeof cfg.sets === 'number') {
+        const count = cfg.exerciseCount && cfg.exerciseCount > 1 ? cfg.exerciseCount : 1;
+        workouts = [];
+        for (let i = 1; i <= count; i++) {
+          workouts.push({
+            id:       i,
+            sets:     cfg.sets || 3,
+            restSets: typeof cfg.restSets === 'number' ? cfg.restSets : 10,
+            reps:     cfg.reps || 10,
+            restReps: typeof cfg.restReps === 'number' ? cfg.restReps : 5,
+            hold:     typeof cfg.hold === 'number' ? cfg.hold : 10,
+          });
         }
-        updateRemoveButtons();
       }
+
+      // Rebuild tabs DOM to match workouts array
+      tabsContainer.querySelectorAll('.tab-wrapper').forEach(w => w.remove());
+      workouts.forEach((w, idx) => {
+        createWorkoutTab(idx + 1, idx === 0);
+      });
+      renumberTabs();
+
+      const savedIdx = typeof cfg.activeWorkoutIndex === 'number' && cfg.activeWorkoutIndex < workouts.length
+        ? cfg.activeWorkoutIndex
+        : 0;
+      switchTab(savedIdx);
     } catch (e) {
       console.warn('Failed to load config from localStorage:', e);
+      loadActiveWorkoutToUI();
+      renumberTabs();
     }
   }
 
   // ── Helper to Update and Sync Stepper Value ───────────────────
   function updateValue(target, newVal) {
-    const s = state[target];
-    if (!s) return;
-    const clamped = Math.min(s.max, Math.max(s.min, newVal));
-    s.value = clamped;
+    const lim = LIMITS[target];
+    if (!lim) return;
+    const clamped = Math.min(lim.max, Math.max(lim.min, newVal));
+    const key = TARGET_KEY_MAP[target];
+    const w = getActiveWorkout();
+    w[key] = clamped;
 
     const display = document.getElementById(`${target}-val-display`);
     if (display) {
@@ -713,7 +784,10 @@
   }
 
   function stepOnce(target, dir) {
-    updateValue(target, state[target].value + dir);
+    const key = TARGET_KEY_MAP[target];
+    const w = getActiveWorkout();
+    const current = typeof w[key] === 'number' ? w[key] : (key === 'sets' ? 3 : key === 'restSets' ? 10 : key === 'reps' ? 10 : key === 'restReps' ? 5 : 10);
+    updateValue(target, current + dir);
   }
 
   // ── Stepper Press & Hold for High Speed Acceleration ─────────
@@ -764,12 +838,14 @@
     const newWrapper = document.createElement('div');
     newWrapper.className = 'tab-wrapper';
     newWrapper.dataset.tabId = num;
+    newWrapper.dataset.index = num - 1;
 
     const newTab = document.createElement('button');
     newTab.className = `tab ${isActive ? 'active' : ''}`;
     newTab.role = 'tab';
     newTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
     newTab.dataset.tab = num;
+    newTab.dataset.index = num - 1;
     newTab.innerHTML = `
       <span class="tab-title">WORKOUT ${num}</span>
       <span class="tab-remove" title="Remove Workout" aria-label="Remove Workout">
@@ -800,21 +876,56 @@
     wrappers.forEach((w, index) => {
       const num = index + 1;
       w.dataset.tabId = num;
+      w.dataset.index = index;
       const btn = w.querySelector('.tab');
       btn.dataset.tab = num;
+      btn.dataset.index = index;
       btn.querySelector('.tab-title').textContent = `WORKOUT ${num}`;
+      if (workouts[index]) {
+        workouts[index].id = num;
+      }
     });
     updateRemoveButtons();
     saveConfig();
   }
 
-  function setActiveTab(tabBtn) {
-    tabsContainer.querySelectorAll('.tab').forEach(t => {
-      t.classList.remove('active');
-      t.setAttribute('aria-selected', 'false');
+  function switchTab(newIndex) {
+    if (newIndex < 0 || newIndex >= workouts.length) return;
+    activeWorkoutIndex = newIndex;
+
+    const wrappers = tabsContainer.querySelectorAll('.tab-wrapper');
+    wrappers.forEach((w, idx) => {
+      const btn = w.querySelector('.tab');
+      if (idx === newIndex) {
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+      } else {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
+      }
     });
-    tabBtn.classList.add('active');
-    tabBtn.setAttribute('aria-selected', 'true');
+
+    loadActiveWorkoutToUI();
+    saveConfig();
+  }
+
+  function removeTab(indexToRemove) {
+    if (workouts.length <= 1) return;
+    workouts.splice(indexToRemove, 1);
+
+    const wrappers = tabsContainer.querySelectorAll('.tab-wrapper');
+    if (wrappers[indexToRemove]) {
+      wrappers[indexToRemove].remove();
+    }
+
+    renumberTabs();
+
+    if (activeWorkoutIndex >= workouts.length) {
+      activeWorkoutIndex = workouts.length - 1;
+    } else if (activeWorkoutIndex === indexToRemove) {
+      activeWorkoutIndex = Math.max(0, indexToRemove - 1);
+    }
+    switchTab(activeWorkoutIndex);
   }
 
   // Setup tab click delegation
@@ -823,20 +934,16 @@
     if (removeBtn) {
       e.stopPropagation();
       const wrapper = removeBtn.closest('.tab-wrapper');
-      const wasActive = wrapper.querySelector('.tab').classList.contains('active');
-      wrapper.remove();
-      renumberTabs();
-      if (wasActive) {
-        const firstTab = tabsContainer.querySelector('.tab');
-        if (firstTab) setActiveTab(firstTab);
-      }
-      saveConfig();
+      const idx = parseInt(wrapper.dataset.index, 10);
+      removeTab(idx);
       return;
     }
 
     const tabBtn = e.target.closest('.tab');
-    if (tabBtn && tabBtn.dataset.tab) {
-      setActiveTab(tabBtn);
+    if (tabBtn) {
+      const wrapper = tabBtn.closest('.tab-wrapper');
+      const idx = parseInt(wrapper.dataset.index, 10);
+      switchTab(idx);
     }
   });
 
@@ -872,16 +979,27 @@
     tabsContainer.scrollLeft = scrollLeft - walk;
   });
 
-  // Add Workout Tab
+  // Add Workout Tab: Creates a completely independent workout with custom parameters
   tabAddBtn.addEventListener('click', () => {
-    const wrappers = tabsContainer.querySelectorAll('.tab-wrapper');
-    const newNum = wrappers.length + 1;
-    const newTab = createWorkoutTab(newNum, true);
+    const newNum = workouts.length + 1;
+    const current = getActiveWorkout();
+    const newWorkout = {
+      id:       newNum,
+      sets:     current.sets,
+      restSets: current.restSets,
+      reps:     current.reps,
+      restReps: current.restReps,
+      hold:     current.hold,
+    };
+    workouts.push(newWorkout);
 
-    setActiveTab(newTab);
-    updateRemoveButtons();
-    newTab.scrollIntoView({ behavior: 'smooth', inline: 'nearest' });
-    saveConfig();
+    createWorkoutTab(newNum, false);
+    renumberTabs();
+    switchTab(workouts.length - 1);
+
+    const wrappers = tabsContainer.querySelectorAll('.tab-wrapper');
+    const newWrapper = wrappers[wrappers.length - 1];
+    if (newWrapper) newWrapper.scrollIntoView({ behavior: 'smooth', inline: 'nearest' });
   });
 
   updateRemoveButtons();
@@ -892,7 +1010,7 @@
   // ── Start Workout Button ──────────────────────────────────────
   document.getElementById('start-btn').addEventListener('click', () => {
     saveConfig();
-    const workoutCount = tabsContainer.querySelectorAll('.tab-wrapper').length;
+    const workoutCount = workouts.length;
 
     // Read prep time from settings (default 0)
     let prepSec = 0;
@@ -904,14 +1022,16 @@
       }
     } catch (e) {}
 
+    const w1 = workouts[0] || createDefaultWorkout(1);
     const p = new URLSearchParams({
       prep:          prepSec,
-      sets:          state['sets'].value,
-      reps:          state['reps'].value,
-      restSets:      state['rest-sets'].value,
-      restReps:      state['rest-reps'].value,
-      hold:          state['hold'].value,
+      sets:          w1.sets,
+      reps:          w1.reps,
+      restSets:      w1.restSets,
+      restReps:      w1.restReps,
+      hold:          w1.hold,
       exercises:     workoutCount,
+      workouts:      JSON.stringify(workouts),
       soundSets:     '1',
       soundRestSets: '1',
       soundReps:     '1',
