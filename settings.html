@@ -74,8 +74,9 @@
     /* ── Main Container (Exact Figma v2: 375 × 1003 px Baseline) ── */
     .card {
       width: 100%;
-      max-width: 375px;
-      height: 1003px;
+      max-width: 440px;
+      height: 100vh;
+      height: 100dvh;
       max-height: 100dvh;
       margin: 0 auto;
       background: var(--bg);
@@ -89,11 +90,11 @@
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
     }
 
-    /* ── Group A: Header (375 × 83 px in Figma v2 Frame 1707479701) ── */
+    /* ── Group A: Header ──────────────────────────────────────────── */
     .header-bar {
       width: 100%;
-      height: 83px;
-      min-height: 83px;
+      height: clamp(54px, 8.5vh, 83px);
+      min-height: 54px;
       display: flex;
       align-items: stretch;
       justify-content: space-between;
@@ -106,15 +107,15 @@
       flex: 1;
       display: flex;
       align-items: center;
-      padding: 0 20px;
+      padding: 0 clamp(14px, 4vw, 20px);
       background: #000000;
     }
 
     .header-title {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 24px;
-      line-height: 24px;
+      font-size: clamp(20px, 3vh, 24px);
+      line-height: 1;
       letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--white);
@@ -127,8 +128,8 @@
 
     .close-btn,
     .close-btn:visited {
-      width: 93px;
-      height: 83px;
+      width: clamp(70px, 11vh, 93px);
+      height: 100%;
       background: var(--accent-red-header); /* #F1372A */
       border: none;
       display: flex;
@@ -147,8 +148,8 @@
     }
 
     .close-btn svg {
-      width: 20px;
-      height: 20px;
+      width: clamp(16px, 2.5vh, 20px);
+      height: clamp(16px, 2.5vh, 20px);
       stroke: var(--white);
       stroke-width: 2.2;
     }
