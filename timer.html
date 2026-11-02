@@ -959,31 +959,23 @@
     }
   }
 
-  function getCueName(key, fallback) {
-    if (SETTINGS.cueNames && SETTINGS.cueNames[key] && SETTINGS.cueNames[key].trim()) {
+  function getCueName(key) {
+    if (SETTINGS.cueNames && typeof SETTINGS.cueNames[key] === 'string') {
       return SETTINGS.cueNames[key].trim();
     }
-    return fallback;
+    const defaults = { sets: 'Set', reps: 'Rep', hold: 'Hold', restSets: 'Rest', restReps: 'Rest' };
+    return defaults[key] || '';
   }
 
-  function isCueEnabled(category) {
+  function isCountEnabled(category) {
     if (SETTINGS.cueToggles && SETTINGS.cueToggles[category] === false) {
       return false;
     }
-    if (category === 'sets' && CFG.soundSets === false) return false;
-    if (category === 'reps' && CFG.soundReps === false) return false;
-    if (category === 'hold' && CFG.soundHold === false) return false;
-    if (category === 'restSets' && CFG.soundRestSets === false) return false;
-    if (category === 'restReps' && CFG.soundRestReps === false) return false;
     return true;
   }
 
-  function isCategoryEnabled(category) {
-    return isCueEnabled(category);
-  }
-
-  function speakPhaseCue(category, text, onSpeechDone) {
-    if (!isCategoryEnabled(category)) {
+  function speakPhaseCue(text, onSpeechDone) {
+    if (!text || !text.trim() || SETTINGS.soundEnabled === false) {
       state.isWaitingForVoice = false;
       state.lastTickTime = performance.now();
       if (onSpeechDone) onSpeechDone();
@@ -1000,21 +992,23 @@
 
   function shouldAnnounceCountdown(remSecs) {
     const style = SETTINGS.countdownStyle || 'default';
-    if (style === 'final3') {
+    if (style === 'default' || style === 'final3') {
       return remSecs <= 3;
     }
     if (style === 'smart') {
       if (remSecs <= 10) return true;
       return (remSecs % 10 === 0);
     }
-    // Default: count every second
-    return true;
+    if (style === 'full') {
+      return true;
+    }
+    return remSecs <= 3;
   }
 
   function speakCountdown(category, text) {
     if (!state.running || state.finished) return;
     if (SETTINGS.soundEnabled === false) return;
-    if (!isCategoryEnabled(category)) return;
+    if (!isCountEnabled(category)) return;
     speakRaw(text, null);
   }
 
@@ -1200,8 +1194,8 @@
 
     setArcFill(0); // Section background starts empty, fills up to 100% during hold
 
-    const holdDisplayName = getCueName('hold', 'Hold');
-    setStageBadge(holdDisplayName.toUpperCase());
+    const holdDisplayName = getCueName('hold');
+    setStageBadge((holdDisplayName || 'HOLD').toUpperCase());
     setStageReps(state.rep, exCfg.reps);
     
     const remSecs = Math.max(0, exCfg.hold);
@@ -1212,26 +1206,43 @@
 
     updateWorkoutTitle();
 
-    const setsOn = isCueEnabled('sets');
-    const repsOn = isCueEnabled('reps');
-    const holdOn = isCueEnabled('hold');
-
-    const setName  = getCueName('sets', 'Set');
-    const repName  = getCueName('reps', 'Rep');
-    const holdName = getCueName('hold', 'Hold');
+    const setName   = getCueName('sets');
+    const countSets = isCountEnabled('sets');
+    const repName   = getCueName('reps');
+    const countReps = isCountEnabled('reps');
+    const holdName  = getCueName('hold');
 
     let cueParts = [];
+
+    // Optional Workout # prefix if multi-workout
     if (isFirstOfExercise && CFG.exercises > 1) {
       cueParts.push(`Workout ${state.exercise}`);
     }
 
-    if ((isFirstOfSet || isFirstOfExercise) && setsOn) {
-      cueParts.push(`${setName} ${state.set}`);
+    // Set announcement (only on the first rep of a set)
+    if (isFirstOfSet || isFirstOfExercise) {
+      if (setName) {
+        if (countSets) {
+          cueParts.push(`${setName} ${state.set}`);
+        } else {
+          cueParts.push(setName);
+        }
+      }
     }
 
-    if (repsOn) {
-      cueParts.push(`${repName} ${repNum}`);
-    } else if (!setsOn && holdOn && (isFirstOfSet || isFirstOfExercise)) {
+    // Rep announcement (every rep)
+    if (repName) {
+      if (countReps) {
+        cueParts.push(`${repName} ${repNum}`);
+      } else {
+        cueParts.push(repName);
+      }
+    } else if (countReps) {
+      cueParts.push(`${repNum}`);
+    }
+
+    // Hold label announcement (if not blank)
+    if (holdName) {
       cueParts.push(holdName);
     }
 
@@ -1243,7 +1254,6 @@
     }
 
     const cueText = cueParts.join('. ') + '.';
-    const category = (isFirstOfSet || isFirstOfExercise) ? 'sets' : 'reps';
 
     state.isCueSpeaking = true;
     let cueFinished = false;
@@ -1264,7 +1274,7 @@
       }
     };
 
-    speakPhaseCue(category, cueText, onCueDone);
+    speakPhaseCue(cueText, onCueDone);
 
     // Fallback timer: word count estimate + buffer
     const wordCount = cueText.trim().split(/\s+/).filter(Boolean).length;
@@ -1282,15 +1292,15 @@
 
     setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
-    const restRepsName = getCueName('restReps', 'Rest');
-    setStageBadge(restRepsName.toUpperCase());
+    const restRepsName = getCueName('restReps');
+    setStageBadge((restRepsName || 'REST').toUpperCase());
     const remSecs = Math.max(0, exCfg.restReps);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
 
-    if (!isCueEnabled('restReps')) {
+    if (!restRepsName) {
       state.isCueSpeaking = false;
       state.phaseElapsed = 0;
       state.lastTickTime = performance.now();
@@ -1316,7 +1326,7 @@
       }
     };
 
-    speakPhaseCue('restReps', restRepsName, onCueDone);
+    speakPhaseCue(restRepsName, onCueDone);
     setTimeout(onCueDone, 1200);
   }
 
@@ -1331,18 +1341,30 @@
 
     setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
-    const restSetsName = getCueName('restSets', 'Rest');
-    setStageBadge('SET ' + restSetsName.toUpperCase());
+    const restSetsName  = getCueName('restSets');
+    const setName       = getCueName('sets');
+    const countSets     = isCountEnabled('sets');
+
+    setStageBadge(('SET ' + (restSetsName || 'REST')).toUpperCase());
     const remSecs = Math.max(0, exCfg.restSets);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
 
-    const restSetsOn = isCueEnabled('restSets');
-    const setsOn = isCueEnabled('sets');
+    let cueParts = [];
+    if (setName) {
+      if (countSets) {
+        cueParts.push(`${setName} ${state.set} complete`);
+      } else {
+        cueParts.push(`${setName} complete`);
+      }
+    }
+    if (restSetsName) {
+      cueParts.push(restSetsName);
+    }
 
-    if (!restSetsOn && !setsOn) {
+    if (cueParts.length === 0) {
       state.isCueSpeaking = false;
       state.phaseElapsed = 0;
       state.lastTickTime = performance.now();
@@ -1368,17 +1390,8 @@
       }
     };
 
-    const setName = getCueName('sets', 'Set');
-    let cueText = '';
-    if (setsOn && restSetsOn) {
-      cueText = `${setName} ${state.set} complete. ${restSetsName}.`;
-    } else if (restSetsOn) {
-      cueText = `${restSetsName}.`;
-    } else {
-      cueText = `${setName} ${state.set} complete.`;
-    }
-
-    speakPhaseCue('restSets', cueText, onCueDone);
+    const cueText = cueParts.join('. ') + '.';
+    speakPhaseCue(cueText, onCueDone);
 
     const wordCount = cueText.trim().split(/\s+/).filter(Boolean).length;
     setTimeout(onCueDone, Math.max(1600, wordCount * 550 + 400));
@@ -1675,8 +1688,15 @@
       const s = remSecs % 60;
       setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
 
-      // User requirement: "Rest(No need to count)"
-      // Voice coach stays silent and does not count seconds during rest
+      // Voice countdown if enabled for rest phase
+      if (remSecs > 0 && !state.spokenCounts[remSecs]) {
+        state.spokenCounts[remSecs] = true;
+        const restCategory = state.phase === PHASE.REST_REPS ? 'restReps' : 'restSets';
+        if (isCountEnabled(restCategory) && shouldAnnounceCountdown(remSecs)) {
+          speakCountdown(restCategory, String(remSecs));
+        }
+        if (SETTINGS.countdownBeeps && state.running) playTone(880, 0.08);
+      }
 
       if (progress >= 1) {
         if (state.phase === PHASE.REST_REPS) {

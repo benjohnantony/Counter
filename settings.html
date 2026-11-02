@@ -886,6 +886,24 @@
         </div>
       </div>
 
+      <!-- 6. Voice Commands -->
+      <div class="setting-card">
+        <div class="setting-header-row">
+          <div class="setting-info">
+            <span class="setting-title">Voice Commands</span>
+            <span class="setting-desc">Hands-free control ("pause", "resume", "stop")</span>
+          </div>
+          <div class="switch-wrap">
+            <label class="switch-pill" aria-label="Toggle hands-free voice commands">
+              <input type="checkbox" class="switch-input" id="toggle-voice-commands" checked />
+              <span class="switch-track">
+                <span class="switch-thumb"></span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /settings-list -->
 
     <!-- Group D: Bottom Action Buttons (Figma v2 Frame 1707479702: 375 × 83 px) -->
@@ -1024,7 +1042,7 @@
           </div>
         </div>
 
-        <!-- 7. Countdown Style (Default / Smart / Final Seconds) -->
+        <!-- 7. Countdown Style (Default / Full Count / Smart Count) -->
         <div class="setting-card clickable" id="card-countdown-style" role="button" aria-haspopup="dialog" aria-label="Countdown style">
           <div class="setting-header-row">
             <div class="setting-info">
@@ -1034,24 +1052,6 @@
             <div class="setting-action">
               <span id="label-selected-countdown-style">Default</span>
               <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- 8. Voice Commands -->
-        <div class="setting-card">
-          <div class="setting-header-row">
-            <div class="setting-info">
-              <span class="setting-title">Voice Commands</span>
-              <span class="setting-desc">Hands-free control ("pause", "resume", "stop")</span>
-            </div>
-            <div class="switch-wrap">
-              <label class="switch-pill" aria-label="Toggle hands-free voice commands">
-                <input type="checkbox" class="switch-input" id="toggle-voice-commands" checked />
-                <span class="switch-track">
-                  <span class="switch-thumb"></span>
-                </span>
-              </label>
             </div>
           </div>
         </div>
@@ -1083,10 +1083,10 @@
         <div class="setting-header-row">
           <div class="setting-info">
             <span class="setting-title">Sets</span>
-            <span class="setting-desc">Spoken when a new set begins</span>
+            <span class="setting-desc">Toggle number count • Blank name mutes</span>
           </div>
           <div class="switch-wrap">
-            <label class="switch-pill" aria-label="Toggle sets voice cue">
+            <label class="switch-pill" aria-label="Toggle sets number count">
               <input type="checkbox" class="switch-input" id="toggle-cue-sets" checked />
               <span class="switch-track">
                 <span class="switch-thumb"></span>
@@ -1096,7 +1096,7 @@
         </div>
         <div class="custom-name-row">
           <span class="custom-name-prefix">Name:</span>
-          <input type="text" class="custom-name-input" id="input-cue-sets" placeholder="Default: Set" maxlength="24" />
+          <input type="text" class="custom-name-input" id="input-cue-sets" placeholder="Default: Set (Blank mutes)" maxlength="24" />
         </div>
       </div>
 
@@ -1105,10 +1105,10 @@
         <div class="setting-header-row">
           <div class="setting-info">
             <span class="setting-title">Rest Between Sets</span>
-            <span class="setting-desc">Spoken after set completes</span>
+            <span class="setting-desc">Toggle countdown • Blank name mutes</span>
           </div>
           <div class="switch-wrap">
-            <label class="switch-pill" aria-label="Toggle rest between sets voice cue">
+            <label class="switch-pill" aria-label="Toggle rest between sets countdown">
               <input type="checkbox" class="switch-input" id="toggle-cue-rest-sets" checked />
               <span class="switch-track">
                 <span class="switch-thumb"></span>
@@ -1118,7 +1118,7 @@
         </div>
         <div class="custom-name-row">
           <span class="custom-name-prefix">Name:</span>
-          <input type="text" class="custom-name-input" id="input-cue-rest-sets" placeholder="Default: Rest" maxlength="24" />
+          <input type="text" class="custom-name-input" id="input-cue-rest-sets" placeholder="Default: Rest (Blank mutes)" maxlength="24" />
         </div>
       </div>
 
@@ -1127,10 +1127,10 @@
         <div class="setting-header-row">
           <div class="setting-info">
             <span class="setting-title">Reps Per Set</span>
-            <span class="setting-desc">Spoken when a rep begins</span>
+            <span class="setting-desc">Toggle number count • Blank name mutes</span>
           </div>
           <div class="switch-wrap">
-            <label class="switch-pill" aria-label="Toggle reps voice cue">
+            <label class="switch-pill" aria-label="Toggle reps number count">
               <input type="checkbox" class="switch-input" id="toggle-cue-reps" checked />
               <span class="switch-track">
                 <span class="switch-thumb"></span>
@@ -1140,7 +1140,7 @@
         </div>
         <div class="custom-name-row">
           <span class="custom-name-prefix">Name:</span>
-          <input type="text" class="custom-name-input" id="input-cue-reps" placeholder="Default: Rep" maxlength="24" />
+          <input type="text" class="custom-name-input" id="input-cue-reps" placeholder="Default: Rep (Blank mutes)" maxlength="24" />
         </div>
       </div>
 
@@ -1149,10 +1149,10 @@
         <div class="setting-header-row">
           <div class="setting-info">
             <span class="setting-title">Rest Between Reps</span>
-            <span class="setting-desc">Spoken during rep rest</span>
+            <span class="setting-desc">Toggle countdown • Blank name mutes</span>
           </div>
           <div class="switch-wrap">
-            <label class="switch-pill" aria-label="Toggle rest between reps voice cue">
+            <label class="switch-pill" aria-label="Toggle rest between reps countdown">
               <input type="checkbox" class="switch-input" id="toggle-cue-rest-reps" checked />
               <span class="switch-track">
                 <span class="switch-thumb"></span>
@@ -1162,7 +1162,7 @@
         </div>
         <div class="custom-name-row">
           <span class="custom-name-prefix">Name:</span>
-          <input type="text" class="custom-name-input" id="input-cue-rest-reps" placeholder="Default: Rest" maxlength="24" />
+          <input type="text" class="custom-name-input" id="input-cue-rest-reps" placeholder="Default: Rest (Blank mutes)" maxlength="24" />
         </div>
       </div>
 
@@ -1171,10 +1171,10 @@
         <div class="setting-header-row">
           <div class="setting-info">
             <span class="setting-title">Hold Time</span>
-            <span class="setting-desc">Spoken during hold phase</span>
+            <span class="setting-desc">Toggle countdown • Blank name mutes</span>
           </div>
           <div class="switch-wrap">
-            <label class="switch-pill" aria-label="Toggle hold voice cue">
+            <label class="switch-pill" aria-label="Toggle hold countdown">
               <input type="checkbox" class="switch-input" id="toggle-cue-hold" checked />
               <span class="switch-track">
                 <span class="switch-thumb"></span>
@@ -1184,7 +1184,7 @@
         </div>
         <div class="custom-name-row">
           <span class="custom-name-prefix">Name:</span>
-          <input type="text" class="custom-name-input" id="input-cue-hold" placeholder="Default: Hold" maxlength="24" />
+          <input type="text" class="custom-name-input" id="input-cue-hold" placeholder="Default: Hold (Blank mutes)" maxlength="24" />
         </div>
       </div>
 
@@ -1699,17 +1699,14 @@
     {
       id: 'default',
       label: 'Default',
-      desc: 'Counts down every second (10, 9, 8, 7...)',
+    },
+    {
+      id: 'full',
+      label: 'Full Count',
     },
     {
       id: 'smart',
-      label: 'Smart Countdown',
-      desc: 'Counts each 10s (>10s), then counts 10 to 1 every second',
-    },
-    {
-      id: 'final3',
-      label: 'Final Seconds',
-      desc: 'Silent countdown, only announces final 3 seconds (3, 2, 1)',
+      label: 'Smart Count',
     },
   ];
 
@@ -1722,7 +1719,6 @@
       el.innerHTML = `
         <div class="sheet-item-left">
           <span class="sheet-item-name">${item.label}</span>
-          <span class="sheet-item-sub">${item.desc}</span>
         </div>
         <span class="sheet-item-check">✓</span>
       `;
@@ -1794,10 +1790,34 @@
     try {
       window.speechSynthesis.cancel();
 
-      const setName  = (currentSettings.cueNames && currentSettings.cueNames.sets && currentSettings.cueNames.sets.trim()) || 'Set';
-      const repName  = (currentSettings.cueNames && currentSettings.cueNames.reps && currentSettings.cueNames.reps.trim()) || 'repp';
-      const holdName = (currentSettings.cueNames && currentSettings.cueNames.hold && currentSettings.cueNames.hold.trim()) || 'Hold';
-      const rawPhrase = customPhrase || `${setName} 1. ${repName} 1. Get ready, ${holdName} for 10 seconds!`;
+      function getCue(k, fallback) {
+        if (currentSettings.cueNames && typeof currentSettings.cueNames[k] === 'string') {
+          return currentSettings.cueNames[k].trim();
+        }
+        return fallback;
+      }
+      function hasCount(k) {
+        return !(currentSettings.cueToggles && currentSettings.cueToggles[k] === false);
+      }
+
+      const setName  = getCue('sets', 'Set');
+      const repName  = getCue('reps', 'Rep');
+      const holdName = getCue('hold', 'Hold');
+
+      let parts = [];
+      if (setName) {
+        parts.push(hasCount('sets') ? `${setName} 1` : setName);
+      }
+      if (repName) {
+        parts.push(hasCount('reps') ? `${repName} 1` : repName);
+      }
+      if (holdName) {
+        parts.push(hasCount('hold') ? `Get ready, ${holdName} for 10 seconds` : holdName);
+      } else if (hasCount('hold')) {
+        parts.push('Get ready for 10 seconds');
+      }
+
+      const rawPhrase = customPhrase || (parts.length > 0 ? (parts.join('. ') + '!') : 'Ready!');
       const phrase = rawPhrase
         .replace(/\breps\b/gi, 'repps')
         .replace(/\brep\b/gi, 'repp')
