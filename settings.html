@@ -173,6 +173,55 @@
       display: none;
     }
 
+    /* ── Settings Section Grouping ── */
+    .settings-section-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+      margin-bottom: 0px;
+      padding: 0 4px;
+    }
+
+    .settings-section-title {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent-green); /* Volt Green #99FF44 */
+      white-space: nowrap;
+    }
+
+    .settings-section-header::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .sound-sub-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      transition: opacity 0.2s ease;
+    }
+
+    .sound-sub-controls.muted {
+      opacity: 0.38;
+      pointer-events: none;
+    }
+
     /* Setting Card (Figma v2: 335 × 96 px, dashed white border - small lines with gap) */
     .setting-card {
       width: 100%;
@@ -666,181 +715,197 @@
   <!-- Group C: Settings List -->
   <div class="settings-list">
 
-    <!-- 1. Sound Master Toggle -->
-    <div class="setting-card">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Sound</span>
-          <span class="setting-desc">Master audio & voice coach</span>
+    <!-- ══ SECTION 1: SOUND ══ -->
+    <div class="settings-section-header">
+      <span class="settings-section-title">SOUND</span>
+    </div>
+
+    <div class="settings-group">
+      <!-- 1. Sound Master Toggle -->
+      <div class="setting-card">
+        <div class="setting-header-row">
+          <div class="setting-info">
+            <span class="setting-title">Sound</span>
+            <span class="setting-desc">Master audio & voice coach</span>
+          </div>
+          <div class="switch-wrap">
+            <label class="switch-pill" aria-label="Toggle master sound">
+              <input type="checkbox" class="switch-input" id="toggle-sound" checked />
+              <span class="switch-track">
+                <span class="switch-thumb"></span>
+              </span>
+            </label>
+          </div>
         </div>
-        <div class="switch-wrap">
-          <label class="switch-pill" aria-label="Toggle master sound">
-            <input type="checkbox" class="switch-input" id="toggle-sound" checked />
-            <span class="switch-track">
-              <span class="switch-thumb"></span>
-            </span>
-          </label>
+      </div>
+
+      <div class="sound-sub-controls" id="sound-sub-controls">
+        <!-- 2. Volume -->
+        <div class="setting-card slider-card">
+          <div class="setting-header-row">
+            <div class="setting-info">
+              <span class="setting-title">Volume</span>
+              <span class="setting-desc">Adjust audio voice volume</span>
+            </div>
+            <span class="slider-val-label" id="val-volume">80%</span>
+          </div>
+          <div class="slider-full-row">
+            <input type="range" class="custom-slider" id="slider-volume"
+                   min="0" max="100" step="5" value="80"
+                   aria-label="Volume" />
+          </div>
+        </div>
+
+        <!-- 3. Language -->
+        <div class="setting-card clickable" id="card-language" role="button" aria-haspopup="dialog" aria-label="App language">
+          <div class="setting-header-row">
+            <div class="setting-info">
+              <span class="setting-title">Language</span>
+              <span class="setting-desc">Voice pronunciation & speech language</span>
+            </div>
+            <div class="setting-action">
+              <span id="label-selected-language">English</span>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Voice -->
+        <div class="setting-card clickable" id="card-voice" role="button" aria-haspopup="dialog" aria-label="Choose a voice">
+          <div class="setting-header-row">
+            <div class="setting-info">
+              <span class="setting-title">Voice</span>
+              <span class="setting-desc">Choose an audio coach voice</span>
+            </div>
+            <div class="setting-action">
+              <span id="label-selected-voice">Default</span>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Countdown Beep -->
+        <div class="setting-card">
+          <div class="setting-header-row">
+            <div class="setting-info">
+              <span class="setting-title">Countdown Beep</span>
+              <span class="setting-desc">Play audio cue tone on second counts</span>
+            </div>
+            <div class="switch-wrap">
+              <label class="switch-pill" aria-label="Toggle countdown beeps">
+                <input type="checkbox" class="switch-input" id="toggle-beeps" checked />
+                <span class="switch-track">
+                  <span class="switch-thumb"></span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Speech Speed -->
+        <div class="setting-card slider-card">
+          <div class="setting-header-row">
+            <div class="setting-info">
+              <span class="setting-title">Speech Speed</span>
+              <span class="setting-desc">Adjust coach counting speed</span>
+            </div>
+            <span class="slider-val-label" id="val-speed">1.0x</span>
+          </div>
+          <div class="slider-full-row">
+            <input type="range" class="custom-slider" id="slider-speed"
+                   min="0.6" max="1.6" step="0.1" value="1.0"
+                   aria-label="Speech speed" />
+          </div>
+        </div>
+
+        <!-- 7. Countdown Style (Default / Smart / Final Seconds) -->
+        <div class="setting-card clickable" id="card-countdown-style" role="button" aria-haspopup="dialog" aria-label="Countdown style">
+          <div class="setting-header-row">
+            <div class="setting-info">
+              <span class="setting-title">Countdown Style</span>
+              <span class="setting-desc">Choose how voice announces intervals</span>
+            </div>
+            <div class="setting-action">
+              <span id="label-selected-countdown-style">Default</span>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Voice Commands -->
+        <div class="setting-card">
+          <div class="setting-header-row">
+            <div class="setting-info">
+              <span class="setting-title">Voice Commands</span>
+              <span class="setting-desc">Hands-free control ("pause", "resume", "stop")</span>
+            </div>
+            <div class="switch-wrap">
+              <label class="switch-pill" aria-label="Toggle hands-free voice commands">
+                <input type="checkbox" class="switch-input" id="toggle-voice-commands" checked />
+                <span class="switch-track">
+                  <span class="switch-thumb"></span>
+                </span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 2. Volume -->
-    <div class="setting-card slider-card">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Volume</span>
-          <span class="setting-desc">Adjust audio voice volume</span>
-        </div>
-        <span class="slider-val-label" id="val-volume">80%</span>
-      </div>
-      <div class="slider-full-row">
-        <input type="range" class="custom-slider" id="slider-volume"
-               min="0" max="100" step="5" value="80"
-               aria-label="Volume" />
-      </div>
+    <!-- ══ SECTION 2: WORKOUT & TIMING ══ -->
+    <div class="settings-section-header">
+      <span class="settings-section-title">WORKOUT & TIMING</span>
     </div>
 
-    <!-- 3. Language -->
-    <div class="setting-card clickable" id="card-language" role="button" aria-haspopup="dialog" aria-label="App language">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Language</span>
-          <span class="setting-desc">Voice pronunciation & speech language</span>
+    <div class="settings-group">
+      <!-- 9. Preparation Time (0 to 60s, default 0s) -->
+      <div class="setting-card slider-card">
+        <div class="setting-header-row">
+          <div class="setting-info">
+            <span class="setting-title">Preparation Time</span>
+            <span class="setting-desc">Countdown before workout starts</span>
+          </div>
+          <span class="slider-val-label" id="val-prep">0s</span>
         </div>
-        <div class="setting-action">
-          <span id="label-selected-language">English</span>
-          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        <div class="slider-full-row">
+          <input type="range" class="custom-slider" id="slider-prep"
+                 min="0" max="60" step="1" value="0"
+                 aria-label="Preparation time in seconds" />
         </div>
       </div>
-    </div>
 
-    <!-- 4. Voice -->
-    <div class="setting-card clickable" id="card-voice" role="button" aria-haspopup="dialog" aria-label="Choose a voice">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Voice</span>
-          <span class="setting-desc">Choose an audio coach voice</span>
-        </div>
-        <div class="setting-action">
-          <span id="label-selected-voice">Default</span>
-          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      <!-- 10. Continue in Background -->
+      <div class="setting-card">
+        <div class="setting-header-row">
+          <div class="setting-info">
+            <span class="setting-title">Continue in Background</span>
+            <span class="setting-desc">Keep screen awake & timer running</span>
+          </div>
+          <div class="switch-wrap">
+            <label class="switch-pill" aria-label="Toggle continue in background">
+              <input type="checkbox" class="switch-input" id="toggle-wakelock" checked />
+              <span class="switch-track">
+                <span class="switch-thumb"></span>
+              </span>
+            </label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 5. Countdown Beep -->
-    <div class="setting-card">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Countdown Beep</span>
-          <span class="setting-desc">Play audio cue tone on second counts</span>
+      <!-- 11. Delay Time (0 to 60s, default 2s) -->
+      <div class="setting-card slider-card">
+        <div class="setting-header-row">
+          <div class="setting-info">
+            <span class="setting-title">Delay Time</span>
+            <span class="setting-desc">Pause between cue & countdown</span>
+          </div>
+          <span class="slider-val-label" id="val-delay">2s</span>
         </div>
-        <div class="switch-wrap">
-          <label class="switch-pill" aria-label="Toggle countdown beeps">
-            <input type="checkbox" class="switch-input" id="toggle-beeps" checked />
-            <span class="switch-track">
-              <span class="switch-thumb"></span>
-            </span>
-          </label>
+        <div class="slider-full-row">
+          <input type="range" class="custom-slider" id="slider-delay"
+                 min="0" max="60" step="1" value="2"
+                 aria-label="Delay time in seconds" />
         </div>
-      </div>
-    </div>
-
-    <!-- 6. Speech Speed -->
-    <div class="setting-card slider-card">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Speech Speed</span>
-          <span class="setting-desc">Adjust coach counting speed</span>
-        </div>
-        <span class="slider-val-label" id="val-speed">1.0x</span>
-      </div>
-      <div class="slider-full-row">
-        <input type="range" class="custom-slider" id="slider-speed"
-               min="0.6" max="1.6" step="0.1" value="1.0"
-               aria-label="Speech speed" />
-      </div>
-    </div>
-
-    <!-- 7. Countdown Style (Default / Smart / Final Seconds) -->
-    <div class="setting-card clickable" id="card-countdown-style" role="button" aria-haspopup="dialog" aria-label="Countdown style">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Countdown Style</span>
-          <span class="setting-desc">Choose how voice announces intervals</span>
-        </div>
-        <div class="setting-action">
-          <span id="label-selected-countdown-style">Default</span>
-          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-      </div>
-    </div>
-
-    <!-- 8. Voice Commands -->
-    <div class="setting-card">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Voice Commands</span>
-          <span class="setting-desc">Hands-free control ("pause", "resume", "stop")</span>
-        </div>
-        <div class="switch-wrap">
-          <label class="switch-pill" aria-label="Toggle hands-free voice commands">
-            <input type="checkbox" class="switch-input" id="toggle-voice-commands" checked />
-            <span class="switch-track">
-              <span class="switch-thumb"></span>
-            </span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- 9. Preparation Time (0 to 60s, default 0s) -->
-    <div class="setting-card slider-card">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Preparation Time</span>
-          <span class="setting-desc">Countdown before workout starts</span>
-        </div>
-        <span class="slider-val-label" id="val-prep">0s</span>
-      </div>
-      <div class="slider-full-row">
-        <input type="range" class="custom-slider" id="slider-prep"
-               min="0" max="60" step="1" value="0"
-               aria-label="Preparation time in seconds" />
-      </div>
-    </div>
-
-    <!-- 10. Continue in Background -->
-    <div class="setting-card">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Continue in Background</span>
-          <span class="setting-desc">Keep screen awake & timer running</span>
-        </div>
-        <div class="switch-wrap">
-          <label class="switch-pill" aria-label="Toggle continue in background">
-            <input type="checkbox" class="switch-input" id="toggle-wakelock" checked />
-            <span class="switch-track">
-              <span class="switch-thumb"></span>
-            </span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- 11. Delay Time (0 to 60s, default 2s) -->
-    <div class="setting-card slider-card">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Delay Time</span>
-          <span class="setting-desc">Pause between cue & countdown</span>
-        </div>
-        <span class="slider-val-label" id="val-delay">2s</span>
-      </div>
-      <div class="slider-full-row">
-        <input type="range" class="custom-slider" id="slider-delay"
-               min="0" max="60" step="1" value="2"
-               aria-label="Delay time in seconds" />
       </div>
     </div>
 
@@ -1030,10 +1095,27 @@
     sliderDelay.value = typeof currentSettings.delayTime === 'number' ? currentSettings.delayTime : 2;
     valDelay.textContent = `${sliderDelay.value}s`;
     updateSliderFill(sliderDelay);
+
+    const soundSubControls = document.getElementById('sound-sub-controls');
+    if (soundSubControls) {
+      if (currentSettings.soundEnabled === false) {
+        soundSubControls.classList.add('muted');
+      } else {
+        soundSubControls.classList.remove('muted');
+      }
+    }
   }
 
   toggleSound.addEventListener('change', () => {
     currentSettings.soundEnabled = toggleSound.checked;
+    const soundSubControls = document.getElementById('sound-sub-controls');
+    if (soundSubControls) {
+      if (!toggleSound.checked) {
+        soundSubControls.classList.add('muted');
+      } else {
+        soundSubControls.classList.remove('muted');
+      }
+    }
     saveSettings();
   });
 

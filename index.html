@@ -515,9 +515,9 @@
     <!-- Group B: Workout Tabs (375 × 84 px) -->
     <nav class="tabs-bar" id="tabs-container" role="tablist" aria-label="Workout Tabs">
       <div class="tab-wrapper" data-tab-id="1">
-        <button class="tab active" role="tab" aria-selected="true" data-tab="1">
+        <button class="tab active has-remove" role="tab" aria-selected="true" data-tab="1">
           <span class="tab-title">WORKOUT 1</span>
-          <span class="tab-remove" title="Remove Workout" aria-label="Remove Workout">
+          <span class="tab-remove" title="Reset / Remove Workout" aria-label="Reset or Remove Workout">
             <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>
             </svg>
@@ -676,9 +676,9 @@
   };
 
   const LIMITS = {
-    sets:        { min: 1, max: 99  },
+    sets:        { min: 0, max: 99  },
     'rest-sets': { min: 0, max: 600 },
-    reps:        { min: 1, max: 99  },
+    reps:        { min: 0, max: 99  },
     'rest-reps': { min: 0, max: 300 },
     hold:        { min: 0, max: 300 },
   };
@@ -753,9 +753,9 @@
         for (let i = 1; i <= count; i++) {
           workouts.push({
             id:       i,
-            sets:     cfg.sets || 3,
+            sets:     typeof cfg.sets === 'number' ? cfg.sets : 3,
             restSets: typeof cfg.restSets === 'number' ? cfg.restSets : 10,
-            reps:     cfg.reps || 10,
+            reps:     typeof cfg.reps === 'number' ? cfg.reps : 10,
             restReps: typeof cfg.restReps === 'number' ? cfg.restReps : 5,
             hold:     typeof cfg.hold === 'number' ? cfg.hold : 10,
           });
@@ -860,14 +860,14 @@
     newWrapper.dataset.index = num - 1;
 
     const newTab = document.createElement('button');
-    newTab.className = `tab ${isActive ? 'active' : ''}`;
+    newTab.className = `tab has-remove ${isActive ? 'active' : ''}`;
     newTab.role = 'tab';
     newTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
     newTab.dataset.tab = num;
     newTab.dataset.index = num - 1;
     newTab.innerHTML = `
       <span class="tab-title">WORKOUT ${num}</span>
-      <span class="tab-remove" title="Remove Workout" aria-label="Remove Workout">
+      <span class="tab-remove" title="Reset / Remove Workout" aria-label="Reset or Remove Workout">
         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>
         </svg>
@@ -882,11 +882,8 @@
     const wrappers = tabsContainer.querySelectorAll('.tab-wrapper');
     wrappers.forEach(w => {
       const tab = w.querySelector('.tab');
-      if (wrappers.length > 1) {
-        tab.classList.add('has-remove');
-      } else {
-        tab.classList.remove('has-remove');
-      }
+      // Never remove the close button; always keep it present for reset/delete actions
+      tab.classList.add('has-remove');
     });
   }
 
@@ -928,6 +925,53 @@
     saveConfig();
   }
 
+  function areAllValuesZero(w) {
+    if (!w) return true;
+    return (
+      (w.sets === 0 || !w.sets) &&
+      (w.restSets === 0 || !w.restSets) &&
+      (w.reps === 0 || !w.reps) &&
+      (w.restReps === 0 || !w.restReps) &&
+      (w.hold === 0 || !w.hold)
+    );
+  }
+
+  function resetWorkoutToZero(idx) {
+    const w = workouts[idx];
+    if (!w) return;
+    w.sets     = 0;
+    w.restSets = 0;
+    w.reps     = 0;
+    w.restReps = 0;
+    w.hold     = 0;
+    if (activeWorkoutIndex === idx) {
+      loadActiveWorkoutToUI();
+    }
+    saveConfig();
+  }
+
+  function handleTabCloseAction(idx) {
+    if (idx < 0 || idx >= workouts.length) return;
+    const w = workouts[idx];
+
+    // If only one tab exists, clicking close resets all values to 0
+    if (workouts.length <= 1) {
+      resetWorkoutToZero(0);
+      switchTab(0);
+      return;
+    }
+
+    // When multiple tabs exist:
+    // 1st click: if any values are non-zero, reset them all to 0
+    // 2nd click: if all values are already 0, remove/close the tab
+    if (!areAllValuesZero(w)) {
+      resetWorkoutToZero(idx);
+      switchTab(idx);
+    } else {
+      removeTab(idx);
+    }
+  }
+
   function removeTab(indexToRemove) {
     if (workouts.length <= 1) return;
     workouts.splice(indexToRemove, 1);
@@ -954,7 +998,7 @@
       e.stopPropagation();
       const wrapper = removeBtn.closest('.tab-wrapper');
       const idx = parseInt(wrapper.dataset.index, 10);
-      removeTab(idx);
+      handleTabCloseAction(idx);
       return;
     }
 
