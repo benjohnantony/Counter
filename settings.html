@@ -666,51 +666,25 @@
   <!-- Group C: Settings List -->
   <div class="settings-list">
 
-    <!-- 1. Voice -->
-    <div class="setting-card clickable" id="card-voice" role="button" aria-haspopup="dialog" aria-label="Choose a voice">
+    <!-- 1. Sound Master Toggle -->
+    <div class="setting-card">
       <div class="setting-header-row">
         <div class="setting-info">
-          <span class="setting-title">Voice</span>
-          <span class="setting-desc">Choose an audio coach voice</span>
+          <span class="setting-title">Sound</span>
+          <span class="setting-desc">Master audio & voice coach</span>
         </div>
-        <div class="setting-action">
-          <span id="label-selected-voice">Default</span>
-          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        <div class="switch-wrap">
+          <label class="switch-pill" aria-label="Toggle master sound">
+            <input type="checkbox" class="switch-input" id="toggle-sound" checked />
+            <span class="switch-track">
+              <span class="switch-thumb"></span>
+            </span>
+          </label>
         </div>
       </div>
     </div>
 
-    <!-- 2. Language -->
-    <div class="setting-card clickable" id="card-language" role="button" aria-haspopup="dialog" aria-label="App language">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Language</span>
-          <span class="setting-desc">Voice pronunciation & speech language</span>
-        </div>
-        <div class="setting-action">
-          <span id="label-selected-language">English</span>
-          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. Speech Speed -->
-    <div class="setting-card slider-card">
-      <div class="setting-header-row">
-        <div class="setting-info">
-          <span class="setting-title">Speech Speed</span>
-          <span class="setting-desc">Adjust coach counting speed</span>
-        </div>
-        <span class="slider-val-label" id="val-speed">1.0x</span>
-      </div>
-      <div class="slider-full-row">
-        <input type="range" class="custom-slider" id="slider-speed"
-               min="0.6" max="1.6" step="0.1" value="1.0"
-               aria-label="Speech speed" />
-      </div>
-    </div>
-
-    <!-- 4. Volume -->
+    <!-- 2. Volume -->
     <div class="setting-card slider-card">
       <div class="setting-header-row">
         <div class="setting-info">
@@ -726,32 +700,44 @@
       </div>
     </div>
 
-    <!-- 5. Preparation Time (0 to 60s, default 0s) -->
-    <div class="setting-card slider-card">
+    <!-- 3. Language -->
+    <div class="setting-card clickable" id="card-language" role="button" aria-haspopup="dialog" aria-label="App language">
       <div class="setting-header-row">
         <div class="setting-info">
-          <span class="setting-title">Preparation Time</span>
-          <span class="setting-desc">Countdown before workout starts</span>
+          <span class="setting-title">Language</span>
+          <span class="setting-desc">Voice pronunciation & speech language</span>
         </div>
-        <span class="slider-val-label" id="val-prep">0s</span>
-      </div>
-      <div class="slider-full-row">
-        <input type="range" class="custom-slider" id="slider-prep"
-               min="0" max="60" step="1" value="0"
-               aria-label="Preparation time in seconds" />
+        <div class="setting-action">
+          <span id="label-selected-language">English</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
       </div>
     </div>
 
-    <!-- 6. Continue in Background -->
+    <!-- 4. Voice -->
+    <div class="setting-card clickable" id="card-voice" role="button" aria-haspopup="dialog" aria-label="Choose a voice">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Voice</span>
+          <span class="setting-desc">Choose an audio coach voice</span>
+        </div>
+        <div class="setting-action">
+          <span id="label-selected-voice">Default</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Countdown Beep -->
     <div class="setting-card">
       <div class="setting-header-row">
         <div class="setting-info">
-          <span class="setting-title">Continue in Background</span>
-          <span class="setting-desc">Keep screen awake & timer running</span>
+          <span class="setting-title">Countdown Beep</span>
+          <span class="setting-desc">Play audio cue tone on second counts</span>
         </div>
         <div class="switch-wrap">
-          <label class="switch-pill" aria-label="Toggle continue in background">
-            <input type="checkbox" class="switch-input" id="toggle-wakelock" checked />
+          <label class="switch-pill" aria-label="Toggle countdown beeps">
+            <input type="checkbox" class="switch-input" id="toggle-beeps" checked />
             <span class="switch-track">
               <span class="switch-thumb"></span>
             </span>
@@ -760,7 +746,37 @@
       </div>
     </div>
 
-    <!-- 6. Voice Commands -->
+    <!-- 6. Speech Speed -->
+    <div class="setting-card slider-card">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Speech Speed</span>
+          <span class="setting-desc">Adjust coach counting speed</span>
+        </div>
+        <span class="slider-val-label" id="val-speed">1.0x</span>
+      </div>
+      <div class="slider-full-row">
+        <input type="range" class="custom-slider" id="slider-speed"
+               min="0.6" max="1.6" step="0.1" value="1.0"
+               aria-label="Speech speed" />
+      </div>
+    </div>
+
+    <!-- 7. Countdown Style (Default / Smart / Final Seconds) -->
+    <div class="setting-card clickable" id="card-countdown-style" role="button" aria-haspopup="dialog" aria-label="Countdown style">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Countdown Style</span>
+          <span class="setting-desc">Choose how voice announces intervals</span>
+        </div>
+        <div class="setting-action">
+          <span id="label-selected-countdown-style">Default</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Voice Commands -->
     <div class="setting-card">
       <div class="setting-header-row">
         <div class="setting-info">
@@ -778,16 +794,32 @@
       </div>
     </div>
 
-    <!-- 7. Countdown Beeps -->
+    <!-- 9. Preparation Time (0 to 60s, default 0s) -->
+    <div class="setting-card slider-card">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Preparation Time</span>
+          <span class="setting-desc">Countdown before workout starts</span>
+        </div>
+        <span class="slider-val-label" id="val-prep">0s</span>
+      </div>
+      <div class="slider-full-row">
+        <input type="range" class="custom-slider" id="slider-prep"
+               min="0" max="60" step="1" value="0"
+               aria-label="Preparation time in seconds" />
+      </div>
+    </div>
+
+    <!-- 10. Continue in Background -->
     <div class="setting-card">
       <div class="setting-header-row">
         <div class="setting-info">
-          <span class="setting-title">Countdown Beeps</span>
-          <span class="setting-desc">Play audio cue tone on second counts</span>
+          <span class="setting-title">Continue in Background</span>
+          <span class="setting-desc">Keep screen awake & timer running</span>
         </div>
         <div class="switch-wrap">
-          <label class="switch-pill" aria-label="Toggle countdown beeps">
-            <input type="checkbox" class="switch-input" id="toggle-beeps" checked />
+          <label class="switch-pill" aria-label="Toggle continue in background">
+            <input type="checkbox" class="switch-input" id="toggle-wakelock" checked />
             <span class="switch-track">
               <span class="switch-thumb"></span>
             </span>
@@ -796,15 +828,32 @@
       </div>
     </div>
 
+    <!-- 11. Delay Time (0 to 60s, default 2s) -->
+    <div class="setting-card slider-card">
+      <div class="setting-header-row">
+        <div class="setting-info">
+          <span class="setting-title">Delay Time</span>
+          <span class="setting-desc">Pause between cue & countdown</span>
+        </div>
+        <span class="slider-val-label" id="val-delay">2s</span>
+      </div>
+      <div class="slider-full-row">
+        <input type="range" class="custom-slider" id="slider-delay"
+               min="0" max="60" step="1" value="2"
+               aria-label="Delay time in seconds" />
+      </div>
+    </div>
+
   </div><!-- /settings-list -->
 
   <!-- Group D: Bottom Action Buttons (Figma v2 Frame 1707479702: 375 × 83 px) -->
   <footer class="actions-group">
-    <!-- Left: Test Voice Coach (Repeat Icon) -->
+    <!-- Left: Test Voice Coach (Speaker Icon) -->
     <button class="btn-secondary" id="btn-preview-coach" aria-label="Test Voice Coach" title="Test Voice Coach">
-      <svg viewBox="0 0 32 18" width="32" height="18" fill="none" aria-hidden="true">
-        <path d="M6 1V5H22C25.3137 5 28 7.68629 28 11C28 14.3137 25.3137 17 22 17H4" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="M8 9L3 5L8 1" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="#FFFFFF"/>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
       </svg>
       <span id="preview-btn-text">Test Coach</span>
     </button>
@@ -843,6 +892,18 @@
   </div>
 </div>
 
+<!-- ── Countdown Style Bottom Sheet ────────────────────────────── -->
+<div class="modal-overlay" id="modal-countdown-style" role="dialog" aria-modal="true" aria-labelledby="style-modal-title">
+  <div class="sheet-card">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <h3 id="style-modal-title">Countdown Style</h3>
+      <button class="sheet-close-btn" id="btn-close-style" aria-label="Close countdown style picker">&times;</button>
+    </div>
+    <div class="sheet-list" id="countdown-style-list"></div>
+  </div>
+</div>
+
 <script>
   /* ══════════════════════════════════════════════════════════════
    *  SETTINGS STATE & PERSISTENCE
@@ -850,16 +911,20 @@
   const SETTINGS_STORAGE_KEY = 'workout_timer_settings';
 
   const DEFAULT_SETTINGS = {
-    voiceURI:        'default',
-    voiceName:       'Default',
-    language:        'en-US',
-    languageLabel:   'English',
-    speed:           1.0,
-    volume:          80,
-    prepTime:        0,
-    keepScreenAwake: true,
-    voiceCommands:   true,
-    countdownBeeps:  true,
+    soundEnabled:        true,
+    volume:              80,
+    language:            'en-US',
+    languageLabel:       'English',
+    voiceURI:            'default',
+    voiceName:           'Default',
+    countdownBeeps:      true,
+    speed:               1.0,
+    countdownStyle:      'default',
+    countdownStyleLabel: 'Default',
+    voiceCommands:       true,
+    prepTime:            0,
+    keepScreenAwake:     true,
+    delayTime:           2,
   };
 
   let currentSettings = { ...DEFAULT_SETTINGS };
@@ -897,55 +962,93 @@
   /* ══════════════════════════════════════════════════════════════
    *  DOM REFS
    * ══════════════════════════════════════════════════════════════ */
-  const labelVoice       = document.getElementById('label-selected-voice');
-  const labelLanguage    = document.getElementById('label-selected-language');
-  const sliderSpeed      = document.getElementById('slider-speed');
-  const valSpeed         = document.getElementById('val-speed');
-  const sliderVolume     = document.getElementById('slider-volume');
-  const valVolume        = document.getElementById('val-volume');
-  const sliderPrep       = document.getElementById('slider-prep');
-  const valPrep          = document.getElementById('val-prep');
-  const toggleWakelock   = document.getElementById('toggle-wakelock');
-  const toggleCommands   = document.getElementById('toggle-voice-commands');
-  const toggleBeeps      = document.getElementById('toggle-beeps');
-  const btnPreview       = document.getElementById('btn-preview-coach');
-  const previewText      = document.getElementById('preview-btn-text');
-  const btnReset         = document.getElementById('btn-reset');
+  const toggleSound          = document.getElementById('toggle-sound');
+  const sliderVolume         = document.getElementById('slider-volume');
+  const valVolume            = document.getElementById('val-volume');
+  const labelLanguage        = document.getElementById('label-selected-language');
+  const labelVoice           = document.getElementById('label-selected-voice');
+  const toggleBeeps          = document.getElementById('toggle-beeps');
+  const sliderSpeed          = document.getElementById('slider-speed');
+  const valSpeed             = document.getElementById('val-speed');
+  const labelCountdownStyle  = document.getElementById('label-selected-countdown-style');
+  const toggleCommands       = document.getElementById('toggle-voice-commands');
+  const sliderPrep           = document.getElementById('slider-prep');
+  const valPrep              = document.getElementById('val-prep');
+  const toggleWakelock       = document.getElementById('toggle-wakelock');
+  const sliderDelay          = document.getElementById('slider-delay');
+  const valDelay             = document.getElementById('val-delay');
+
+  const btnPreview           = document.getElementById('btn-preview-coach');
+  const previewText          = document.getElementById('preview-btn-text');
+  const btnReset             = document.getElementById('btn-reset');
 
   // Modals
-  const cardVoice        = document.getElementById('card-voice');
-  const modalVoice       = document.getElementById('modal-voice');
-  const btnCloseVoice    = document.getElementById('btn-close-voice');
-  const voiceListEl      = document.getElementById('voice-list');
+  const cardVoice            = document.getElementById('card-voice');
+  const modalVoice           = document.getElementById('modal-voice');
+  const btnCloseVoice        = document.getElementById('btn-close-voice');
+  const voiceListEl          = document.getElementById('voice-list');
 
-  const cardLanguage     = document.getElementById('card-language');
-  const modalLanguage    = document.getElementById('modal-language');
-  const btnCloseLang     = document.getElementById('btn-close-lang');
-  const langListEl       = document.getElementById('lang-list');
+  const cardLanguage         = document.getElementById('card-language');
+  const modalLanguage        = document.getElementById('modal-language');
+  const btnCloseLang         = document.getElementById('btn-close-lang');
+  const langListEl           = document.getElementById('lang-list');
+
+  const cardCountdownStyle   = document.getElementById('card-countdown-style');
+  const modalCountdownStyle  = document.getElementById('modal-countdown-style');
+  const btnCloseStyle        = document.getElementById('btn-close-style');
+  const countdownStyleListEl = document.getElementById('countdown-style-list');
 
   /* ══════════════════════════════════════════════════════════════
    *  SYNC UI WITH CURRENT SETTINGS
    * ══════════════════════════════════════════════════════════════ */
   function syncUI() {
-    labelVoice.textContent    = currentSettings.voiceName || 'Default';
+    toggleSound.checked = currentSettings.soundEnabled !== false;
+
+    sliderVolume.value = currentSettings.volume;
+    valVolume.textContent = `${currentSettings.volume}%`;
+    updateSliderFill(sliderVolume);
+
     labelLanguage.textContent = currentSettings.languageLabel || 'English';
+    labelVoice.textContent    = currentSettings.voiceName || 'Default';
+
+    toggleBeeps.checked = !!currentSettings.countdownBeeps;
 
     sliderSpeed.value  = currentSettings.speed;
     valSpeed.textContent = `${parseFloat(currentSettings.speed).toFixed(1)}x`;
     updateSliderFill(sliderSpeed);
 
-    sliderVolume.value = currentSettings.volume;
-    valVolume.textContent = `${currentSettings.volume}%`;
-    updateSliderFill(sliderVolume);
+    labelCountdownStyle.textContent = currentSettings.countdownStyleLabel || 'Default';
+
+    toggleCommands.checked = !!currentSettings.voiceCommands;
 
     sliderPrep.value = typeof currentSettings.prepTime === 'number' ? currentSettings.prepTime : 0;
     valPrep.textContent = `${sliderPrep.value}s`;
     updateSliderFill(sliderPrep);
 
     toggleWakelock.checked = !!currentSettings.keepScreenAwake;
-    toggleCommands.checked = !!currentSettings.voiceCommands;
-    toggleBeeps.checked    = !!currentSettings.countdownBeeps;
+
+    sliderDelay.value = typeof currentSettings.delayTime === 'number' ? currentSettings.delayTime : 2;
+    valDelay.textContent = `${sliderDelay.value}s`;
+    updateSliderFill(sliderDelay);
   }
+
+  toggleSound.addEventListener('change', () => {
+    currentSettings.soundEnabled = toggleSound.checked;
+    saveSettings();
+  });
+
+  sliderVolume.addEventListener('input', () => {
+    const val = parseInt(sliderVolume.value, 10);
+    currentSettings.volume = val;
+    valVolume.textContent = `${val}%`;
+    updateSliderFill(sliderVolume);
+    saveSettings();
+  });
+
+  toggleBeeps.addEventListener('change', () => {
+    currentSettings.countdownBeeps = toggleBeeps.checked;
+    saveSettings();
+  });
 
   sliderSpeed.addEventListener('input', () => {
     const val = parseFloat(sliderSpeed.value);
@@ -955,11 +1058,8 @@
     saveSettings();
   });
 
-  sliderVolume.addEventListener('input', () => {
-    const val = parseInt(sliderVolume.value, 10);
-    currentSettings.volume = val;
-    valVolume.textContent = `${val}%`;
-    updateSliderFill(sliderVolume);
+  toggleCommands.addEventListener('change', () => {
+    currentSettings.voiceCommands = toggleCommands.checked;
     saveSettings();
   });
 
@@ -976,13 +1076,11 @@
     saveSettings();
   });
 
-  toggleCommands.addEventListener('change', () => {
-    currentSettings.voiceCommands = toggleCommands.checked;
-    saveSettings();
-  });
-
-  toggleBeeps.addEventListener('change', () => {
-    currentSettings.countdownBeeps = toggleBeeps.checked;
+  sliderDelay.addEventListener('input', () => {
+    const val = parseInt(sliderDelay.value, 10);
+    currentSettings.delayTime = val;
+    valDelay.textContent = `${val}s`;
+    updateSliderFill(sliderDelay);
     saveSettings();
   });
 
@@ -1100,6 +1198,52 @@
   }
 
   /* ══════════════════════════════════════════════════════════════
+   *  COUNTDOWN STYLE OPTIONS
+   * ══════════════════════════════════════════════════════════════ */
+  const COUNTDOWN_STYLES = [
+    {
+      id: 'default',
+      label: 'Default',
+      desc: 'Counts down every second (10, 9, 8, 7...)',
+    },
+    {
+      id: 'smart',
+      label: 'Smart Countdown',
+      desc: 'Counts each 10s (>10s), then counts 10 to 1 every second',
+    },
+    {
+      id: 'final3',
+      label: 'Final Seconds',
+      desc: 'Silent countdown, only announces final 3 seconds (3, 2, 1)',
+    },
+  ];
+
+  function populateCountdownStyleList() {
+    countdownStyleListEl.innerHTML = '';
+    COUNTDOWN_STYLES.forEach(item => {
+      const el = document.createElement('div');
+      const isSelected = (currentSettings.countdownStyle || 'default') === item.id;
+      el.className = `sheet-item ${isSelected ? 'selected' : ''}`;
+      el.innerHTML = `
+        <div class="sheet-item-left">
+          <span class="sheet-item-name">${item.label}</span>
+          <span class="sheet-item-sub">${item.desc}</span>
+        </div>
+        <span class="sheet-item-check">✓</span>
+      `;
+      el.onclick = () => {
+        currentSettings.countdownStyle = item.id;
+        currentSettings.countdownStyleLabel = item.label;
+        labelCountdownStyle.textContent = item.label;
+        saveSettings();
+        closeModals();
+        testVoiceCue(`Countdown style set to ${item.label}`);
+      };
+      countdownStyleListEl.appendChild(el);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════
    *  MODAL CONTROLS
    * ══════════════════════════════════════════════════════════════ */
   function openVoiceModal() {
@@ -1112,9 +1256,15 @@
     modalLanguage.classList.add('active');
   }
 
+  function openCountdownStyleModal() {
+    populateCountdownStyleList();
+    modalCountdownStyle.classList.add('active');
+  }
+
   function closeModals() {
     modalVoice.classList.remove('active');
     modalLanguage.classList.remove('active');
+    modalCountdownStyle.classList.remove('active');
   }
 
   cardVoice.addEventListener('click', openVoiceModal);
@@ -1129,11 +1279,22 @@
     if (e.target === modalLanguage) closeModals();
   });
 
+  cardCountdownStyle.addEventListener('click', openCountdownStyleModal);
+  btnCloseStyle.addEventListener('click', closeModals);
+  modalCountdownStyle.addEventListener('click', (e) => {
+    if (e.target === modalCountdownStyle) closeModals();
+  });
+
   /* ══════════════════════════════════════════════════════════════
    *  AUDIO PREVIEW / TEST COACH
    * ══════════════════════════════════════════════════════════════ */
   function testVoiceCue(customPhrase) {
     if (!('speechSynthesis' in window)) return;
+    if (currentSettings.soundEnabled === false) {
+      previewText.textContent = 'Sound Muted';
+      setTimeout(() => { previewText.textContent = 'Test Coach'; }, 1400);
+      return;
+    }
 
     try {
       window.speechSynthesis.cancel();
@@ -1161,12 +1322,12 @@
 
       u.onend = () => {
         btnPreview.classList.remove('playing');
-        previewText.textContent = 'Test Voice Coach';
+        previewText.textContent = 'Test Coach';
       };
 
       u.onerror = () => {
         btnPreview.classList.remove('playing');
-        previewText.textContent = 'Test Voice Coach';
+        previewText.textContent = 'Test Coach';
       };
 
       window.speechSynthesis.speak(u);

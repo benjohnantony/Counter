@@ -584,11 +584,11 @@
 
   <!-- ── Controls Section (Figma v2 Frame 1707479676: 375 × 83 px) ───── -->
   <div class="controls">
-    <!-- Repeat -->
-    <button class="ctrl-btn-block" id="btn-repeat" aria-label="Repeat current rep" title="Repeat">
-      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-        <polyline points="3 3 3 8 8 8"/>
+    <!-- Reset -->
+    <button class="ctrl-btn-block reset-col" id="btn-repeat" aria-label="Reset current rep" title="Reset">
+      <svg viewBox="0 0 32 18" width="28" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 1V5H22C25.3137 5 28 7.68629 28 11C28 14.3137 25.3137 17 22 17H4"/>
+        <path d="M8 9L3 5L8 1"/>
       </svg>
     </button>
 
@@ -664,6 +664,7 @@
    * ══════════════════════════════════════════════════════════════ */
   const SETTINGS_STORAGE_KEY = 'workout_timer_settings';
   let SETTINGS = {
+    soundEnabled:    true,
     voiceURI:        'default',
     language:        'en-US',
     speed:           1.0,
@@ -672,6 +673,8 @@
     keepScreenAwake: true,
     voiceCommands:   true,
     countdownBeeps:  true,
+    countdownStyle:  'default',
+    delayTime:       2,
   };
   try {
     const rawSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
@@ -785,6 +788,7 @@
   }
 
   function playTone(freq, duration = 0.12) {
+    if (SETTINGS.soundEnabled === false) return;
     if (!SETTINGS.countdownBeeps) return;
     if (!state.running || state.finished) return; // STRICT GUARD: Never play tone when paused or finished
     try {
@@ -844,6 +848,10 @@
   let coachSafetyTimer = null;
 
   function speakRaw(text, onComplete) {
+    if (SETTINGS.soundEnabled === false) {
+      if (onComplete) onComplete();
+      return;
+    }
     if (!('speechSynthesis' in window)) {
       if (onComplete) onComplete();
       return;
@@ -952,8 +960,22 @@
     });
   }
 
+  function shouldAnnounceCountdown(remSecs) {
+    const style = SETTINGS.countdownStyle || 'default';
+    if (style === 'final3') {
+      return remSecs <= 3;
+    }
+    if (style === 'smart') {
+      if (remSecs <= 10) return true;
+      return (remSecs % 10 === 0);
+    }
+    // Default: count every second
+    return true;
+  }
+
   function speakCountdown(category, text) {
     if (!state.running || state.finished) return;
+    if (SETTINGS.soundEnabled === false) return;
     if (!isCategoryEnabled(category)) return;
     speakRaw(text, null);
   }
@@ -1171,12 +1193,21 @@
 
     state.isCueSpeaking = true;
     let cueFinished = false;
+    const delayMs = Math.max(0, parseInt(SETTINGS.delayTime, 10) || 0) * 1000;
     const onCueDone = () => {
       if (cueFinished) return;
       cueFinished = true;
-      state.isCueSpeaking = false;
-      state.phaseElapsed = 0;
-      state.lastTickTime = performance.now();
+      if (delayMs > 0) {
+        setTimeout(() => {
+          state.isCueSpeaking = false;
+          state.phaseElapsed = 0;
+          state.lastTickTime = performance.now();
+        }, delayMs);
+      } else {
+        state.isCueSpeaking = false;
+        state.phaseElapsed = 0;
+        state.lastTickTime = performance.now();
+      }
     };
 
     speakPhaseCue(category, cueText, onCueDone);
@@ -1206,12 +1237,21 @@
 
     state.isCueSpeaking = true;
     let cueFinished = false;
+    const delayMs = Math.max(0, parseInt(SETTINGS.delayTime, 10) || 0) * 1000;
     const onCueDone = () => {
       if (cueFinished) return;
       cueFinished = true;
-      state.isCueSpeaking = false;
-      state.phaseElapsed = 0;
-      state.lastTickTime = performance.now();
+      if (delayMs > 0) {
+        setTimeout(() => {
+          state.isCueSpeaking = false;
+          state.phaseElapsed = 0;
+          state.lastTickTime = performance.now();
+        }, delayMs);
+      } else {
+        state.isCueSpeaking = false;
+        state.phaseElapsed = 0;
+        state.lastTickTime = performance.now();
+      }
     };
 
     speakPhaseCue('restReps', 'Rest', onCueDone);
@@ -1238,12 +1278,21 @@
 
     state.isCueSpeaking = true;
     let cueFinished = false;
+    const delayMs = Math.max(0, parseInt(SETTINGS.delayTime, 10) || 0) * 1000;
     const onCueDone = () => {
       if (cueFinished) return;
       cueFinished = true;
-      state.isCueSpeaking = false;
-      state.phaseElapsed = 0;
-      state.lastTickTime = performance.now();
+      if (delayMs > 0) {
+        setTimeout(() => {
+          state.isCueSpeaking = false;
+          state.phaseElapsed = 0;
+          state.lastTickTime = performance.now();
+        }, delayMs);
+      } else {
+        state.isCueSpeaking = false;
+        state.phaseElapsed = 0;
+        state.lastTickTime = performance.now();
+      }
     };
 
     const cueText = `Set ${state.set} complete. Rest.`;
@@ -1490,7 +1539,9 @@
       // Voice countdown matching display going backwards (e.g. 5, 4, 3, 2, 1)
       if (remSecs > 0 && !state.spokenCounts[remSecs]) {
         state.spokenCounts[remSecs] = true;
-        speakCountdown('hold', String(remSecs));
+        if (shouldAnnounceCountdown(remSecs)) {
+          speakCountdown('hold', String(remSecs));
+        }
         if (SETTINGS.countdownBeeps && state.running) playTone(880, 0.08);
       }
 

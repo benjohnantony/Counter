@@ -189,7 +189,8 @@
       background: #000000;
       border: none;
       border-radius: 0;
-      padding: 0 clamp(10px, 3vw, 16px);
+      padding-left: clamp(12px, 3vw, 18px);
+      padding-right: clamp(12px, 3vw, 18px);
       cursor: pointer;
       white-space: nowrap;
       display: inline-flex;
@@ -199,6 +200,11 @@
       transition: all var(--transition);
       flex-shrink: 0;
       -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+    }
+
+    .tab.has-remove {
+      padding-right: 0;
     }
 
     .tab span.tab-title {
@@ -221,36 +227,45 @@
       color: var(--white);
     }
 
-    /* Dismiss button: 20 × 20 px circular, fill #000000 */
+    /* Square Dismiss Button: Full-height square matching athletic brutalist style */
     .tab-remove {
       display: none;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.4);
+      height: 100%;
+      width: clamp(32px, 4.8vh, 40px);
+      aspect-ratio: 1;
+      border-radius: 0;
+      background: rgba(0, 0, 0, 0.35);
       border: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.2);
       align-items: center;
       justify-content: center;
       cursor: pointer;
       color: var(--white);
       flex-shrink: 0;
       padding: 0;
+      transition: background var(--transition);
     }
 
     .tab.has-remove .tab-remove {
       display: inline-flex;
     }
 
+    .tab:not(.active) .tab-remove {
+      background: #1B1B1F;
+      border-left: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
     .tab-remove:hover {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.85);
     }
 
     .tab-remove svg {
-      width: 8px;
-      height: 8px;
+      width: clamp(12px, 1.8vh, 15px);
+      height: clamp(12px, 1.8vh, 15px);
       display: block;
       stroke: #FFFFFF;
-      stroke-width: 2;
+      stroke-width: 2.4;
+      stroke-linecap: square;
     }
 
     /* Add Tab Button: 40 × 40 px, fill #000000, white plus icon */
@@ -504,7 +519,7 @@
           <span class="tab-title">WORKOUT 1</span>
           <span class="tab-remove" title="Remove Workout" aria-label="Remove Workout">
             <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M5 5L11 11M11 5L5 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>
             </svg>
           </span>
         </button>
@@ -854,7 +869,7 @@
       <span class="tab-title">WORKOUT ${num}</span>
       <span class="tab-remove" title="Remove Workout" aria-label="Remove Workout">
         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M5 5L11 11M11 5L5 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>
         </svg>
       </span>`;
 
