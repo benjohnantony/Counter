@@ -663,7 +663,7 @@
    *  LOAD USER SETTINGS
    * ══════════════════════════════════════════════════════════════ */
   const SETTINGS_STORAGE_KEY = 'workout_timer_settings';
-  let SETTINGS = {
+  const DEFAULT_SETTINGS = {
     soundEnabled:    true,
     voiceURI:        'default',
     language:        'en-US',
@@ -675,10 +675,34 @@
     countdownBeeps:  true,
     countdownStyle:  'default',
     delayTime:       2,
+    cueToggles: {
+      sets:     true,
+      restSets: true,
+      reps:     true,
+      restReps: true,
+      hold:     true,
+    },
+    cueNames: {
+      sets:     'Set',
+      restSets: 'Rest',
+      reps:     'Rep',
+      restReps: 'Rest',
+      hold:     'Hold',
+    },
   };
+
+  let SETTINGS = { ...DEFAULT_SETTINGS };
   try {
     const rawSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (rawSettings) SETTINGS = { ...SETTINGS, ...JSON.parse(rawSettings) };
+    if (rawSettings) {
+      const parsed = JSON.parse(rawSettings);
+      SETTINGS = {
+        ...DEFAULT_SETTINGS,
+        ...parsed,
+        cueToggles: { ...DEFAULT_SETTINGS.cueToggles, ...(parsed.cueToggles || {}) },
+        cueNames:   { ...DEFAULT_SETTINGS.cueNames,   ...(parsed.cueNames || {}) },
+      };
+    }
   } catch (e) {
     console.warn('Failed to load settings:', e);
   }
@@ -935,13 +959,27 @@
     }
   }
 
-  function isCategoryEnabled(category) {
-    if (category === 'sets')     return CFG.soundSets;
-    if (category === 'reps')     return CFG.soundReps;
-    if (category === 'hold')     return CFG.soundHold;
-    if (category === 'restSets') return CFG.soundRestSets;
-    if (category === 'restReps') return CFG.soundRestReps;
+  function getCueName(key, fallback) {
+    if (SETTINGS.cueNames && SETTINGS.cueNames[key] && SETTINGS.cueNames[key].trim()) {
+      return SETTINGS.cueNames[key].trim();
+    }
+    return fallback;
+  }
+
+  function isCueEnabled(category) {
+    if (SETTINGS.cueToggles && SETTINGS.cueToggles[category] === false) {
+      return false;
+    }
+    if (category === 'sets' && CFG.soundSets === false) return false;
+    if (category === 'reps' && CFG.soundReps === false) return false;
+    if (category === 'hold' && CFG.soundHold === false) return false;
+    if (category === 'restSets' && CFG.soundRestSets === false) return false;
+    if (category === 'restReps' && CFG.soundRestReps === false) return false;
     return true;
+  }
+
+  function isCategoryEnabled(category) {
+    return isCueEnabled(category);
   }
 
   function speakPhaseCue(category, text, onSpeechDone) {
@@ -1162,7 +1200,8 @@
 
     setArcFill(0); // Section background starts empty, fills up to 100% during hold
 
-    setStageBadge('HOLD');
+    const holdDisplayName = getCueName('hold', 'Hold');
+    setStageBadge(holdDisplayName.toUpperCase());
     setStageReps(state.rep, exCfg.reps);
     
     const remSecs = Math.max(0, exCfg.hold);
@@ -1173,23 +1212,38 @@
 
     updateWorkoutTitle();
 
-    // Voice announcement cue: strictly "repp" (phonetic), never "repetition" or "representative"
-    let cueText = '';
-    let category = 'reps';
+    const setsOn = isCueEnabled('sets');
+    const repsOn = isCueEnabled('reps');
+    const holdOn = isCueEnabled('hold');
 
-    if (isFirstOfExercise && state.exercise === 1) {
-      category = 'sets';
-      cueText = CFG.exercises > 1 ? 'Workout 1. Set 1. repp 1.' : 'Set 1. repp 1.';
-    } else if (isFirstOfExercise && state.exercise > 1) {
-      category = 'sets';
-      cueText = `Workout ${state.exercise}. Set 1. repp 1.`;
-    } else if (isFirstOfSet && state.set > 1) {
-      category = 'sets';
-      cueText = `Set ${state.set}. repp ${repNum}.`;
-    } else {
-      category = 'reps';
-      cueText = `repp ${repNum}.`;
+    const setName  = getCueName('sets', 'Set');
+    const repName  = getCueName('reps', 'Rep');
+    const holdName = getCueName('hold', 'Hold');
+
+    let cueParts = [];
+    if (isFirstOfExercise && CFG.exercises > 1) {
+      cueParts.push(`Workout ${state.exercise}`);
     }
+
+    if ((isFirstOfSet || isFirstOfExercise) && setsOn) {
+      cueParts.push(`${setName} ${state.set}`);
+    }
+
+    if (repsOn) {
+      cueParts.push(`${repName} ${repNum}`);
+    } else if (!setsOn && holdOn && (isFirstOfSet || isFirstOfExercise)) {
+      cueParts.push(holdName);
+    }
+
+    if (cueParts.length === 0) {
+      state.isCueSpeaking = false;
+      state.phaseElapsed = 0;
+      state.lastTickTime = performance.now();
+      return;
+    }
+
+    const cueText = cueParts.join('. ') + '.';
+    const category = (isFirstOfSet || isFirstOfExercise) ? 'sets' : 'reps';
 
     state.isCueSpeaking = true;
     let cueFinished = false;
@@ -1228,12 +1282,20 @@
 
     setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
-    setStageBadge('REST');
+    const restRepsName = getCueName('restReps', 'Rest');
+    setStageBadge(restRepsName.toUpperCase());
     const remSecs = Math.max(0, exCfg.restReps);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
+
+    if (!isCueEnabled('restReps')) {
+      state.isCueSpeaking = false;
+      state.phaseElapsed = 0;
+      state.lastTickTime = performance.now();
+      return;
+    }
 
     state.isCueSpeaking = true;
     let cueFinished = false;
@@ -1254,7 +1316,7 @@
       }
     };
 
-    speakPhaseCue('restReps', 'Rest', onCueDone);
+    speakPhaseCue('restReps', restRepsName, onCueDone);
     setTimeout(onCueDone, 1200);
   }
 
@@ -1269,12 +1331,23 @@
 
     setArcFill(1); // Starts full (100%), empties down to 0% during rest
 
-    setStageBadge('SET REST');
+    const restSetsName = getCueName('restSets', 'Rest');
+    setStageBadge('SET ' + restSetsName.toUpperCase());
     const remSecs = Math.max(0, exCfg.restSets);
     const m = Math.floor(remSecs / 60);
     const s = remSecs % 60;
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
+
+    const restSetsOn = isCueEnabled('restSets');
+    const setsOn = isCueEnabled('sets');
+
+    if (!restSetsOn && !setsOn) {
+      state.isCueSpeaking = false;
+      state.phaseElapsed = 0;
+      state.lastTickTime = performance.now();
+      return;
+    }
 
     state.isCueSpeaking = true;
     let cueFinished = false;
@@ -1295,7 +1368,16 @@
       }
     };
 
-    const cueText = `Set ${state.set} complete. Rest.`;
+    const setName = getCueName('sets', 'Set');
+    let cueText = '';
+    if (setsOn && restSetsOn) {
+      cueText = `${setName} ${state.set} complete. ${restSetsName}.`;
+    } else if (restSetsOn) {
+      cueText = `${restSetsName}.`;
+    } else {
+      cueText = `${setName} ${state.set} complete.`;
+    }
+
     speakPhaseCue('restSets', cueText, onCueDone);
 
     const wordCount = cueText.trim().split(/\s+/).filter(Boolean).length;
@@ -1539,7 +1621,7 @@
       // Voice countdown matching display going backwards (e.g. 5, 4, 3, 2, 1)
       if (remSecs > 0 && !state.spokenCounts[remSecs]) {
         state.spokenCounts[remSecs] = true;
-        if (shouldAnnounceCountdown(remSecs)) {
+        if (isCueEnabled('hold') && shouldAnnounceCountdown(remSecs)) {
           speakCountdown('hold', String(remSecs));
         }
         if (SETTINGS.countdownBeeps && state.running) playTone(880, 0.08);
