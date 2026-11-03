@@ -420,17 +420,17 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* ── BOTTOM OVERLAY MODAL (Figma v2: 1px Solid White Border) ─── */
+    /* ── BOTTOM OVERLAY MODAL (Figma Node 77-49) ─── */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 20px;
+      align-items: flex-end;
+      padding: 0;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
@@ -444,78 +444,157 @@
     }
 
     .modal-card {
+      position: relative;
       width: 100%;
-      max-width: 335px;
+      max-width: 375px;
       box-sizing: border-box;
-      background: var(--bg); /* #000000 */
-      border: 1px solid var(--card-border); /* 1px solid #FFFFFF */
-      border-radius: var(--r-none);
-      padding: 24px 20px;
+      background: #000000;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      border-radius: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      text-align: center;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9);
-      transform: scale(0.95);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      align-items: center;
+      box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.9);
+      transform: translateY(100%);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .modal-overlay.active .modal-card {
-      transform: scale(1);
+      transform: translateY(0);
     }
 
-    .modal-text-group {
+    .modal-close-btn {
+      position: absolute;
+      top: -83px;
+      right: 0;
+      width: 93px;
+      height: 83px;
+      background: #F1372A;
+      border: none;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      z-index: 10;
+      transition: filter 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-close-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    .modal-close-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: #FFFFFF;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .modal-body {
+      width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      align-items: center;
       text-align: center;
+      padding: 28px 24px 26px;
+      box-sizing: border-box;
+    }
+
+    .modal-ill {
+      height: 135px;
+      width: auto;
+      max-width: 200px;
+      object-fit: contain;
+      margin-bottom: 20px;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     .modal-title {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: 24px;
-      line-height: 28px;
+      font-size: 26px;
+      line-height: 1.15;
       letter-spacing: 1.2px;
       text-transform: uppercase;
-      color: var(--white);
+      color: #FFFFFF;
+      margin: 0 0 10px;
+      text-align: center;
     }
 
     .modal-subtitle {
       font-family: var(--font-body);
       font-weight: 500;
       font-size: 13px;
-      line-height: 16px;
-      color: var(--muted-text);
+      line-height: 1.45;
+      color: #9E9E9E;
+      text-align: center;
+      max-width: 290px;
+      margin: 0;
     }
 
-    .modal-controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
+    .modal-subtitle .highlight-green {
+      color: #99FF44;
+      font-weight: 700;
     }
 
-    .modal-btn {
-      flex: 1;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-family: var(--font-heading);
-      font-size: 16px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      cursor: pointer;
+    .modal-action-bar {
+      width: 100%;
+      height: 83px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      box-sizing: border-box;
+    }
+
+    .modal-action-btn {
+      height: 100%;
       border: none;
-      transition: filter var(--transition);
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: filter 0.15s ease;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .modal-btn:hover { filter: brightness(1.12); }
-    .modal-btn.resume { background: var(--accent-green); color: var(--text-black); }
-    .modal-btn.restart { background: #1B1B1F; border: 1px solid var(--control-border); color: var(--white); }
-    .modal-btn.home { background: var(--accent-red); color: var(--white); }
+    .modal-action-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .modal-action-btn.btn-restart {
+      background: #000000;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+    }
+
+    .modal-action-btn.btn-home {
+      background: #99FF44;
+      color: #000000;
+    }
+
+    .modal-action-btn.btn-play {
+      background: #99FF44;
+      color: #000000;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .modal-action-btn.btn-stop {
+      background: #000000;
+      color: #FF003B;
+    }
 
     /* Responsive */
     @media (max-width: 480px) {
@@ -613,47 +692,91 @@
 
 </main>
 
-<!-- ── STOP POPUP MODAL (Exact Figma 335 × 257 px) ──────────────── -->
+<!-- ── STOP POPUP MODAL (Figma Node 77-49) ──────────────── -->
 <div class="modal-overlay" id="stop-modal" role="dialog" aria-modal="true" aria-labelledby="stop-title">
   <div class="modal-card">
-    <div class="modal-text-group">
-      <h2 class="modal-title" id="stop-title">Stop Workout?</h2>
+    <button class="modal-close-btn" id="modal-resume-btn" aria-label="Resume workout">
+      <svg viewBox="0 0 24 24">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="modal-body">
+      <img src="assets/ill_water_bottle.png" alt="Stop Workout" class="modal-ill" />
+      <h2 class="modal-title" id="stop-title">STOP WORKOUT?</h2>
       <p class="modal-subtitle">Would you like to restart from the beginning or return to home?</p>
     </div>
-
-    <div class="modal-controls">
-      <button class="modal-btn restart" id="modal-restart-btn">Restart</button>
-      <button class="modal-btn resume" id="modal-resume-btn">Resume</button>
-      <button class="modal-btn home" id="modal-home-btn">Home</button>
+    <div class="modal-action-bar">
+      <button class="modal-action-btn btn-restart" id="modal-restart-btn" aria-label="Restart">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+      </button>
+      <button class="modal-action-btn btn-home" id="modal-home-btn" aria-label="Home">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#000000">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- ── NEXT WORKOUT POPUP MODAL ──────────────────────────────────── -->
+<!-- ── NEXT WORKOUT POPUP MODAL (Figma Node 77-49) ─────────────── -->
 <div class="modal-overlay" id="next-workout-modal" role="dialog" aria-modal="true" aria-labelledby="next-workout-title">
   <div class="modal-card">
-    <div class="modal-text-group">
-      <h2 class="modal-title" id="next-workout-title">Workout 1 Complete!</h2>
-      <p class="modal-subtitle" id="next-workout-subtitle">Ready for Workout 2? Take your time to get ready.</p>
+    <button class="modal-close-btn" id="next-workout-close-btn" aria-label="Close">
+      <svg viewBox="0 0 24 24">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="modal-body">
+      <img src="assets/ill_stopwatch.png" alt="Workout Transition" class="modal-ill" />
+      <h2 class="modal-title" id="next-workout-title">WORKOUT 1 COMPLETE!</h2>
+      <p class="modal-subtitle" id="next-workout-subtitle">Workout 2 starts in <span class="highlight-green" id="next-workout-timer">00:20</span></p>
     </div>
-
-    <div class="modal-controls">
-      <button class="modal-btn resume" id="next-workout-start-btn" style="flex: 1; height: 52px; background: var(--accent-green); color: var(--text-black);">START WORKOUT 2</button>
+    <div class="modal-action-bar">
+      <button class="modal-action-btn btn-play" id="next-workout-start-btn" aria-label="Start Next Workout">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#000000">
+          <polygon points="6 3 20 12 6 21 6 3"/>
+        </svg>
+      </button>
+      <button class="modal-action-btn btn-stop" id="next-workout-stop-btn" aria-label="Stop Workout">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#FF003B">
+          <rect x="4" y="4" width="16" height="16" rx="1.5"/>
+        </svg>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- ── FINISH POPUP MODAL (Figma v2) ─────────────────────────────── -->
+<!-- ── FINISH POPUP MODAL (Figma Node 77-49) ────────────────────── -->
 <div class="modal-overlay" id="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finish-title">
   <div class="modal-card">
-    <div class="modal-text-group">
-      <h2 class="modal-title" id="finish-title">Workout Complete</h2>
+    <button class="modal-close-btn" id="finish-close-btn" aria-label="Close">
+      <svg viewBox="0 0 24 24">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="modal-body">
+      <img src="assets/ill_trophy.png" alt="Workout Complete" class="modal-ill" />
+      <h2 class="modal-title" id="finish-title">WORKOUT COMPLETE</h2>
       <p class="modal-subtitle" id="finish-subtitle">You finished all exercises. Great Workout!</p>
     </div>
-
-    <div class="modal-controls">
-      <button class="modal-btn restart" id="finish-restart-btn">Restart</button>
-      <button class="modal-btn resume" id="finish-home-btn">Home</button>
+    <div class="modal-action-bar">
+      <button class="modal-action-btn btn-restart" id="finish-restart-btn" aria-label="Restart">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+      </button>
+      <button class="modal-action-btn btn-home" id="finish-home-btn" aria-label="Home">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#000000">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+      </button>
     </div>
   </div>
 </div>
@@ -1400,6 +1523,32 @@
   /* ══════════════════════════════════════════════════════════════
    *  TRANSITION / COMPLETE MODALS
    * ══════════════════════════════════════════════════════════════ */
+  let transitionInterval = null;
+
+  function proceedToNextWorkout() {
+    if (transitionInterval) {
+      clearInterval(transitionInterval);
+      transitionInterval = null;
+    }
+    if (nextWorkoutModal) nextWorkoutModal.classList.remove('active');
+    state.exercise++;
+    state.set = 1;
+    state.rep = 1;
+    state.running = true;
+    card.classList.remove('paused');
+    btnPause.classList.remove('paused');
+    iconPause.style.display = '';
+    iconPlay.style.display  = 'none';
+    if (pauseLabel) pauseLabel.textContent = 'PAUSE';
+
+    startTicker();
+    if (CFG.prep > 0) {
+      startPrep();
+    } else {
+      startHold(1, true, true);
+    }
+  }
+
   function showNextWorkoutPrompt() {
     state.running = false;
     stopTicker();
@@ -1410,8 +1559,26 @@
 
     const nextNum = state.exercise + 1;
     if (nextWorkoutTitle) nextWorkoutTitle.textContent = `WORKOUT ${state.exercise} COMPLETE!`;
-    if (nextWorkoutSubtitle) nextWorkoutSubtitle.textContent = `Ready for Workout ${nextNum} of ${CFG.exercises}? Take your time to get ready.`;
-    if (nextWorkoutStartBtn) nextWorkoutStartBtn.textContent = `START WORKOUT ${nextNum}`;
+
+    let countdown = 20;
+    const updateCountdownText = () => {
+      const formatted = `00:${String(Math.max(0, countdown)).padStart(2, '0')}`;
+      if (nextWorkoutSubtitle) {
+        nextWorkoutSubtitle.innerHTML = `Workout ${nextNum} starts in <span class="highlight-green" id="next-workout-timer">${formatted}</span>`;
+      }
+    };
+    updateCountdownText();
+
+    if (transitionInterval) clearInterval(transitionInterval);
+    transitionInterval = setInterval(() => {
+      countdown--;
+      updateCountdownText();
+      if (countdown <= 0) {
+        clearInterval(transitionInterval);
+        transitionInterval = null;
+        proceedToNextWorkout();
+      }
+    }, 1000);
 
     if (nextWorkoutModal) nextWorkoutModal.classList.add('active');
     speakRaw(`Workout ${state.exercise} complete. Ready for Workout ${nextNum}.`);
@@ -1419,23 +1586,25 @@
 
   if (nextWorkoutStartBtn) {
     nextWorkoutStartBtn.onclick = () => {
-      if (nextWorkoutModal) nextWorkoutModal.classList.remove('active');
-      state.exercise++;
-      state.set = 1;
-      state.rep = 1;
-      state.running = true;
-      card.classList.remove('paused');
-      btnPause.classList.remove('paused');
-      iconPause.style.display = '';
-      iconPlay.style.display  = 'none';
-      if (pauseLabel) pauseLabel.textContent = 'PAUSE';
+      proceedToNextWorkout();
+    };
+  }
 
-      startTicker();
-      if (CFG.prep > 0) {
-        startPrep();
-      } else {
-        startHold(1, true, true);
-      }
+  const nextWorkoutStopBtn = document.getElementById('next-workout-stop-btn');
+  if (nextWorkoutStopBtn) {
+    nextWorkoutStopBtn.onclick = () => {
+      if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
+      if (nextWorkoutModal) nextWorkoutModal.classList.remove('active');
+      openStopModal();
+    };
+  }
+
+  const nextWorkoutCloseBtn = document.getElementById('next-workout-close-btn');
+  if (nextWorkoutCloseBtn) {
+    nextWorkoutCloseBtn.onclick = () => {
+      if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
+      if (nextWorkoutModal) nextWorkoutModal.classList.remove('active');
+      openStopModal();
     };
   }
 
@@ -1465,6 +1634,12 @@
   }
 
   function restartEntireWorkout() {
+    if (transitionInterval) {
+      clearInterval(transitionInterval);
+      transitionInterval = null;
+    }
+    if (nextWorkoutModal) nextWorkoutModal.classList.remove('active');
+    if (finishModal) finishModal.classList.remove('active');
     state.finished = false;
     state.exercise = 1;
     state.set = 1;
@@ -1559,6 +1734,14 @@
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     location.href = 'index.html';
   };
+
+  const finishCloseBtn = document.getElementById('finish-close-btn');
+  if (finishCloseBtn) {
+    finishCloseBtn.onclick = () => {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      location.href = 'index.html';
+    };
+  }
 
   if (finishSetupBtn) {
     finishSetupBtn.onclick = () => {

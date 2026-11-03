@@ -651,20 +651,22 @@
       display: none;
     }
 
-    /* ── Bottom Sheet Selection Modal ───────────────────────────── */
+    /* ── Bottom Sheet Selection Modal (Figma Node 77-49) ───────── */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.28s ease;
+      transition: opacity 0.25s ease;
       z-index: 990;
       display: flex;
       justify-content: center;
       align-items: flex-end;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     .modal-overlay.active {
@@ -675,17 +677,19 @@
     .sheet-card {
       width: 100%;
       max-width: 375px;
-      max-height: 80vh;
-      background: var(--bg);
-      border: 1px solid var(--card-border);
+      max-height: 85vh;
+      background: #000000;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-left: none;
+      border-right: none;
       border-bottom: none;
-      border-radius: var(--r-none);
-      padding: 20px 20px 32px;
+      border-radius: 0;
+      padding: 0 0 24px;
       display: flex;
       flex-direction: column;
       transform: translateY(100%);
-      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.9);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.9);
       box-sizing: border-box;
     }
 
@@ -694,78 +698,138 @@
     }
 
     .sheet-handle {
-      width: 40px;
-      height: 4px;
-      border-radius: 999px;
-      background: var(--control-border);
-      margin: 0 auto 16px;
+      display: none;
     }
 
     .sheet-header {
+      height: 83px;
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #222227;
+      padding-left: 24px;
+      padding-right: 0;
+      margin: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      box-sizing: border-box;
     }
 
     .sheet-header h3 {
       font-family: var(--font-heading);
       font-size: 22px;
       font-weight: 400;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      color: var(--white);
+      color: #FFFFFF;
+      margin: 0;
     }
 
     .sheet-close-btn {
-      background: transparent;
-      border: 1px solid var(--control-border);
+      width: 93px;
+      height: 83px;
+      background: #F1372A;
+      border: none;
       border-radius: 0;
-      width: 32px;
-      height: 32px;
-      display: grid;
-      place-items: center;
-      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      font-size: 1.2rem;
-      line-height: 1;
+      padding: 0;
+      color: #FFFFFF;
+      transition: filter 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .sheet-close-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    .sheet-close-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: #FFFFFF;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .sheet-list {
+      padding: 20px 20px 10px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      max-height: 55vh;
-      padding-right: 4px;
+      gap: 12px;
+      max-height: 60vh;
+      box-sizing: border-box;
     }
 
     .sheet-item {
+      min-height: 64px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 16px;
-      background: var(--bg);
-      border: 1px solid var(--control-border);
+      background: #000000;
+      border: 1.5px dashed rgba(255, 255, 255, 0.25);
       border-radius: 0;
       cursor: pointer;
-      transition: background var(--transition), border-color var(--transition);
-      color: var(--primary-text);
-      font-family: var(--font-body);
-      font-weight: 500;
+      transition: all 0.15s ease;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .sheet-item:hover {
-      background: #111114;
-      border-color: var(--accent-green);
+      border-color: #99FF44;
     }
 
     .sheet-item.selected {
-      border-color: var(--accent-green);
-      background: rgba(153, 255, 68, 0.12);
-      color: var(--accent-green);
+      border-color: #99FF44;
+      background: #000000;
+      color: #99FF44;
+    }
+
+    .sheet-item-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      text-align: left;
+    }
+
+    .sheet-item-name {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: inherit;
+    }
+
+    .sheet-item-sub {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      color: #888888;
+    }
+
+    .sheet-item.selected .sheet-item-sub {
+      color: rgba(153, 255, 68, 0.7);
+    }
+
+    .sheet-item-chevron {
+      width: 18px;
+      height: 18px;
+      stroke: rgba(255, 255, 255, 0.4);
+      stroke-width: 2.4;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+      transition: stroke 0.15s ease;
+    }
+
+    .sheet-item.selected .sheet-item-chevron,
+    .sheet-item:hover .sheet-item-chevron {
+      stroke: #99FF44;
     }
 
     /* Responsive */
@@ -1193,37 +1257,49 @@
 
 </main>
 
-<!-- ── Voice Picker Bottom Sheet ───────────────────────────────── -->
+<!-- ── Voice Picker Bottom Sheet (Figma Node 77-49) ───────────── -->
 <div class="modal-overlay" id="modal-voice" role="dialog" aria-modal="true" aria-labelledby="voice-modal-title">
   <div class="sheet-card">
-    <div class="sheet-handle"></div>
     <div class="sheet-header">
-      <h3 id="voice-modal-title">Select Voice</h3>
-      <button class="sheet-close-btn" id="btn-close-voice" aria-label="Close voice picker">&times;</button>
+      <h3 id="voice-modal-title">SELECT VOICE</h3>
+      <button class="sheet-close-btn" id="btn-close-voice" aria-label="Close voice picker">
+        <svg viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
     <div class="sheet-list" id="voice-list"></div>
   </div>
 </div>
 
-<!-- ── Language Picker Bottom Sheet ────────────────────────────── -->
+<!-- ── Language Picker Bottom Sheet (Figma Node 77-49) ────────── -->
 <div class="modal-overlay" id="modal-language" role="dialog" aria-modal="true" aria-labelledby="lang-modal-title">
   <div class="sheet-card">
-    <div class="sheet-handle"></div>
     <div class="sheet-header">
-      <h3 id="lang-modal-title">Select Language</h3>
-      <button class="sheet-close-btn" id="btn-close-lang" aria-label="Close language picker">&times;</button>
+      <h3 id="lang-modal-title">SELECT LANGUAGE</h3>
+      <button class="sheet-close-btn" id="btn-close-lang" aria-label="Close language picker">
+        <svg viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
     <div class="sheet-list" id="lang-list"></div>
   </div>
 </div>
 
-<!-- ── Countdown Style Bottom Sheet ────────────────────────────── -->
+<!-- ── Countdown Style Bottom Sheet (Figma Node 77-49) ────────── -->
 <div class="modal-overlay" id="modal-countdown-style" role="dialog" aria-modal="true" aria-labelledby="style-modal-title">
   <div class="sheet-card">
-    <div class="sheet-handle"></div>
     <div class="sheet-header">
-      <h3 id="style-modal-title">Countdown Style</h3>
-      <button class="sheet-close-btn" id="btn-close-style" aria-label="Close countdown style picker">&times;</button>
+      <h3 id="style-modal-title">COUNTDOWN STYLE</h3>
+      <button class="sheet-close-btn" id="btn-close-style" aria-label="Close countdown style picker">
+        <svg viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
     <div class="sheet-list" id="countdown-style-list"></div>
   </div>
@@ -1620,7 +1696,9 @@
         <span class="sheet-item-name">System Default</span>
         <span class="sheet-item-sub">Default device voice</span>
       </div>
-      <span class="sheet-item-check">✓</span>
+      <svg class="sheet-item-chevron" viewBox="0 0 24 24">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
     `;
     defaultItem.onclick = () => {
       currentSettings.voiceURI  = 'default';
@@ -1648,7 +1726,9 @@
           <span class="sheet-item-name">${cleanName}</span>
           <span class="sheet-item-sub">${v.lang} ${v.default ? '• System' : ''}</span>
         </div>
-        <span class="sheet-item-check">✓</span>
+        <svg class="sheet-item-chevron" viewBox="0 0 24 24">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
       `;
 
       item.onclick = () => {
@@ -1675,7 +1755,9 @@
           <span class="sheet-item-name">${lang.label}</span>
           <span class="sheet-item-sub">${lang.code}</span>
         </div>
-        <span class="sheet-item-check">✓</span>
+        <svg class="sheet-item-chevron" viewBox="0 0 24 24">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
       `;
 
       item.onclick = () => {
@@ -1720,7 +1802,9 @@
         <div class="sheet-item-left">
           <span class="sheet-item-name">${item.label}</span>
         </div>
-        <span class="sheet-item-check">✓</span>
+        <svg class="sheet-item-chevron" viewBox="0 0 24 24">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
       `;
       el.onclick = () => {
         currentSettings.countdownStyle = item.id;
