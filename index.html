@@ -1069,9 +1069,13 @@
     renumberTabs();
     switchTab(workouts.length - 1);
 
-    const wrappers = tabsContainer.querySelectorAll('.tab-wrapper');
-    const newWrapper = wrappers[wrappers.length - 1];
-    if (newWrapper) newWrapper.scrollIntoView({ behavior: 'smooth', inline: 'nearest' });
+    // Auto-scroll so both the new tab and the Add (+) button stay in the fold
+    requestAnimationFrame(() => {
+      tabsContainer.scrollTo({
+        left: tabsContainer.scrollWidth,
+        behavior: 'smooth'
+      });
+    });
   });
 
   updateRemoveButtons();
