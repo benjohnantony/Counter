@@ -943,7 +943,7 @@
             <span class="setting-desc" id="status-delay-nav">Prep, cue to countdown & workout transition</span>
           </div>
           <div class="setting-action" style="display: flex; align-items: center; gap: 8px;">
-            <span class="slider-val-label" id="val-delay-summary" style="font-size: 14px; font-weight: 600; color: var(--accent-green);">0s / 2s / 20s</span>
+            <span class="slider-val-label" id="val-delay-summary" style="font-size: 14px; font-weight: 600; color: var(--accent-green);">10s / 2s / 60s</span>
             <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
         </div>
@@ -958,7 +958,7 @@
           </div>
           <div class="switch-wrap">
             <label class="switch-pill" aria-label="Toggle hands-free voice commands">
-              <input type="checkbox" class="switch-input" id="toggle-voice-commands" checked />
+              <input type="checkbox" class="switch-input" id="toggle-voice-commands" />
               <span class="switch-track">
                 <span class="switch-thumb"></span>
               </span>
@@ -1269,18 +1269,18 @@
     </header>
 
     <div class="settings-list">
-      <!-- 1. Preparation Time (0 to 60s, default 0s) -->
+      <!-- 1. Preparation Time (0 to 60s, default 10s) -->
       <div class="setting-card slider-card">
         <div class="setting-header-row">
           <div class="setting-info">
             <span class="setting-title">Preparation Time</span>
             <span class="setting-desc">Countdown before workout starts</span>
           </div>
-          <span class="slider-val-label" id="val-prep">0s</span>
+          <span class="slider-val-label" id="val-prep">10s</span>
         </div>
         <div class="slider-full-row">
           <input type="range" class="custom-slider" id="slider-prep"
-                 min="0" max="60" step="1" value="0"
+                 min="0" max="60" step="1" value="10"
                  aria-label="Preparation time in seconds" />
         </div>
       </div>
@@ -1301,18 +1301,18 @@
         </div>
       </div>
 
-      <!-- 3. Workout to Workout (0 to 60s, default 20s) -->
+      <!-- 3. Workout to Workout (0 to 600s, default 60s) -->
       <div class="setting-card slider-card">
         <div class="setting-header-row">
           <div class="setting-info">
             <span class="setting-title">Workout to Workout</span>
             <span class="setting-desc">Countdown before next workout starts</span>
           </div>
-          <span class="slider-val-label" id="val-workout-delay">20s</span>
+          <span class="slider-val-label" id="val-workout-delay">60s</span>
         </div>
         <div class="slider-full-row">
           <input type="range" class="custom-slider" id="slider-workout-delay"
-                 min="0" max="60" step="1" value="20"
+                 min="0" max="600" step="1" value="60"
                  aria-label="Workout to workout transition delay in seconds" />
         </div>
       </div>
@@ -1404,11 +1404,11 @@
     speed:               1.0,
     countdownStyle:      'default',
     countdownStyleLabel: 'Default',
-    voiceCommands:       true,
-    prepTime:            0,
+    voiceCommands:       false,
+    prepTime:            10,
     keepScreenAwake:     true,
     delayTime:           2,
-    workoutDelay:        20,
+    workoutDelay:        60,
     cueToggles: {
       sets:     true,
       restSets: true,
@@ -1664,7 +1664,7 @@
 
     toggleCommands.checked = !!currentSettings.voiceCommands;
 
-    sliderPrep.value = typeof currentSettings.prepTime === 'number' ? currentSettings.prepTime : 0;
+    sliderPrep.value = typeof currentSettings.prepTime === 'number' ? currentSettings.prepTime : 10;
     valPrep.textContent = `${sliderPrep.value}s`;
     updateSliderFill(sliderPrep);
 
@@ -1674,7 +1674,7 @@
     valDelay.textContent = `${sliderDelay.value}s`;
     updateSliderFill(sliderDelay);
 
-    sliderWorkoutDelay.value = typeof currentSettings.workoutDelay === 'number' ? currentSettings.workoutDelay : 20;
+    sliderWorkoutDelay.value = typeof currentSettings.workoutDelay === 'number' ? currentSettings.workoutDelay : 60;
     valWorkoutDelay.textContent = `${sliderWorkoutDelay.value}s`;
     updateSliderFill(sliderWorkoutDelay);
 

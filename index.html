@@ -561,7 +561,7 @@
           </svg>
         </span>
       </button>
-      <input type="number" id="sets-val" value="3" min="1" max="99" style="display:none;" />
+      <input type="number" id="sets-val" value="3" min="0" style="display:none;" />
     </div>
 
     <!-- 2. REST BETWEEN SETS (Default: 10 SEC) -->
@@ -580,7 +580,7 @@
           </svg>
         </span>
       </button>
-      <input type="number" id="rest-sets-val" value="10" min="0" max="600" style="display:none;" />
+      <input type="number" id="rest-sets-val" value="10" min="0" style="display:none;" />
     </div>
 
     <!-- 3. REPS PER SET (Default: 10) -->
@@ -599,7 +599,7 @@
           </svg>
         </span>
       </button>
-      <input type="number" id="reps-val" value="10" min="1" max="99" style="display:none;" />
+      <input type="number" id="reps-val" value="10" min="0" style="display:none;" />
     </div>
 
     <!-- 4. REST BETWEEN REPS (Default: 5 SEC) -->
@@ -618,7 +618,7 @@
           </svg>
         </span>
       </button>
-      <input type="number" id="rest-reps-val" value="5" min="0" max="300" style="display:none;" />
+      <input type="number" id="rest-reps-val" value="5" min="0" style="display:none;" />
     </div>
 
     <!-- 5. HOLD TIME (Default: 10 SEC) -->
@@ -637,7 +637,7 @@
           </svg>
         </span>
       </button>
-      <input type="number" id="hold-val" value="10" min="0" max="300" style="display:none;" />
+      <input type="number" id="hold-val" value="10" min="0" style="display:none;" />
     </div>
 
     <!-- Hidden audio toggles for backward compatibility and config persistence -->
@@ -685,11 +685,11 @@
   };
 
   const LIMITS = {
-    sets:        { min: 0, max: 99  },
-    'rest-sets': { min: 0, max: 600 },
-    reps:        { min: 0, max: 99  },
-    'rest-reps': { min: 0, max: 300 },
-    hold:        { min: 0, max: 300 },
+    sets:        { min: 0, max: Infinity },
+    'rest-sets': { min: 0, max: Infinity },
+    reps:        { min: 0, max: Infinity },
+    'rest-reps': { min: 0, max: Infinity },
+    hold:        { min: 0, max: Infinity },
   };
 
   const STORAGE_KEY = 'workout_timer_saved_config';
@@ -1084,8 +1084,8 @@
     saveConfig();
     const workoutCount = workouts.length;
 
-    // Read prep time from settings (default 0)
-    let prepSec = 0;
+    // Read prep time from settings (default 10)
+    let prepSec = 10;
     try {
       const rawS = localStorage.getItem('workout_timer_settings');
       if (rawS) {

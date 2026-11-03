@@ -852,13 +852,13 @@
     language:        'en-US',
     speed:           1.0,
     volume:          80,
-    prepTime:        0,
+    prepTime:        10,
     keepScreenAwake: true,
-    voiceCommands:   true,
+    voiceCommands:   false,
     countdownBeeps:  true,
     countdownStyle:  'default',
     delayTime:       2,
-    workoutDelay:    20,
+    workoutDelay:    60,
     cueToggles: {
       sets:     true,
       restSets: true,
@@ -906,12 +906,12 @@
 
   const prepParam = p.get('prep');
   const CFG = {
-    prep:          prepParam !== null ? getNonNegativeInt(prepParam, 0) : getNonNegativeInt(SETTINGS.prepTime, 0),
-    sets:          getPositiveInt(p.get('sets'), 3),
-    reps:          getPositiveInt(p.get('reps'), 10),
+    prep:          prepParam !== null ? getNonNegativeInt(prepParam, 10) : getNonNegativeInt(SETTINGS.prepTime, 10),
+    sets:          getNonNegativeInt(p.get('sets'), 3),
+    reps:          getNonNegativeInt(p.get('reps'), 10),
     restSets:      getNonNegativeInt(p.get('restSets'), 10),
     restReps:      getNonNegativeInt(p.get('restReps'), 5),
-    hold:          getPositiveInt(p.get('hold'), 10),
+    hold:          getNonNegativeInt(p.get('hold'), 10),
     exercises:     getPositiveInt(p.get('exercises'), 1),
     soundSets:     p.get('soundSets') !== '0',
     soundRestSets: p.get('soundRestSets') !== '0',
@@ -1683,7 +1683,7 @@
     const nextNum = state.exercise + 1;
     if (nextWorkoutTitle) nextWorkoutTitle.textContent = `WORKOUT ${state.exercise} COMPLETE!`;
 
-    transitionCountdown = typeof SETTINGS.workoutDelay === 'number' ? SETTINGS.workoutDelay : 20;
+    transitionCountdown = typeof SETTINGS.workoutDelay === 'number' ? SETTINGS.workoutDelay : 60;
     transitionPaused = false;
 
     const pauseIcon = document.getElementById('next-pause-icon');
