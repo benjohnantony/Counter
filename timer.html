@@ -454,9 +454,14 @@
     }
 
     .modal-card {
-      position: relative;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       width: 100%;
-      max-width: 440px;
+      width: 100vw;
+      max-width: 100%;
+      margin: 0;
       box-sizing: border-box;
       background: #000000;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -814,6 +819,7 @@
     countdownBeeps:  true,
     countdownStyle:  'default',
     delayTime:       2,
+    workoutDelay:    20,
     cueToggles: {
       sets:     true,
       restSets: true,
@@ -1576,25 +1582,31 @@
     const nextNum = state.exercise + 1;
     if (nextWorkoutTitle) nextWorkoutTitle.textContent = `WORKOUT ${state.exercise} COMPLETE!`;
 
-    let countdown = 20;
+    let countdown = typeof SETTINGS.workoutDelay === 'number' ? SETTINGS.workoutDelay : 20;
     const updateCountdownText = () => {
       const formatted = `00:${String(Math.max(0, countdown)).padStart(2, '0')}`;
       if (nextWorkoutSubtitle) {
-        nextWorkoutSubtitle.innerHTML = `Workout ${nextNum} starts in <span class="highlight-green" id="next-workout-timer">${formatted}</span>`;
+        if (countdown > 0) {
+          nextWorkoutSubtitle.innerHTML = `Workout ${nextNum} starts in <span class="highlight-green" id="next-workout-timer">${formatted}</span>`;
+        } else {
+          nextWorkoutSubtitle.innerHTML = `Ready for Workout ${nextNum} of ${CFG.exercises}? Press play to begin.`;
+        }
       }
     };
     updateCountdownText();
 
     if (transitionInterval) clearInterval(transitionInterval);
-    transitionInterval = setInterval(() => {
-      countdown--;
-      updateCountdownText();
-      if (countdown <= 0) {
-        clearInterval(transitionInterval);
-        transitionInterval = null;
-        proceedToNextWorkout();
-      }
-    }, 1000);
+    if (countdown > 0) {
+      transitionInterval = setInterval(() => {
+        countdown--;
+        updateCountdownText();
+        if (countdown <= 0) {
+          clearInterval(transitionInterval);
+          transitionInterval = null;
+          proceedToNextWorkout();
+        }
+      }, 1000);
+    }
 
     if (nextWorkoutModal) nextWorkoutModal.classList.add('active');
     speakRaw(`Workout ${state.exercise} complete. Ready for Workout ${nextNum}.`);
