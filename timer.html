@@ -1373,7 +1373,16 @@
     speakRaw('Get ready.');
   }
 
+  let activeDelayTimer = null;
+  function clearActiveDelay() {
+    if (activeDelayTimer) {
+      clearTimeout(activeDelayTimer);
+      activeDelayTimer = null;
+    }
+  }
+
   function startHold(repNum, isFirstOfSet = false, isFirstOfExercise = false) {
+    clearActiveDelay();
     state.rep           = repNum;
     state.phase         = PHASE.HOLD;
     const exCfg         = getWorkoutConfig(state.exercise);
@@ -1386,7 +1395,8 @@
     setArcFill(0); // Section background starts empty, fills up to 100% during hold
 
     const holdDisplayName = getCueName('hold');
-    setStageBadge((holdDisplayName || 'HOLD').toUpperCase());
+    // Initially show GET READY during setup & silent delay
+    setStageBadge('GET READY');
     setStageReps(state.rep, exCfg.reps);
     
     const remSecs = Math.max(0, exCfg.hold);
@@ -1432,47 +1442,59 @@
       cueParts.push(`${repNum}`);
     }
 
-    // Hold label announcement (if not blank)
-    if (holdName) {
-      cueParts.push(holdName);
-    }
-
-    if (cueParts.length === 0) {
+    // Execution trigger: spoken AFTER silent pose delay, starting countdown immediately
+    const beginHoldCountdown = () => {
+      clearActiveDelay();
+      if (!state.running || state.finished) return;
+      setStageBadge((holdDisplayName || 'HOLD').toUpperCase());
+      if (holdName) {
+        speakRaw(holdName);
+      }
+      if (SETTINGS.countdownBeeps && state.running) {
+        playTone(1760, 0.2); // Crisp Go chime
+      }
       state.isCueSpeaking = false;
       state.phaseElapsed = 0;
       state.lastTickTime = performance.now();
+    };
+
+    state.isCueSpeaking = true;
+    const delayMs = Math.max(0, parseInt(SETTINGS.delayTime, 10) || 0) * 1000;
+
+    const onSetupCueDone = () => {
+      if (delayMs > 0) {
+        // Silent pose delay: give the user time to get into position
+        activeDelayTimer = setTimeout(() => {
+          activeDelayTimer = null;
+          beginHoldCountdown();
+        }, delayMs);
+      } else {
+        beginHoldCountdown();
+      }
+    };
+
+    if (cueParts.length === 0) {
+      onSetupCueDone();
       return;
     }
 
     const cueText = cueParts.join('. ') + '.';
-
-    state.isCueSpeaking = true;
     let cueFinished = false;
-    const delayMs = Math.max(0, parseInt(SETTINGS.delayTime, 10) || 0) * 1000;
-    const onCueDone = () => {
+    const wrappedCueDone = () => {
       if (cueFinished) return;
       cueFinished = true;
-      if (delayMs > 0) {
-        setTimeout(() => {
-          state.isCueSpeaking = false;
-          state.phaseElapsed = 0;
-          state.lastTickTime = performance.now();
-        }, delayMs);
-      } else {
-        state.isCueSpeaking = false;
-        state.phaseElapsed = 0;
-        state.lastTickTime = performance.now();
-      }
+      onSetupCueDone();
     };
 
-    speakPhaseCue(cueText, onCueDone);
+    speakPhaseCue(cueText, wrappedCueDone);
 
     // Fallback timer: word count estimate + buffer
     const wordCount = cueText.trim().split(/\s+/).filter(Boolean).length;
-    setTimeout(onCueDone, Math.max(1600, wordCount * 550 + 400));
+    activeDelayTimer = setTimeout(wrappedCueDone, Math.max(1400, wordCount * 550 + 350));
   }
 
   function startRestReps() {
+    clearActiveDelay();
     state.phase         = PHASE.REST_REPS;
     const exCfg         = getWorkoutConfig(state.exercise);
     state.phaseDuration = exCfg.restReps * 1000;
@@ -1491,37 +1513,47 @@
     setStageDigits(`00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     popRepNumber();
 
-    if (!restRepsName) {
+    const beginRestCountdown = () => {
+      clearActiveDelay();
+      if (!state.running || state.finished) return;
       state.isCueSpeaking = false;
       state.phaseElapsed = 0;
       state.lastTickTime = performance.now();
-      return;
-    }
+    };
 
     state.isCueSpeaking = true;
-    let cueFinished = false;
     const delayMs = Math.max(0, parseInt(SETTINGS.delayTime, 10) || 0) * 1000;
-    const onCueDone = () => {
-      if (cueFinished) return;
-      cueFinished = true;
+
+    const onRestCueDone = () => {
       if (delayMs > 0) {
-        setTimeout(() => {
-          state.isCueSpeaking = false;
-          state.phaseElapsed = 0;
-          state.lastTickTime = performance.now();
+        // Silent rest delay: give the user time to release pose and return to normal position
+        activeDelayTimer = setTimeout(() => {
+          activeDelayTimer = null;
+          beginRestCountdown();
         }, delayMs);
       } else {
-        state.isCueSpeaking = false;
-        state.phaseElapsed = 0;
-        state.lastTickTime = performance.now();
+        beginRestCountdown();
       }
     };
 
-    speakPhaseCue(restRepsName, onCueDone);
-    setTimeout(onCueDone, 1200);
+    if (!restRepsName) {
+      onRestCueDone();
+      return;
+    }
+
+    let cueFinished = false;
+    const wrappedDone = () => {
+      if (cueFinished) return;
+      cueFinished = true;
+      onRestCueDone();
+    };
+
+    speakPhaseCue(restRepsName, wrappedDone);
+    activeDelayTimer = setTimeout(wrappedDone, 1200);
   }
 
   function startRestSets() {
+    clearActiveDelay();
     state.phase         = PHASE.REST_SETS;
     const exCfg         = getWorkoutConfig(state.exercise);
     state.phaseDuration = exCfg.restSets * 1000;
@@ -1555,37 +1587,46 @@
       cueParts.push(restSetsName);
     }
 
-    if (cueParts.length === 0) {
+    const beginRestCountdown = () => {
+      clearActiveDelay();
+      if (!state.running || state.finished) return;
       state.isCueSpeaking = false;
       state.phaseElapsed = 0;
       state.lastTickTime = performance.now();
-      return;
-    }
+    };
 
     state.isCueSpeaking = true;
-    let cueFinished = false;
     const delayMs = Math.max(0, parseInt(SETTINGS.delayTime, 10) || 0) * 1000;
-    const onCueDone = () => {
-      if (cueFinished) return;
-      cueFinished = true;
+
+    const onRestCueDone = () => {
       if (delayMs > 0) {
-        setTimeout(() => {
-          state.isCueSpeaking = false;
-          state.phaseElapsed = 0;
-          state.lastTickTime = performance.now();
+        // Silent rest delay: give the user time to return to normal position
+        activeDelayTimer = setTimeout(() => {
+          activeDelayTimer = null;
+          beginRestCountdown();
         }, delayMs);
       } else {
-        state.isCueSpeaking = false;
-        state.phaseElapsed = 0;
-        state.lastTickTime = performance.now();
+        beginRestCountdown();
       }
     };
 
+    if (cueParts.length === 0) {
+      onRestCueDone();
+      return;
+    }
+
+    let cueFinished = false;
+    const wrappedDone = () => {
+      if (cueFinished) return;
+      cueFinished = true;
+      onRestCueDone();
+    };
+
     const cueText = cueParts.join('. ') + '.';
-    speakPhaseCue(cueText, onCueDone);
+    speakPhaseCue(cueText, wrappedDone);
 
     const wordCount = cueText.trim().split(/\s+/).filter(Boolean).length;
-    setTimeout(onCueDone, Math.max(1600, wordCount * 550 + 400));
+    activeDelayTimer = setTimeout(wrappedDone, Math.max(1400, wordCount * 550 + 350));
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -1730,6 +1771,7 @@
   }
 
   function restartEntireWorkout() {
+    clearActiveDelay();
     if (transitionInterval) {
       clearInterval(transitionInterval);
       transitionInterval = null;
@@ -1999,6 +2041,7 @@
       clearInterval(tickerId);
       tickerId = null;
     }
+    clearActiveDelay();
     state.lastTickTime = null;
   }
 

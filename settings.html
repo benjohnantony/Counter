@@ -917,23 +917,7 @@
         </div>
       </div>
 
-      <!-- 3. Preparation Time (0 to 60s, default 0s) -->
-      <div class="setting-card slider-card">
-        <div class="setting-header-row">
-          <div class="setting-info">
-            <span class="setting-title">Preparation Time</span>
-            <span class="setting-desc">Countdown before workout starts</span>
-          </div>
-          <span class="slider-val-label" id="val-prep">0s</span>
-        </div>
-        <div class="slider-full-row">
-          <input type="range" class="custom-slider" id="slider-prep"
-                 min="0" max="60" step="1" value="0"
-                 aria-label="Preparation time in seconds" />
-        </div>
-      </div>
-
-      <!-- 4. Continue in Background -->
+      <!-- 3. Continue in Background -->
       <div class="setting-card">
         <div class="setting-header-row">
           <div class="setting-info">
@@ -951,21 +935,21 @@
         </div>
       </div>
 
-      <!-- 5. DELAY (Navigates to Settings > Delay) -->
+      <!-- 4. DELAY (Navigates to Settings > Delay) -->
       <div class="setting-card clickable" id="card-nav-delay" role="button" aria-haspopup="true" aria-label="Open delay settings">
         <div class="setting-header-row">
           <div class="setting-info">
             <span class="setting-title">Delay</span>
-            <span class="setting-desc" id="status-delay-nav">Cue to countdown & workout transition</span>
+            <span class="setting-desc" id="status-delay-nav">Prep, cue to countdown & workout transition</span>
           </div>
           <div class="setting-action" style="display: flex; align-items: center; gap: 8px;">
-            <span class="slider-val-label" id="val-delay-summary" style="font-size: 14px; font-weight: 600; color: var(--accent-green);">2s / 20s</span>
+            <span class="slider-val-label" id="val-delay-summary" style="font-size: 14px; font-weight: 600; color: var(--accent-green);">0s / 2s / 20s</span>
             <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
         </div>
       </div>
 
-      <!-- 6. Voice Commands -->
+      <!-- 5. Voice Commands -->
       <div class="setting-card">
         <div class="setting-header-row">
           <div class="setting-info">
@@ -1285,12 +1269,28 @@
     </header>
 
     <div class="settings-list">
-      <!-- 1. Cue to Countdown (0 to 60s, default 2s) -->
+      <!-- 1. Preparation Time (0 to 60s, default 0s) -->
+      <div class="setting-card slider-card">
+        <div class="setting-header-row">
+          <div class="setting-info">
+            <span class="setting-title">Preparation Time</span>
+            <span class="setting-desc">Countdown before workout starts</span>
+          </div>
+          <span class="slider-val-label" id="val-prep">0s</span>
+        </div>
+        <div class="slider-full-row">
+          <input type="range" class="custom-slider" id="slider-prep"
+                 min="0" max="60" step="1" value="0"
+                 aria-label="Preparation time in seconds" />
+        </div>
+      </div>
+
+      <!-- 2. Cue to Countdown (0 to 60s, default 2s) -->
       <div class="setting-card slider-card">
         <div class="setting-header-row">
           <div class="setting-info">
             <span class="setting-title">Cue to Countdown</span>
-            <span class="setting-desc">Pause between voice cue & countdown</span>
+            <span class="setting-desc">Silent pause before Hold & Rest countdown</span>
           </div>
           <span class="slider-val-label" id="val-delay">2s</span>
         </div>
@@ -1301,7 +1301,7 @@
         </div>
       </div>
 
-      <!-- 2. Workout to Workout (0 to 60s, default 20s) -->
+      <!-- 3. Workout to Workout (0 to 60s, default 20s) -->
       <div class="setting-card slider-card">
         <div class="setting-header-row">
           <div class="setting-info">
@@ -1679,7 +1679,7 @@
     updateSliderFill(sliderWorkoutDelay);
 
     if (valDelaySummary) {
-      valDelaySummary.textContent = `${sliderDelay.value}s / ${sliderWorkoutDelay.value}s`;
+      valDelaySummary.textContent = `${sliderPrep.value}s / ${sliderDelay.value}s / ${sliderWorkoutDelay.value}s`;
     }
 
     const soundSubControls = document.getElementById('sound-sub-controls');
@@ -1747,10 +1747,17 @@
     saveSettings();
   });
 
+  function updateDelaySummary() {
+    if (valDelaySummary) {
+      valDelaySummary.textContent = `${sliderPrep.value}s / ${sliderDelay.value}s / ${sliderWorkoutDelay.value}s`;
+    }
+  }
+
   sliderPrep.addEventListener('input', () => {
     const val = parseInt(sliderPrep.value, 10);
     currentSettings.prepTime = val;
     valPrep.textContent = `${val}s`;
+    updateDelaySummary();
     updateSliderFill(sliderPrep);
     saveSettings();
   });
@@ -1764,7 +1771,7 @@
     const val = parseInt(sliderDelay.value, 10);
     currentSettings.delayTime = val;
     valDelay.textContent = `${val}s`;
-    if (valDelaySummary) valDelaySummary.textContent = `${val}s / ${sliderWorkoutDelay.value}s`;
+    updateDelaySummary();
     updateSliderFill(sliderDelay);
     saveSettings();
   });
@@ -1773,7 +1780,7 @@
     const val = parseInt(sliderWorkoutDelay.value, 10);
     currentSettings.workoutDelay = val;
     valWorkoutDelay.textContent = `${val}s`;
-    if (valDelaySummary) valDelaySummary.textContent = `${sliderDelay.value}s / ${val}s`;
+    updateDelaySummary();
     updateSliderFill(sliderWorkoutDelay);
     saveSettings();
   });
