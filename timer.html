@@ -445,7 +445,7 @@
       transition: opacity 0.25s ease;
       z-index: 1000;
       box-sizing: border-box;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     .modal-overlay.active {
@@ -454,14 +454,10 @@
     }
 
     .modal-card {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      position: relative;
       width: 100%;
-      width: 100vw;
-      max-width: 100%;
-      margin: 0;
+      max-width: 440px;
+      margin: 0 auto;
       box-sizing: border-box;
       background: #000000;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -487,7 +483,7 @@
       position: absolute;
       top: -83px;
       right: 0;
-      width: clamp(74px, 11vw, 93px);
+      width: clamp(70px, 11vh, 93px);
       height: 83px;
       background: #F1372A;
       border: none;
@@ -498,21 +494,22 @@
       cursor: pointer;
       padding: 0;
       z-index: 10;
-      transition: filter 0.15s ease;
+      transition: opacity var(--transition);
       -webkit-tap-highlight-color: transparent;
     }
 
     .modal-close-btn:hover {
-      filter: brightness(1.1);
+      opacity: 0.9;
     }
 
     .modal-close-btn svg {
-      width: 22px;
-      height: 22px;
+      width: clamp(16px, 2.5vh, 20px);
+      height: clamp(16px, 2.5vh, 20px);
       stroke: #FFFFFF;
-      stroke-width: 2.6;
+      stroke-width: 2.4;
       stroke-linecap: round;
       stroke-linejoin: round;
+      fill: none;
     }
 
     .modal-body {
@@ -521,14 +518,14 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: clamp(14px, 2.2vh, 22px) 20px clamp(12px, 1.8vh, 18px);
+      padding: clamp(16px, 2.4vh, 26px) 20px clamp(14px, 2vh, 22px);
       box-sizing: border-box;
     }
 
     .modal-ill {
-      height: clamp(80px, 12vh, 110px);
+      height: clamp(130px, 18vh, 175px);
       width: auto;
-      max-width: 140px;
+      max-width: 220px;
       object-fit: contain;
       margin-bottom: clamp(10px, 1.4vh, 16px);
       display: block;
@@ -567,7 +564,7 @@
 
     .modal-action-bar {
       width: 100%;
-      height: clamp(64px, 9vh, 83px);
+      height: 83px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -575,7 +572,7 @@
     }
 
     .modal-action-btn {
-      height: 100%;
+      height: 83px;
       border: none;
       border-radius: 0;
       display: flex;
@@ -588,7 +585,7 @@
     }
 
     .modal-action-btn:hover {
-      filter: brightness(1.08);
+      filter: brightness(1.1);
     }
 
     .modal-action-btn.btn-restart {
@@ -597,20 +594,55 @@
       color: #FFFFFF;
     }
 
+    .modal-action-btn.btn-restart svg {
+      width: 28px;
+      height: 18px;
+      stroke: currentColor;
+    }
+
     .modal-action-btn.btn-home {
       background: #99FF44;
       color: #000000;
     }
 
-    .modal-action-btn.btn-play {
+    .modal-action-btn.btn-home svg {
+      width: 24px;
+      height: 24px;
+      fill: #000000;
+    }
+
+    .modal-action-btn.btn-next {
       background: #99FF44;
       color: #000000;
       border-right: 1px solid rgba(255, 255, 255, 0.15);
     }
 
+    .modal-action-btn.btn-next svg {
+      width: 24px;
+      height: 24px;
+      fill: #000000;
+    }
+
+    .modal-action-btn.btn-pause-toggle {
+      background: #000000;
+      color: #FFFFFF;
+    }
+
+    .modal-action-btn.btn-pause-toggle svg {
+      width: 24px;
+      height: 24px;
+      fill: #FFFFFF;
+    }
+
     .modal-action-btn.btn-stop {
       background: #000000;
       color: #FF003B;
+    }
+
+    .modal-action-btn.btn-stop svg {
+      width: 24px;
+      height: 24px;
+      fill: #FF003B;
     }
 
     /* Responsive */
@@ -716,10 +748,10 @@
 <!-- ── STOP POPUP MODAL (Figma Node 77-49) ──────────────── -->
 <div class="modal-overlay" id="stop-modal" role="dialog" aria-modal="true" aria-labelledby="stop-title">
   <div class="modal-card">
-    <button class="modal-close-btn" id="modal-resume-btn" aria-label="Resume workout">
-      <svg viewBox="0 0 24 24">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
+    <button class="modal-close-btn" id="modal-resume-btn" aria-label="Resume workout" title="Resume">
+      <svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true">
+        <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
       </svg>
     </button>
     <div class="modal-body">
@@ -728,14 +760,14 @@
       <p class="modal-subtitle">Would you like to restart from the beginning or return to home?</p>
     </div>
     <div class="modal-action-bar">
-      <button class="modal-action-btn btn-restart" id="modal-restart-btn" aria-label="Restart">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-          <path d="M3 3v5h5"/>
+      <button class="modal-action-btn btn-restart" id="modal-restart-btn" aria-label="Restart" title="Restart">
+        <svg viewBox="0 0 32 18" width="28" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 1V5H22C25.3137 5 28 7.68629 28 11C28 14.3137 25.3137 17 22 17H4"/>
+          <path d="M8 9L3 5L8 1"/>
         </svg>
       </button>
-      <button class="modal-action-btn btn-home" id="modal-home-btn" aria-label="Home">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="#000000">
+      <button class="modal-action-btn btn-home" id="modal-home-btn" aria-label="Home" title="Home">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="#000000" aria-hidden="true">
           <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
         </svg>
       </button>
@@ -746,10 +778,10 @@
 <!-- ── NEXT WORKOUT POPUP MODAL (Figma Node 77-49) ─────────────── -->
 <div class="modal-overlay" id="next-workout-modal" role="dialog" aria-modal="true" aria-labelledby="next-workout-title">
   <div class="modal-card">
-    <button class="modal-close-btn" id="next-workout-close-btn" aria-label="Close">
-      <svg viewBox="0 0 24 24">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
+    <button class="modal-close-btn" id="next-workout-close-btn" aria-label="Close" title="Close">
+      <svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true">
+        <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
       </svg>
     </button>
     <div class="modal-body">
@@ -758,14 +790,21 @@
       <p class="modal-subtitle" id="next-workout-subtitle">Workout 2 starts in <span class="highlight-green" id="next-workout-timer">00:20</span></p>
     </div>
     <div class="modal-action-bar">
-      <button class="modal-action-btn btn-play" id="next-workout-start-btn" aria-label="Start Next Workout">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#000000">
-          <polygon points="6 3 20 12 6 21 6 3"/>
+      <!-- Next button (Neon Volt Green #99FF44, black icon) -->
+      <button class="modal-action-btn btn-next" id="next-workout-next-btn" aria-label="Next Workout" title="Next Workout">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="#000000" aria-hidden="true">
+          <polygon points="5 4 15 12 5 20 5 4"/>
+          <rect x="16" y="4" width="3.5" height="16"/>
         </svg>
       </button>
-      <button class="modal-action-btn btn-stop" id="next-workout-stop-btn" aria-label="Stop Workout">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="#FF003B">
-          <rect x="4" y="4" width="16" height="16" rx="1.5"/>
+      <!-- Pause / Play Toggle button (Black background #000000, white icon) -->
+      <button class="modal-action-btn btn-pause-toggle" id="next-workout-pause-btn" aria-label="Pause Delay" title="Pause Delay">
+        <svg id="next-pause-icon" viewBox="0 0 24 24" width="24" height="24" fill="#FFFFFF" aria-hidden="true">
+          <rect x="5" y="4" width="4.5" height="16"/>
+          <rect x="14.5" y="4" width="4.5" height="16"/>
+        </svg>
+        <svg id="next-play-icon" viewBox="0 0 24 24" width="24" height="24" fill="#FFFFFF" style="display:none;" aria-hidden="true">
+          <polygon points="6 4 20 12 6 20 6 4"/>
         </svg>
       </button>
     </div>
@@ -775,10 +814,10 @@
 <!-- ── FINISH POPUP MODAL (Figma Node 77-49) ────────────────────── -->
 <div class="modal-overlay" id="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finish-title">
   <div class="modal-card">
-    <button class="modal-close-btn" id="finish-close-btn" aria-label="Close">
-      <svg viewBox="0 0 24 24">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
+    <button class="modal-close-btn" id="finish-close-btn" aria-label="Close" title="Close">
+      <svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true">
+        <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
       </svg>
     </button>
     <div class="modal-body">
@@ -787,14 +826,14 @@
       <p class="modal-subtitle" id="finish-subtitle">You finished all exercises. Great Workout!</p>
     </div>
     <div class="modal-action-bar">
-      <button class="modal-action-btn btn-restart" id="finish-restart-btn" aria-label="Restart">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-          <path d="M3 3v5h5"/>
+      <button class="modal-action-btn btn-restart" id="finish-restart-btn" aria-label="Restart" title="Restart">
+        <svg viewBox="0 0 32 18" width="28" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 1V5H22C25.3137 5 28 7.68629 28 11C28 14.3137 25.3137 17 22 17H4"/>
+          <path d="M8 9L3 5L8 1"/>
         </svg>
       </button>
-      <button class="modal-action-btn btn-home" id="finish-home-btn" aria-label="Home">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="#000000">
+      <button class="modal-action-btn btn-home" id="finish-home-btn" aria-label="Home" title="Home">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="#000000" aria-hidden="true">
           <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
         </svg>
       </button>
@@ -1183,7 +1222,8 @@
   const nextWorkoutModal    = document.getElementById('next-workout-modal');
   const nextWorkoutTitle    = document.getElementById('next-workout-title');
   const nextWorkoutSubtitle = document.getElementById('next-workout-subtitle');
-  const nextWorkoutStartBtn = document.getElementById('next-workout-start-btn');
+  const nextWorkoutNextBtn  = document.getElementById('next-workout-next-btn') || document.getElementById('next-workout-start-btn');
+  const nextWorkoutPauseBtn = document.getElementById('next-workout-pause-btn');
 
   const finishModal     = document.getElementById('finish-modal');
   const finishSubtitle  = document.getElementById('finish-subtitle');
@@ -1546,12 +1586,15 @@
    *  TRANSITION / COMPLETE MODALS
    * ══════════════════════════════════════════════════════════════ */
   let transitionInterval = null;
+  let transitionCountdown = 20;
+  let transitionPaused = false;
 
   function proceedToNextWorkout() {
     if (transitionInterval) {
       clearInterval(transitionInterval);
       transitionInterval = null;
     }
+    transitionPaused = false;
     if (nextWorkoutModal) nextWorkoutModal.classList.remove('active');
     state.exercise++;
     state.set = 1;
@@ -1571,6 +1614,17 @@
     }
   }
 
+  function updateTransitionCountdownUI(nextNum) {
+    const formatted = `00:${String(Math.max(0, transitionCountdown)).padStart(2, '0')}`;
+    if (nextWorkoutSubtitle) {
+      if (transitionCountdown > 0) {
+        nextWorkoutSubtitle.innerHTML = `Workout ${nextNum} starts in <span class="highlight-green" id="next-workout-timer">${formatted}</span>`;
+      } else {
+        nextWorkoutSubtitle.innerHTML = `Ready for Workout ${nextNum} of ${CFG.exercises}? Press Next to begin.`;
+      }
+    }
+  }
+
   function showNextWorkoutPrompt() {
     state.running = false;
     stopTicker();
@@ -1582,28 +1636,28 @@
     const nextNum = state.exercise + 1;
     if (nextWorkoutTitle) nextWorkoutTitle.textContent = `WORKOUT ${state.exercise} COMPLETE!`;
 
-    let countdown = typeof SETTINGS.workoutDelay === 'number' ? SETTINGS.workoutDelay : 20;
-    const updateCountdownText = () => {
-      const formatted = `00:${String(Math.max(0, countdown)).padStart(2, '0')}`;
-      if (nextWorkoutSubtitle) {
-        if (countdown > 0) {
-          nextWorkoutSubtitle.innerHTML = `Workout ${nextNum} starts in <span class="highlight-green" id="next-workout-timer">${formatted}</span>`;
-        } else {
-          nextWorkoutSubtitle.innerHTML = `Ready for Workout ${nextNum} of ${CFG.exercises}? Press play to begin.`;
-        }
-      }
-    };
-    updateCountdownText();
+    transitionCountdown = typeof SETTINGS.workoutDelay === 'number' ? SETTINGS.workoutDelay : 20;
+    transitionPaused = false;
+
+    const pauseIcon = document.getElementById('next-pause-icon');
+    const playIcon  = document.getElementById('next-play-icon');
+    if (pauseIcon) pauseIcon.style.display = '';
+    if (playIcon) playIcon.style.display  = 'none';
+    if (nextWorkoutPauseBtn) nextWorkoutPauseBtn.setAttribute('aria-label', 'Pause Delay');
+
+    updateTransitionCountdownUI(nextNum);
 
     if (transitionInterval) clearInterval(transitionInterval);
-    if (countdown > 0) {
+    if (transitionCountdown > 0) {
       transitionInterval = setInterval(() => {
-        countdown--;
-        updateCountdownText();
-        if (countdown <= 0) {
-          clearInterval(transitionInterval);
-          transitionInterval = null;
-          proceedToNextWorkout();
+        if (!transitionPaused) {
+          transitionCountdown--;
+          updateTransitionCountdownUI(nextNum);
+          if (transitionCountdown <= 0) {
+            clearInterval(transitionInterval);
+            transitionInterval = null;
+            proceedToNextWorkout();
+          }
         }
       }, 1000);
     }
@@ -1612,18 +1666,26 @@
     speakRaw(`Workout ${state.exercise} complete. Ready for Workout ${nextNum}.`);
   }
 
-  if (nextWorkoutStartBtn) {
-    nextWorkoutStartBtn.onclick = () => {
+  if (nextWorkoutNextBtn) {
+    nextWorkoutNextBtn.onclick = () => {
       proceedToNextWorkout();
     };
   }
 
-  const nextWorkoutStopBtn = document.getElementById('next-workout-stop-btn');
-  if (nextWorkoutStopBtn) {
-    nextWorkoutStopBtn.onclick = () => {
-      if (transitionInterval) { clearInterval(transitionInterval); transitionInterval = null; }
-      if (nextWorkoutModal) nextWorkoutModal.classList.remove('active');
-      openStopModal();
+  if (nextWorkoutPauseBtn) {
+    nextWorkoutPauseBtn.onclick = () => {
+      transitionPaused = !transitionPaused;
+      const pauseIcon = document.getElementById('next-pause-icon');
+      const playIcon  = document.getElementById('next-play-icon');
+      if (transitionPaused) {
+        if (pauseIcon) pauseIcon.style.display = 'none';
+        if (playIcon) playIcon.style.display = '';
+        nextWorkoutPauseBtn.setAttribute('aria-label', 'Resume Delay');
+      } else {
+        if (pauseIcon) pauseIcon.style.display = '';
+        if (playIcon) playIcon.style.display = 'none';
+        nextWorkoutPauseBtn.setAttribute('aria-label', 'Pause Delay');
+      }
     };
   }
 

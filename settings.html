@@ -684,14 +684,10 @@
     }
 
     .sheet-card {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      position: relative;
       width: 100%;
-      width: 100vw;
-      max-width: 100%;
-      margin: 0;
+      max-width: 440px;
+      margin: 0 auto;
       max-height: 85vh;
       max-height: 85dvh;
       background: #000000;
@@ -741,7 +737,7 @@
     }
 
     .sheet-close-btn {
-      width: 93px;
+      width: clamp(70px, 11vh, 93px);
       height: 83px;
       background: #F1372A;
       border: none;
@@ -752,21 +748,22 @@
       cursor: pointer;
       padding: 0;
       color: #FFFFFF;
-      transition: filter 0.15s ease;
+      transition: opacity var(--transition);
       -webkit-tap-highlight-color: transparent;
     }
 
     .sheet-close-btn:hover {
-      filter: brightness(1.1);
+      opacity: 0.9;
     }
 
     .sheet-close-btn svg {
-      width: 22px;
-      height: 22px;
+      width: clamp(16px, 2.5vh, 20px);
+      height: clamp(16px, 2.5vh, 20px);
       stroke: #FFFFFF;
-      stroke-width: 2.6;
+      stroke-width: 2.4;
       stroke-linecap: round;
       stroke-linejoin: round;
+      fill: none;
     }
 
     .sheet-list {
@@ -1347,10 +1344,10 @@
   <div class="sheet-card">
     <div class="sheet-header">
       <h3 id="voice-modal-title">SELECT VOICE</h3>
-      <button class="sheet-close-btn" id="btn-close-voice" aria-label="Close voice picker">
-        <svg viewBox="0 0 24 24">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
+      <button class="sheet-close-btn" id="btn-close-voice" aria-label="Close voice picker" title="Close">
+        <svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true">
+          <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+          <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
@@ -1363,10 +1360,10 @@
   <div class="sheet-card">
     <div class="sheet-header">
       <h3 id="lang-modal-title">SELECT LANGUAGE</h3>
-      <button class="sheet-close-btn" id="btn-close-lang" aria-label="Close language picker">
-        <svg viewBox="0 0 24 24">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
+      <button class="sheet-close-btn" id="btn-close-lang" aria-label="Close language picker" title="Close">
+        <svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true">
+          <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+          <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
@@ -1379,10 +1376,10 @@
   <div class="sheet-card">
     <div class="sheet-header">
       <h3 id="style-modal-title">COUNTDOWN STYLE</h3>
-      <button class="sheet-close-btn" id="btn-close-style" aria-label="Close countdown style picker">
-        <svg viewBox="0 0 24 24">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
+      <button class="sheet-close-btn" id="btn-close-style" aria-label="Close countdown style picker" title="Close">
+        <svg viewBox="0 0 20 20" width="20" height="20" fill="none" aria-hidden="true">
+          <line x1="4" y1="4" x2="16" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+          <line x1="16" y1="4" x2="4" y2="16" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
