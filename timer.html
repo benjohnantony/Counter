@@ -1155,8 +1155,14 @@
     if (SETTINGS.cueToggles && SETTINGS.cueToggles[category] === false) {
       return false;
     }
+    if (category === 'hold' && CFG.soundHold === false) return false;
+    if (category === 'sets' && CFG.soundSets === false) return false;
+    if (category === 'reps' && CFG.soundReps === false) return false;
+    if (category === 'restSets' && CFG.soundRestSets === false) return false;
+    if (category === 'restReps' && CFG.soundRestReps === false) return false;
     return true;
   }
+  const isCueEnabled = isCountEnabled;
 
   function speakPhaseCue(text, onSpeechDone) {
     if (!text || !text.trim() || SETTINGS.soundEnabled === false) {
@@ -1907,7 +1913,7 @@
       // Voice countdown matching display going backwards (e.g. 5, 4, 3, 2, 1)
       if (remSecs > 0 && !state.spokenCounts[remSecs]) {
         state.spokenCounts[remSecs] = true;
-        if (isCueEnabled('hold') && shouldAnnounceCountdown(remSecs)) {
+        if (isCountEnabled('hold') && shouldAnnounceCountdown(remSecs)) {
           speakCountdown('hold', String(remSecs));
         }
         if (SETTINGS.countdownBeeps && state.running) playTone(880, 0.08);
