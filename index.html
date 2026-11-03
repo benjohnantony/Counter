@@ -38,6 +38,15 @@
       --transition:           0.12s ease;
     }
 
+    /* ── Hide scrollbars across all browsers ─────────────────────── */
+    * {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    *::-webkit-scrollbar {
+      display: none;
+    }
+
     html, body {
       min-height: 100%;
       background: var(--bg);
