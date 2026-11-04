@@ -208,35 +208,70 @@
       transition: clip-path 0.04s linear;
     }
 
-    /* Phase Badge (HOLD / REST) & Giant Timer */
-    .stage-upper-wrap {
+    /* ── Top Unified 3-Column Metrics Bar (Inside Neon Green Space) ── */
+    .metrics-bar {
       width: 100%;
-      flex: 1;
-      min-height: 0;
+      height: clamp(44px, 6.5vh, 54px);
+      min-height: 44px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding-top: 14px;
-      box-sizing: border-box;
+      justify-content: space-between;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+      background: rgba(0, 0, 0, 0.04);
+      flex-shrink: 0;
       position: relative;
       z-index: 2;
     }
 
-    .stage-set-tag {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: clamp(16px, 2.4vh, 20px);
-      line-height: 1.2;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      text-align: center;
-      color: var(--text-black); /* Pure black on neon volt green */
+    .metric-col {
+      flex: 1;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+      padding: 0 4px;
+      box-sizing: border-box;
       user-select: none;
     }
 
-    /* Giant Countdown Timer (Anton 80px) */
+    .metric-divider {
+      width: 1.5px;
+      height: 22px;
+      background: rgba(0, 0, 0, 0.22);
+      flex-shrink: 0;
+    }
+
+    .metric-val {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: clamp(15px, 2.3vh, 19px);
+      line-height: 1.2;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #000000;
+    }
+
+    .metric-total {
+      font-family: var(--font-heading);
+      font-weight: 400;
+      font-size: clamp(13px, 1.9vh, 16px);
+      line-height: 1.2;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: rgba(0, 0, 0, 0.52);
+    }
+
+    /* ── Center Stage & Giant Countdown Timer ── */
+    .stage-center-wrap {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+
     .stage-timer-wrap {
       display: flex;
       flex-direction: column;
@@ -249,12 +284,12 @@
     .stage-timer-digits {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: clamp(48px, min(18vw, 10vh), 80px);
-      line-height: 1.05;
+      font-size: clamp(54px, min(22vw, 13vh), 96px);
+      line-height: 1;
       letter-spacing: 1px;
       font-variant-numeric: tabular-nums;
       text-align: center;
-      color: var(--text-black); /* Pure black on neon volt green */
+      color: var(--text-black);
       transition: transform 0.15s ease;
       will-change: transform;
     }
@@ -263,88 +298,57 @@
       transform: scale(1.05);
     }
 
-    /* Rep status row (Centered, no arrows as in Figma) */
-    .stage-lower-wrap {
-      width: 100%;
-      height: clamp(48px, 7vh, 72px);
-      min-height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 20px;
-      box-sizing: border-box;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 2;
-    }
-
-    .stage-rep-tag {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: clamp(16px, 2.4vh, 20px);
-      line-height: 1.2;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      text-align: center;
-      color: var(--text-black); /* Pure black on neon volt green */
-      user-select: none;
-    }
-
-    /* ── Red Command Banner / Action Ticker ── */
+    /* ── Red Command Banner / Action Runway Ticker ── */
     .command-banner {
       width: 100%;
       height: clamp(52px, 7.8vh, 76px);
       min-height: 52px;
-      background: var(--accent-red); /* #F13629 / #FF003B */
+      background: var(--accent-red); /* #FF003B */
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: clamp(12px, 3vw, 24px);
+      justify-content: space-between;
       flex-shrink: 0;
-      padding: 0 16px;
+      padding: 0 8px;
       box-sizing: border-box;
       position: relative;
       overflow: hidden;
-      transition: background 0.3s ease;
+      transition: background 0.25s ease, color 0.25s ease;
     }
 
-    .command-chevrons {
+    .runway-side {
+      flex: 1;
+      height: 100%;
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: var(--white);
+      overflow: hidden;
+      position: relative;
+      color: #FFFFFF;
+      transition: opacity 0.2s ease, transform 0.3s ease;
+    }
+
+    .runway-side.left {
+      justify-content: flex-end;
+    }
+
+    .runway-side.right {
+      justify-content: flex-start;
+    }
+
+    .runway-svg {
+      width: 216px;
+      height: 32px;
       flex-shrink: 0;
+      display: block;
       will-change: transform;
     }
 
-    .command-chevrons svg {
-      width: clamp(22px, 3.2vw, 28px);
-      height: clamp(16px, 2.4vw, 20px);
-      display: block;
-    }
-
-    .command-chevrons.left {
-      animation: chevronMoveLeft 0.8s ease-in-out infinite alternate;
-    }
-
-    .command-chevrons.right {
-      animation: chevronMoveRight 0.8s ease-in-out infinite alternate;
-    }
-
-    @keyframes chevronMoveLeft {
-      0%   { transform: translateX(0); opacity: 0.55; }
-      100% { transform: translateX(-7px); opacity: 1; }
-    }
-
-    @keyframes chevronMoveRight {
-      0%   { transform: translateX(0); opacity: 0.55; }
-      100% { transform: translateX(7px); opacity: 1; }
-    }
-
-    .command-content {
+    .command-center-wrap {
+      padding: 0 clamp(8px, 2vw, 16px);
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 3;
     }
 
     .command-badge {
@@ -352,13 +356,15 @@
       font-weight: 400;
       font-size: clamp(20px, 3vh, 26px);
       line-height: 1.1;
-      letter-spacing: 1.6px;
+      letter-spacing: 1.8px;
       text-transform: uppercase;
-      color: var(--white);
+      color: #FFFFFF;
       text-align: center;
       user-select: none;
       display: inline-block;
+      white-space: nowrap;
       will-change: transform;
+      transition: color 0.2s ease;
     }
 
     .command-badge.animate-pop {
@@ -371,37 +377,70 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* ── Paused State in Command Bar ── */
+    /* ── Mode 1 & 2: OUTWARD (GO! & HOLD) ── */
+    .command-banner.mode-outward .runway-side.left .runway-svg {
+      animation: streamLeft 0.8s linear infinite;
+    }
+
+    .command-banner.mode-outward .runway-side.right .runway-svg {
+      animation: streamRight 0.8s linear infinite;
+    }
+
+    @keyframes streamLeft {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-36px); }
+    }
+
+    @keyframes streamRight {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(36px); }
+    }
+
+    /* ── Mode 3: INWARD (REST & SET REST) ── */
+    .command-banner.mode-inward .runway-side.left {
+      transform: scaleX(-1);
+    }
+
+    .command-banner.mode-inward .runway-side.right {
+      transform: scaleX(-1);
+    }
+
+    .command-banner.mode-inward .runway-side.left .runway-svg {
+      animation: streamRight 0.9s linear infinite;
+    }
+
+    .command-banner.mode-inward .runway-side.right .runway-svg {
+      animation: streamLeft 0.9s linear infinite;
+    }
+
+    /* ── Mode 4: PAUSED (Yellow Background + Frozen Motion) ── */
+    .command-banner.mode-paused,
     #card.paused .command-banner {
-      background: repeating-linear-gradient(
-        -45deg,
-        #FF003B,
-        #FF003B 14px,
-        #990022 14px,
-        #990022 28px
-      );
-      background-size: 39.6px 39.6px;
-      animation: pauseHazardMove 1.4s linear infinite;
+      background: #FFD000 !important; /* Athletic Pause Yellow */
+      color: #000000 !important;
     }
 
-    @keyframes pauseHazardMove {
-      0%   { background-position: 0 0; }
-      100% { background-position: 39.6px 0; }
+    .command-banner.mode-paused .command-badge,
+    #card.paused .command-banner .command-badge {
+      color: #000000 !important;
+      letter-spacing: 2.5px;
     }
 
-    #card.paused .command-chevrons {
-      animation: none;
-      opacity: 0.3;
+    .command-banner.mode-paused .runway-side,
+    #card.paused .command-banner .runway-side {
+      color: #000000 !important;
     }
 
-    #card.paused .command-badge {
-      letter-spacing: 2.8px;
-      animation: pauseBlink 1.4s ease-in-out infinite alternate;
+    .command-banner.mode-paused .runway-svg,
+    #card.paused .command-banner .runway-svg {
+      animation-play-state: paused !important; /* Arrows frozen in place */
+      opacity: 0.65;
     }
 
-    @keyframes pauseBlink {
-      0%   { opacity: 0.65; transform: scale(0.96); }
-      100% { opacity: 1; transform: scale(1.04); }
+    /* ── Mode 5: NO ARROWS (PREPARATION & COMPLETE) ── */
+    .command-banner.mode-no-arrows .runway-side {
+      opacity: 0 !important;
+      visibility: hidden !important;
     }
 
     /* ── Controls Section (Figma v2 Frame 1707479676) ── */
@@ -788,32 +827,55 @@
     <!-- 20% Black Progress Overlay rising on Hold and emptying on Rest -->
     <div class="stage-progress-overlay" id="stage-fill-overlay"></div>
 
-    <div class="stage-upper-wrap">
-      <div class="stage-set-tag" id="set-info">SET 1 OF 3</div>
+    <!-- Unified 3-Column Top Metrics Strip -->
+    <div class="metrics-bar" id="metrics-bar">
+      <div class="metric-col">
+        <span class="metric-val" id="metric-wrt-num">WRT 1</span>
+        <span class="metric-total" id="metric-wrt-total">OF 1</span>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-col">
+        <span class="metric-val" id="metric-set-num">SET 1</span>
+        <span class="metric-total" id="metric-set-total">OF 3</span>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-col">
+        <span class="metric-val" id="metric-rep-num">REP 1</span>
+        <span class="metric-total" id="metric-rep-total">OF 10</span>
+      </div>
+    </div>
+
+    <!-- Giant Countdown Timer Centered in Canvas -->
+    <div class="stage-center-wrap">
       <div class="stage-timer-wrap">
         <span class="stage-timer-digits">00:00:10</span>
       </div>
     </div>
-    <div class="stage-lower-wrap">
-      <div class="stage-rep-tag">REP <span class="current-rep-num">1</span> OF <span class="total-reps-num">10</span></div>
-    </div>
   </div>
 
   <!-- Red Command Action Bar -->
-  <div class="command-banner" id="command-banner" role="status" aria-live="polite">
-    <div class="command-chevrons left" aria-hidden="true">
-      <svg viewBox="0 0 28 20" width="28" height="20" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="square">
-        <path d="M12 2L4 10L12 18" />
-        <path d="M22 2L14 10L22 18" />
+  <div class="command-banner mode-outward" id="command-banner" role="status" aria-live="polite">
+    <div class="runway-side left" id="runway-left" aria-hidden="true">
+      <svg class="runway-svg" viewBox="0 0 216 36" preserveAspectRatio="none">
+        <path d="M18 4L0 18L18 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M54 4L36 18L54 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M90 4L72 18L90 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M126 4L108 18L126 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M162 4L144 18L162 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M198 4L180 18L198 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
       </svg>
     </div>
-    <div class="command-content">
+    <div class="command-center-wrap">
       <span class="command-badge animate-pop" id="command-badge">GO!</span>
     </div>
-    <div class="command-chevrons right" aria-hidden="true">
-      <svg viewBox="0 0 28 20" width="28" height="20" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="square">
-        <path d="M6 2L14 10L6 18" />
-        <path d="M16 2L24 10L16 18" />
+    <div class="runway-side right" id="runway-right" aria-hidden="true">
+      <svg class="runway-svg" viewBox="0 0 216 36" preserveAspectRatio="none">
+        <path d="M0 4L18 18L0 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M36 4L54 18L36 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M72 4L90 18L72 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M108 4L126 18L108 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M144 4L162 18L144 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+        <path d="M180 4L198 18L180 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
       </svg>
     </div>
   </div>
@@ -1416,12 +1478,29 @@
       activeCommandBadge = text;
     }
     const badge = document.getElementById('command-badge');
+    const banner = document.getElementById('command-banner');
+
     if (badge) {
       badge.textContent = text;
       badge.classList.remove('animate-pop');
       void badge.offsetWidth;
       badge.classList.add('animate-pop');
     }
+
+    if (banner) {
+      banner.classList.remove('mode-outward', 'mode-inward', 'mode-paused', 'mode-no-arrows');
+      if (text === 'PAUSED') {
+        banner.classList.add('mode-paused');
+      } else if (text === 'PREPARATION' || text === 'GREAT WORKOUT!' || text === 'COMPLETE!') {
+        banner.classList.add('mode-no-arrows');
+      } else if (text === 'REST' || text.startsWith('SET REST')) {
+        banner.classList.add('mode-inward');
+      } else {
+        // GO!, HOLD, etc. -> moving outwards
+        banner.classList.add('mode-outward');
+      }
+    }
+
     // Also sync any lingering stage-phase-badge class elements if present
     document.querySelectorAll('.stage-phase-badge').forEach(el => el.textContent = text);
   }
@@ -1431,6 +1510,10 @@
   }
 
   function setStageReps(current, total) {
+    const repNum = document.getElementById('metric-rep-num');
+    const repTotal = document.getElementById('metric-rep-total');
+    if (repNum) repNum.textContent = `REP ${current}`;
+    if (repTotal) repTotal.textContent = `OF ${total}`;
     document.querySelectorAll('.current-rep-num').forEach(el => el.textContent = current);
     document.querySelectorAll('.total-reps-num').forEach(el => el.textContent = total);
   }
@@ -1441,6 +1524,12 @@
       void el.offsetWidth;
       el.classList.add('pop');
     });
+    const repCol = document.getElementById('metric-rep-num');
+    if (repCol) {
+      repCol.style.transition = 'transform 0.15s ease';
+      repCol.style.transform = 'scale(1.2)';
+      setTimeout(() => { repCol.style.transform = 'scale(1)'; }, 180);
+    }
   }
 
   /* Liquid fill:
@@ -1456,10 +1545,28 @@
 
   function updateWorkoutTitle() {
     const exCfg = getWorkoutConfig(state.exercise);
-    if (CFG.exercises > 1) {
-      setInfoEl.textContent = `WORKOUT ${state.exercise} : SET ${state.set} OF ${exCfg.sets}`;
-    } else {
-      setInfoEl.textContent = `SET ${state.set} OF ${exCfg.sets}`;
+
+    const wrtNum = document.getElementById('metric-wrt-num');
+    const wrtTotal = document.getElementById('metric-wrt-total');
+    if (wrtNum) wrtNum.textContent = `WRT ${state.exercise}`;
+    if (wrtTotal) wrtTotal.textContent = `OF ${CFG.exercises}`;
+
+    const setNum = document.getElementById('metric-set-num');
+    const setTotal = document.getElementById('metric-set-total');
+    if (setNum) setNum.textContent = `SET ${state.set}`;
+    if (setTotal) setTotal.textContent = `OF ${exCfg.sets}`;
+
+    const repNum = document.getElementById('metric-rep-num');
+    const repTotal = document.getElementById('metric-rep-total');
+    if (repNum) repNum.textContent = `REP ${state.rep}`;
+    if (repTotal) repTotal.textContent = `OF ${exCfg.reps}`;
+
+    if (setInfoEl) {
+      if (CFG.exercises > 1) {
+        setInfoEl.textContent = `WORKOUT ${state.exercise} : SET ${state.set} OF ${exCfg.sets}`;
+      } else {
+        setInfoEl.textContent = `SET ${state.set} OF ${exCfg.sets}`;
+      }
     }
   }
 
