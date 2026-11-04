@@ -934,23 +934,23 @@
     saveConfig();
   }
 
-  function areAllValuesZero(w) {
+  function isWorkoutAtMinimum(w) {
     if (!w) return true;
     return (
-      (w.sets === 0 || !w.sets) &&
+      (w.sets <= 1) &&
+      (w.reps <= 1) &&
       (w.restSets === 0 || !w.restSets) &&
-      (w.reps === 0 || !w.reps) &&
       (w.restReps === 0 || !w.restReps) &&
       (w.hold === 0 || !w.hold)
     );
   }
 
-  function resetWorkoutToZero(idx) {
+  function resetWorkoutToMinimum(idx) {
     const w = workouts[idx];
     if (!w) return;
-    w.sets     = 0;
+    w.sets     = 1;
     w.restSets = 0;
-    w.reps     = 0;
+    w.reps     = 1;
     w.restReps = 0;
     w.hold     = 0;
     if (activeWorkoutIndex === idx) {
@@ -963,18 +963,18 @@
     if (idx < 0 || idx >= workouts.length) return;
     const w = workouts[idx];
 
-    // If only one tab exists, clicking close resets all values to 0
+    // If only one tab exists, clicking close resets all values to minimum (Sets: 1, Reps: 1, others: 0)
     if (workouts.length <= 1) {
-      resetWorkoutToZero(0);
+      resetWorkoutToMinimum(0);
       switchTab(0);
       return;
     }
 
     // When multiple tabs exist:
-    // 1st click: if any values are non-zero, reset them all to 0
-    // 2nd click: if all values are already 0, remove/close the tab
-    if (!areAllValuesZero(w)) {
-      resetWorkoutToZero(idx);
+    // 1st click: if any values are above minimum, reset them to minimum (Sets: 1, Reps: 1, others: 0)
+    // 2nd click: if already at minimum, remove/close the tab
+    if (!isWorkoutAtMinimum(w)) {
+      resetWorkoutToMinimum(idx);
       switchTab(idx);
     } else {
       removeTab(idx);
