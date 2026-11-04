@@ -38,8 +38,8 @@
 | `COLOR_BORDER_DARK` | `#1B1B1F` | 1px horizontal borders separating parameter cards on the setup screen |
 | `COLOR_CARD_BORDER` | `rgba(255, 255, 255, 0.30)` | 30% dashed white border for settings cards |
 | `COLOR_OVERLAY_FILL` | `rgba(0, 0, 0, 0.20)` | 20% Black liquid progress overlay filling upward during hold and draining during rest |
-| `COLOR_METRIC_DIVIDER`| `rgba(0, 0, 0, 0.20)` | 1.5px vertical dividers in the 3-column top metrics strip |
-| `COLOR_METRIC_MUTED` | `rgba(0, 0, 0, 0.52)` | Two-tone secondary totals in the metrics bar (`OF 3`, `OF 10`) |
+| `COLOR_METRIC_DIVIDER`| `rgba(0, 0, 0, 0.22)` | 1.5px vertical dividers in the 3-column top metrics strip |
+| `COLOR_METRIC_MUTED` | `rgba(0, 0, 0, 0.75)` | High-contrast secondary totals in the metrics bar (`OF 3`, `OF 10`) |
 | `COLOR_CHEVRON_RED` | `rgba(255, 255, 255, 0.28)` | Solid chevron ribbons on red background (renders precisely as `#F45E54`) |
 | `COLOR_CHEVRON_PAUSE`| `rgba(0, 0, 0, 0.28)` | Solid chevron ribbons on yellow paused background (renders as subtle dark bands) |
 
@@ -84,17 +84,17 @@ export const Typography = {
   },
   metricVal: {
     fontFamily: 'Anton',
-    fontSize: 19,
-    letterSpacing: 0.8,
+    fontSize: 22,
+    letterSpacing: 1.2,
     textTransform: 'uppercase',
     color: '#000000',
   },
   metricTotal: {
     fontFamily: 'Anton',
-    fontSize: 15,
-    letterSpacing: 0.6,
+    fontSize: 17,
+    letterSpacing: 1.2,
     textTransform: 'uppercase',
-    color: 'rgba(0, 0, 0, 0.52)',
+    color: 'rgba(0, 0, 0, 0.75)',
   },
   timerDigits: {
     fontFamily: 'Anton',
@@ -220,14 +220,14 @@ export const Typography = {
   * Color: `rgba(0, 0, 0, 0.20)` (20% black).
   * **During HOLD (0% → 100%):** Starts completely empty at the bottom and fills upward toward 100% as the hold seconds tick down.
   * **During REST (100% → 0%):** Starts completely full and drains downward toward 0% as the rest seconds tick down.
-* **Top Unified 3-Column Metrics Bar (`54px – 60px` height):**
+* **Top Unified 3-Column Metrics Bar (`52px – 64px` height):**
   * Transparent background, no bottom border.
   * 3 equal columns:
-    1. **Workout Column:** `WRT X OF Y` (e.g. `WRT 1` in Anton 19px `#000000`, `OF 3` in Anton 15px `rgba(0, 0, 0, 0.52)`).
-    2. **Divider 1:** `1.5px` width, `28px` height, `rgba(0, 0, 0, 0.20)`.
-    3. **Set Column:** `SET X OF Y` (e.g. `SET 2` in `#000000`, `OF 3` in `rgba(0, 0, 0, 0.52)`).
-    4. **Divider 2:** `1.5px` width, `28px` height, `rgba(0, 0, 0, 0.20)`.
-    5. **Rep Column:** `REP X OF Y` (e.g. `REP 2` in `#000000`, `OF 10` in `rgba(0, 0, 0, 0.52)`).
+    1. **Workout Column:** `WRT X OF Y` (e.g. `WRT 1` in Anton 22px `#000000` with 1.2px letter-spacing, `OF 3` in Anton 17px `rgba(0, 0, 0, 0.75)` with 1.2px letter-spacing).
+    2. **Divider 1:** `1.5px` width, `30px` height, `rgba(0, 0, 0, 0.22)`.
+    3. **Set Column:** `SET X OF Y` (e.g. `SET 2` in `#000000`, `OF 3` in `rgba(0, 0, 0, 0.75)`).
+    4. **Divider 2:** `1.5px` width, `30px` height, `rgba(0, 0, 0, 0.22)`.
+    5. **Rep Column:** `REP X OF Y` (e.g. `REP 2` in `#000000`, `OF 10` in `rgba(0, 0, 0, 0.75)`).
   * Pop animation (`scale: 1.2 -> 1.0` over 180ms) triggers whenever a rep completes.
 * **Giant Countdown Digits (`stage-timer-digits`):**
   * Anton, 84px – 100px, `#000000`, tabular-nums, line-height 1.
@@ -333,7 +333,7 @@ To avoid sharp rectangular scissor cuts near the center badge:
 | **1. `OUTWARD`** | `GO!` | `<<<< [GO!] >>>>` | Streaming outward (Left: `translateX(0 → -48px)`, Right: `translateX(0 → +48px)` in 0.8s) | `#F13629` | Text: White `#FFFFFF`<br>Chevrons: White 0.28 |
 | **2. `HOLD`** | `HOLD` (or custom cue) | `<<<< [HOLD] >>>>` | **FROZEN in exact moment & position** (`animationPlayState: 'paused'`) | `#F13629` | Text: White `#FFFFFF`<br>Chevrons: White 0.28 |
 | **3. `INWARD`** | `REST` / `SET REST` | `>>>> [REST] <<<<` | Streaming inward (Left: `translateX(0 → +48px)`, Right: `translateX(0 → -48px)` in 0.8s) | `#F13629` | Text: White `#FFFFFF`<br>Chevrons: White 0.28 |
-| **4. `PAUSED`** | User taps Pause | Same as Hold | **FROZEN in exact moment & position** | **`#FFD000` (Yellow)** | Text: Pure Black `#000000`<br>Chevrons: **Black 0.28** |
+| **4. `PAUSED`** | User taps Pause | None (Chevrons hidden) | Clean text only | **`#FFD000` (Yellow)** | Text: Pure Black `#000000`<br>Chevrons: **Hidden** (`opacity: 0`) |
 | **5. `NO ARROWS`**| `PREPARATION` / `COMPLETE!` | None | Chevrons hidden (`opacity: 0`) | `#F13629` | Text: White `#FFFFFF` |
 
 ---
