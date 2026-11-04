@@ -561,7 +561,7 @@
           </svg>
         </span>
       </button>
-      <input type="number" id="sets-val" value="3" min="0" style="display:none;" />
+      <input type="number" id="sets-val" value="3" min="1" style="display:none;" />
     </div>
 
     <!-- 2. REST BETWEEN SETS (Default: 10 SEC) -->
@@ -599,7 +599,7 @@
           </svg>
         </span>
       </button>
-      <input type="number" id="reps-val" value="10" min="0" style="display:none;" />
+      <input type="number" id="reps-val" value="10" min="1" style="display:none;" />
     </div>
 
     <!-- 4. REST BETWEEN REPS (Default: 5 SEC) -->
@@ -685,9 +685,9 @@
   };
 
   const LIMITS = {
-    sets:        { min: 0, max: Infinity },
+    sets:        { min: 1, max: Infinity },
     'rest-sets': { min: 0, max: Infinity },
-    reps:        { min: 0, max: Infinity },
+    reps:        { min: 1, max: Infinity },
     'rest-reps': { min: 0, max: Infinity },
     hold:        { min: 0, max: Infinity },
   };
@@ -750,9 +750,9 @@
       if (Array.isArray(cfg.workouts) && cfg.workouts.length > 0) {
         workouts = cfg.workouts.map((w, idx) => ({
           id:       idx + 1,
-          sets:     typeof w.sets === 'number' ? w.sets : 3,
+          sets:     Math.max(1, typeof w.sets === 'number' ? w.sets : 3),
           restSets: typeof w.restSets === 'number' ? w.restSets : 10,
-          reps:     typeof w.reps === 'number' ? w.reps : 10,
+          reps:     Math.max(1, typeof w.reps === 'number' ? w.reps : 10),
           restReps: typeof w.restReps === 'number' ? w.restReps : 5,
           hold:     typeof w.hold === 'number' ? w.hold : 10,
         }));
@@ -762,9 +762,9 @@
         for (let i = 1; i <= count; i++) {
           workouts.push({
             id:       i,
-            sets:     typeof cfg.sets === 'number' ? cfg.sets : 3,
+            sets:     Math.max(1, typeof cfg.sets === 'number' ? cfg.sets : 3),
             restSets: typeof cfg.restSets === 'number' ? cfg.restSets : 10,
-            reps:     typeof cfg.reps === 'number' ? cfg.reps : 10,
+            reps:     Math.max(1, typeof cfg.reps === 'number' ? cfg.reps : 10),
             restReps: typeof cfg.restReps === 'number' ? cfg.restReps : 5,
             hold:     typeof cfg.hold === 'number' ? cfg.hold : 10,
           });

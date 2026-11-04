@@ -907,8 +907,8 @@
   const prepParam = p.get('prep');
   const CFG = {
     prep:          prepParam !== null ? getNonNegativeInt(prepParam, 10) : getNonNegativeInt(SETTINGS.prepTime, 10),
-    sets:          getNonNegativeInt(p.get('sets'), 3),
-    reps:          getNonNegativeInt(p.get('reps'), 10),
+    sets:          Math.max(1, getPositiveInt(p.get('sets'), 3)),
+    reps:          Math.max(1, getPositiveInt(p.get('reps'), 10)),
     restSets:      getNonNegativeInt(p.get('restSets'), 10),
     restReps:      getNonNegativeInt(p.get('restReps'), 5),
     hold:          getNonNegativeInt(p.get('hold'), 10),
@@ -945,8 +945,8 @@
     if (workoutsList[idx]) {
       const w = workoutsList[idx];
       return {
-        sets:     typeof w.sets === 'number' ? w.sets : CFG.sets,
-        reps:     typeof w.reps === 'number' ? w.reps : CFG.reps,
+        sets:     Math.max(1, typeof w.sets === 'number' ? w.sets : CFG.sets),
+        reps:     Math.max(1, typeof w.reps === 'number' ? w.reps : CFG.reps),
         restSets: typeof w.restSets === 'number' ? w.restSets : CFG.restSets,
         restReps: typeof w.restReps === 'number' ? w.restReps : CFG.restReps,
         hold:     typeof w.hold === 'number' ? w.hold : CFG.hold,
@@ -1447,15 +1447,27 @@
       clearActiveDelay();
       if (!state.running || state.finished) return;
       setStageBadge((holdDisplayName || 'HOLD').toUpperCase());
-      if (holdName) {
-        speakRaw(holdName);
-      }
       if (SETTINGS.countdownBeeps && state.running) {
         playTone(1760, 0.2); // Crisp Go chime
       }
-      state.isCueSpeaking = false;
-      state.phaseElapsed = 0;
-      state.lastTickTime = performance.now();
+
+      if (holdName && exCfg.hold > 0) {
+        state.isCueSpeaking = true;
+        let holdDoneCalled = false;
+        const onHoldDone = () => {
+          if (holdDoneCalled) return;
+          holdDoneCalled = true;
+          state.isCueSpeaking = false;
+          state.phaseElapsed = 0;
+          state.lastTickTime = performance.now();
+        };
+        speakRaw(holdName, onHoldDone);
+        activeDelayTimer = setTimeout(onHoldDone, 650);
+      } else {
+        state.isCueSpeaking = false;
+        state.phaseElapsed = 0;
+        state.lastTickTime = performance.now();
+      }
     };
 
     state.isCueSpeaking = true;
@@ -1583,7 +1595,7 @@
         cueParts.push(`${setName} complete`);
       }
     }
-    if (restSetsName) {
+    if (exCfg.restSets > 0 && restSetsName) {
       cueParts.push(restSetsName);
     }
 
@@ -1599,6 +1611,12 @@
     const delayMs = Math.max(0, parseInt(SETTINGS.delayTime, 10) || 0) * 1000;
 
     const onRestCueDone = () => {
+      if (exCfg.restSets === 0) {
+        // Zero rest between sets: announce completion then immediately start next set!
+        state.set++;
+        startHold(1, true);
+        return;
+      }
       if (delayMs > 0) {
         // Silent rest delay: give the user time to return to normal position
         activeDelayTimer = setTimeout(() => {
@@ -1975,12 +1993,7 @@
             startHold(state.rep + 1);
           }
         } else if (!isLastSetOfEx) {
-          if (exCfg.restSets > 0) {
-            startRestSets();
-          } else {
-            state.set++;
-            startHold(1, true);
-          }
+          startRestSets();
         } else if (!isLastExercise) {
           showNextWorkoutPrompt();
         } else {
