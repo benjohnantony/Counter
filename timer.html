@@ -329,10 +329,14 @@
 
     .runway-side.left {
       justify-content: flex-end;
+      -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 1) 24px, rgba(0, 0, 0, 1) calc(100% - 36px), rgba(0, 0, 0, 0) 100%);
+      mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 1) 24px, rgba(0, 0, 0, 1) calc(100% - 36px), rgba(0, 0, 0, 0) 100%);
     }
 
     .runway-side.right {
       justify-content: flex-start;
+      -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 1) 36px, rgba(0, 0, 0, 1) calc(100% - 24px), rgba(0, 0, 0, 0) 100%);
+      mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 1) 36px, rgba(0, 0, 0, 1) calc(100% - 24px), rgba(0, 0, 0, 0) 100%);
     }
 
     .runway-svg {
@@ -396,20 +400,24 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* ── Mode 1 & 2: OUTWARD (GO! & HOLD) ── */
-    .command-banner.mode-outward .arrow-outward {
+    /* ── Mode 1: OUTWARD (GO!) ── */
+    .command-banner.mode-outward .arrow-outward,
+    .command-banner.mode-hold .arrow-outward {
       display: block;
     }
 
-    .command-banner.mode-outward .arrow-inward {
+    .command-banner.mode-outward .arrow-inward,
+    .command-banner.mode-hold .arrow-inward {
       display: none;
     }
 
-    .command-banner.mode-outward .runway-side.left .runway-svg {
+    .command-banner.mode-outward .runway-side.left .runway-svg,
+    .command-banner.mode-hold .runway-side.left .runway-svg {
       animation: streamOutwardLeft 0.8s linear infinite;
     }
 
-    .command-banner.mode-outward .runway-side.right .runway-svg {
+    .command-banner.mode-outward .runway-side.right .runway-svg,
+    .command-banner.mode-hold .runway-side.right .runway-svg {
       animation: streamOutwardRight 0.8s linear infinite;
     }
 
@@ -421,6 +429,11 @@
     @keyframes streamOutwardRight {
       0%   { transform: translateX(0); }
       100% { transform: translateX(48px); }
+    }
+
+    /* ── Mode 2: HOLD (Freeze in exact moment & position) ── */
+    .command-banner.mode-hold .runway-svg {
+      animation-play-state: paused !important;
     }
 
     /* ── Mode 3: INWARD (REST & SET REST) ── */
@@ -450,7 +463,7 @@
       100% { transform: translateX(-48px); }
     }
 
-    /* ── Mode 4: PAUSED (Yellow Background + Frozen Motion) ── */
+    /* ── Mode 4: PAUSED (Yellow Background + Frozen Motion + Black Chevrons) ── */
     .command-banner.mode-paused,
     #card.paused .command-banner {
       background: #FFD000 !important; /* Athletic Pause Yellow */
@@ -465,7 +478,7 @@
 
     .command-banner.mode-paused .runway-svg,
     #card.paused .command-banner .runway-svg {
-      fill: rgba(0, 0, 0, 0.22) !important;
+      fill: rgba(0, 0, 0, 0.28) !important; /* Black with exact same 0.28 opacity */
       animation-play-state: paused !important; /* Arrows frozen in place */
     }
 
@@ -1512,16 +1525,25 @@
     }
 
     if (banner) {
-      banner.classList.remove('mode-outward', 'mode-inward', 'mode-paused', 'mode-no-arrows');
+      banner.classList.remove('mode-outward', 'mode-hold', 'mode-inward', 'mode-paused', 'mode-no-arrows');
       if (text === 'PAUSED') {
         banner.classList.add('mode-paused');
+        if (activeCommandBadge === 'REST' || activeCommandBadge.startsWith('SET REST')) {
+          banner.classList.add('mode-inward');
+        } else if (activeCommandBadge === 'PREPARATION' || activeCommandBadge === 'GREAT WORKOUT!' || activeCommandBadge === 'COMPLETE!') {
+          banner.classList.add('mode-no-arrows');
+        } else {
+          banner.classList.add('mode-hold');
+        }
       } else if (text === 'PREPARATION' || text === 'GREAT WORKOUT!' || text === 'COMPLETE!') {
         banner.classList.add('mode-no-arrows');
       } else if (text === 'REST' || text.startsWith('SET REST')) {
         banner.classList.add('mode-inward');
-      } else {
-        // GO!, HOLD, etc. -> moving outwards
+      } else if (text === 'GO!') {
         banner.classList.add('mode-outward');
+      } else {
+        // HOLD or active hold cue name -> freeze in position!
+        banner.classList.add('mode-hold');
       }
     }
 
