@@ -177,7 +177,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       transition: background-color 0.25s ease;
     }
 
@@ -210,6 +210,9 @@
 
     /* ── Top Unified 3-Column Metrics Bar (Inside Neon Green Space) ── */
     .metrics-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: clamp(52px, 7.5vh, 64px);
       min-height: 52px;
@@ -219,8 +222,7 @@
       border-bottom: none;
       background: transparent;
       flex-shrink: 0;
-      position: relative;
-      z-index: 2;
+      z-index: 5;
       padding: clamp(6px, 1.2vh, 12px) 0 clamp(4px, 0.8vh, 8px);
       box-sizing: border-box;
     }

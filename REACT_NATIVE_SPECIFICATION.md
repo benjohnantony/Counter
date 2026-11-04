@@ -221,6 +221,7 @@ export const Typography = {
   * **During HOLD (0% → 100%):** Starts completely empty at the bottom and fills upward toward 100% as the hold seconds tick down.
   * **During REST (100% → 0%):** Starts completely full and drains downward toward 0% as the rest seconds tick down.
 * **Top Unified 3-Column Metrics Bar (`52px – 64px` height):**
+  * Positioned absolutely at the top (`position: 'absolute', top: 0, left: 0, right: 0, zIndex: 5`) so it never displaces the countdown digits.
   * Transparent background, no bottom border.
   * 3 equal columns:
     1. **Workout Column:** `WRT X OF Y` (e.g. `WRT 1` in Anton 22px `#000000` with 1.2px letter-spacing, `OF 3` in Anton 17px `rgba(0, 0, 0, 0.75)` with 1.2px letter-spacing).
@@ -230,6 +231,7 @@ export const Typography = {
     5. **Rep Column:** `REP X OF Y` (e.g. `REP 2` in `#000000`, `OF 10` in `rgba(0, 0, 0, 0.75)`).
   * Pop animation (`scale: 1.2 -> 1.0` over 180ms) triggers whenever a rep completes.
 * **Giant Countdown Digits (`stage-timer-digits`):**
+  * Positioned at the exact mathematical geometric center (50% X, 50% Y) of the entire green stage canvas, completely independent of the metrics bar above.
   * Anton, 84px – 100px, `#000000`, tabular-nums, line-height 1.
   * Displays remaining seconds formatted as `00:00:SS` or `00:MM:SS`.
 
