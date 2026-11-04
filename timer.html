@@ -217,14 +217,14 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      padding-top: 16px;
+      gap: 6px;
+      padding-top: 14px;
       box-sizing: border-box;
       position: relative;
       z-index: 2;
     }
 
-    .stage-phase-badge {
+    .stage-set-tag {
       font-family: var(--font-heading);
       font-weight: 400;
       font-size: clamp(16px, 2.4vh, 20px);
@@ -233,6 +233,7 @@
       text-transform: uppercase;
       text-align: center;
       color: var(--text-black); /* Pure black on neon volt green */
+      user-select: none;
     }
 
     /* Giant Countdown Timer (Anton 80px) */
@@ -289,29 +290,118 @@
       user-select: none;
     }
 
-    /* ── Status Banner (Figma v2 Frame 1707479699: fill #F13629) ── */
-    .set-status-banner {
+    /* ── Red Command Banner / Action Ticker ── */
+    .command-banner {
       width: 100%;
-      height: clamp(50px, 7.5vh, 72px);
-      min-height: 50px;
-      background: var(--accent-red); /* #F13629 */
+      height: clamp(52px, 7.8vh, 76px);
+      min-height: 52px;
+      background: var(--accent-red); /* #F13629 / #FF003B */
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: clamp(12px, 3vw, 24px);
       flex-shrink: 0;
-      padding: 10px;
+      padding: 0 16px;
       box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease;
     }
 
-    .set-status-text {
+    .command-chevrons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      flex-shrink: 0;
+      will-change: transform;
+    }
+
+    .command-chevrons svg {
+      width: clamp(22px, 3.2vw, 28px);
+      height: clamp(16px, 2.4vw, 20px);
+      display: block;
+    }
+
+    .command-chevrons.left {
+      animation: chevronMoveLeft 0.8s ease-in-out infinite alternate;
+    }
+
+    .command-chevrons.right {
+      animation: chevronMoveRight 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes chevronMoveLeft {
+      0%   { transform: translateX(0); opacity: 0.55; }
+      100% { transform: translateX(-7px); opacity: 1; }
+    }
+
+    @keyframes chevronMoveRight {
+      0%   { transform: translateX(0); opacity: 0.55; }
+      100% { transform: translateX(7px); opacity: 1; }
+    }
+
+    .command-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .command-badge {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: clamp(16px, 2.4vh, 20px);
-      line-height: 1.2;
-      letter-spacing: 0.4px;
+      font-size: clamp(20px, 3vh, 26px);
+      line-height: 1.1;
+      letter-spacing: 1.6px;
       text-transform: uppercase;
       color: var(--white);
       text-align: center;
+      user-select: none;
+      display: inline-block;
+      will-change: transform;
+    }
+
+    .command-badge.animate-pop {
+      animation: cmdPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes cmdPop {
+      0%   { transform: scale(0.8); opacity: 0.5; }
+      60%  { transform: scale(1.16); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ── Paused State in Command Bar ── */
+    #card.paused .command-banner {
+      background: repeating-linear-gradient(
+        -45deg,
+        #FF003B,
+        #FF003B 14px,
+        #990022 14px,
+        #990022 28px
+      );
+      background-size: 39.6px 39.6px;
+      animation: pauseHazardMove 1.4s linear infinite;
+    }
+
+    @keyframes pauseHazardMove {
+      0%   { background-position: 0 0; }
+      100% { background-position: 39.6px 0; }
+    }
+
+    #card.paused .command-chevrons {
+      animation: none;
+      opacity: 0.3;
+    }
+
+    #card.paused .command-badge {
+      letter-spacing: 2.8px;
+      animation: pauseBlink 1.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes pauseBlink {
+      0%   { opacity: 0.65; transform: scale(0.96); }
+      100% { opacity: 1; transform: scale(1.04); }
     }
 
     /* ── Controls Section (Figma v2 Frame 1707479676) ── */
@@ -699,7 +789,7 @@
     <div class="stage-progress-overlay" id="stage-fill-overlay"></div>
 
     <div class="stage-upper-wrap">
-      <div class="stage-phase-badge">HOLD</div>
+      <div class="stage-set-tag" id="set-info">SET 1 OF 3</div>
       <div class="stage-timer-wrap">
         <span class="stage-timer-digits">00:00:10</span>
       </div>
@@ -709,9 +799,23 @@
     </div>
   </div>
 
-  <!-- Status Banner (Figma v2 Frame 1707479699: 375 × 84 px Red Bar) -->
-  <div class="set-status-banner">
-    <span class="set-status-text" id="set-info">SET 1 OF 3</span>
+  <!-- Red Command Action Bar -->
+  <div class="command-banner" id="command-banner" role="status" aria-live="polite">
+    <div class="command-chevrons left" aria-hidden="true">
+      <svg viewBox="0 0 28 20" width="28" height="20" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="square">
+        <path d="M12 2L4 10L12 18" />
+        <path d="M22 2L14 10L22 18" />
+      </svg>
+    </div>
+    <div class="command-content">
+      <span class="command-badge animate-pop" id="command-badge">GO!</span>
+    </div>
+    <div class="command-chevrons right" aria-hidden="true">
+      <svg viewBox="0 0 28 20" width="28" height="20" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="square">
+        <path d="M6 2L14 10L6 18" />
+        <path d="M16 2L24 10L16 18" />
+      </svg>
+    </div>
   </div>
 
   <!-- ── Controls Section (Figma v2 Frame 1707479676: 375 × 83 px) ───── -->
@@ -1305,7 +1409,20 @@
   }
 
   /* ── Stage Display & Liquid Loader Helpers ───────────────────── */
+  let activeCommandBadge = 'GO!';
   function setStageBadge(text) {
+    if (text === 'GET READY') text = 'GO!';
+    if (text !== 'PAUSED') {
+      activeCommandBadge = text;
+    }
+    const badge = document.getElementById('command-badge');
+    if (badge) {
+      badge.textContent = text;
+      badge.classList.remove('animate-pop');
+      void badge.offsetWidth;
+      badge.classList.add('animate-pop');
+    }
+    // Also sync any lingering stage-phase-badge class elements if present
     document.querySelectorAll('.stage-phase-badge').forEach(el => el.textContent = text);
   }
 
@@ -1395,8 +1512,8 @@
     setArcFill(0); // Section background starts empty, fills up to 100% during hold
 
     const holdDisplayName = getCueName('hold');
-    // Initially show GET READY during setup & silent delay
-    setStageBadge('GET READY');
+    // Initially show GO! during setup & silent delay
+    setStageBadge('GO!');
     setStageReps(state.rep, exCfg.reps);
     
     const remSecs = Math.max(0, exCfg.hold);
@@ -2092,6 +2209,7 @@
     iconPlay.style.display  = paused ? ''     : 'none';
     if (pauseLabel) pauseLabel.textContent  = paused ? 'RESUME' : 'PAUSE';
     btnPause.setAttribute('aria-label', paused ? 'Resume workout' : 'Pause workout');
+    setStageBadge(paused ? 'PAUSED' : activeCommandBadge);
   }
 
   btnPause.addEventListener('click', togglePause);
