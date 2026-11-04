@@ -211,16 +211,18 @@
     /* ── Top Unified 3-Column Metrics Bar (Inside Neon Green Space) ── */
     .metrics-bar {
       width: 100%;
-      height: clamp(44px, 6.5vh, 54px);
-      min-height: 44px;
+      height: clamp(48px, 7vh, 60px);
+      min-height: 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 2px solid rgba(0, 0, 0, 0.15);
-      background: rgba(0, 0, 0, 0.04);
+      border-bottom: none;
+      background: transparent;
       flex-shrink: 0;
       position: relative;
       z-index: 2;
+      padding: clamp(6px, 1.2vh, 12px) 0 clamp(4px, 0.8vh, 8px);
+      box-sizing: border-box;
     }
 
     .metric-col {
@@ -228,7 +230,7 @@
       display: flex;
       align-items: baseline;
       justify-content: center;
-      gap: 4px;
+      gap: 5px;
       padding: 0 4px;
       box-sizing: border-box;
       user-select: none;
@@ -236,15 +238,15 @@
 
     .metric-divider {
       width: 1.5px;
-      height: 22px;
-      background: rgba(0, 0, 0, 0.22);
+      height: 28px;
+      background: rgba(0, 0, 0, 0.20);
       flex-shrink: 0;
     }
 
     .metric-val {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: clamp(15px, 2.3vh, 19px);
+      font-size: clamp(16px, 2.4vh, 20px);
       line-height: 1.2;
       letter-spacing: 0.8px;
       text-transform: uppercase;
@@ -284,7 +286,7 @@
     .stage-timer-digits {
       font-family: var(--font-heading);
       font-weight: 400;
-      font-size: clamp(54px, min(22vw, 13vh), 96px);
+      font-size: clamp(58px, min(24vw, 14vh), 100px);
       line-height: 1;
       letter-spacing: 1px;
       font-variant-numeric: tabular-nums;
@@ -298,17 +300,17 @@
       transform: scale(1.05);
     }
 
-    /* ── Red Command Banner / Action Runway Ticker ── */
+    /* ── Red Command Banner / Action Runway Ticker (Figma Node 84-151) ── */
     .command-banner {
       width: 100%;
-      height: clamp(52px, 7.8vh, 76px);
-      min-height: 52px;
-      background: var(--accent-red); /* #FF003B */
+      height: clamp(64px, 10.3vh, 84px);
+      min-height: 64px;
+      background: var(--accent-red); /* #FF003B / #F13629 */
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
-      padding: 0 8px;
+      padding: 0;
       box-sizing: border-box;
       position: relative;
       overflow: hidden;
@@ -322,8 +324,7 @@
       align-items: center;
       overflow: hidden;
       position: relative;
-      color: #FFFFFF;
-      transition: opacity 0.2s ease, transform 0.3s ease;
+      transition: opacity 0.2s ease;
     }
 
     .runway-side.left {
@@ -335,15 +336,33 @@
     }
 
     .runway-svg {
-      width: 216px;
-      height: 32px;
+      width: 576px;
+      height: 100%;
       flex-shrink: 0;
       display: block;
       will-change: transform;
+      fill: rgba(255, 255, 255, 0.28); /* Exact Figma chevron color: #F45E54 over #F13629 */
+      transition: fill 0.2s ease;
+    }
+
+    .runway-side.left .runway-svg {
+      margin-right: -48px;
+    }
+
+    .runway-side.right .runway-svg {
+      margin-left: -48px;
+    }
+
+    .arrow-inward {
+      display: none;
+    }
+
+    .arrow-outward {
+      display: block;
     }
 
     .command-center-wrap {
-      padding: 0 clamp(8px, 2vw, 16px);
+      padding: 0 clamp(10px, 2.5vw, 18px);
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -378,39 +397,57 @@
     }
 
     /* ── Mode 1 & 2: OUTWARD (GO! & HOLD) ── */
+    .command-banner.mode-outward .arrow-outward {
+      display: block;
+    }
+
+    .command-banner.mode-outward .arrow-inward {
+      display: none;
+    }
+
     .command-banner.mode-outward .runway-side.left .runway-svg {
-      animation: streamLeft 0.8s linear infinite;
+      animation: streamOutwardLeft 0.8s linear infinite;
     }
 
     .command-banner.mode-outward .runway-side.right .runway-svg {
-      animation: streamRight 0.8s linear infinite;
+      animation: streamOutwardRight 0.8s linear infinite;
     }
 
-    @keyframes streamLeft {
+    @keyframes streamOutwardLeft {
       0%   { transform: translateX(0); }
-      100% { transform: translateX(-36px); }
+      100% { transform: translateX(-48px); }
     }
 
-    @keyframes streamRight {
+    @keyframes streamOutwardRight {
       0%   { transform: translateX(0); }
-      100% { transform: translateX(36px); }
+      100% { transform: translateX(48px); }
     }
 
     /* ── Mode 3: INWARD (REST & SET REST) ── */
-    .command-banner.mode-inward .runway-side.left {
-      transform: scaleX(-1);
+    .command-banner.mode-inward .arrow-outward {
+      display: none;
     }
 
-    .command-banner.mode-inward .runway-side.right {
-      transform: scaleX(-1);
+    .command-banner.mode-inward .arrow-inward {
+      display: block;
     }
 
     .command-banner.mode-inward .runway-side.left .runway-svg {
-      animation: streamRight 0.9s linear infinite;
+      animation: streamInwardLeft 0.8s linear infinite;
     }
 
     .command-banner.mode-inward .runway-side.right .runway-svg {
-      animation: streamLeft 0.9s linear infinite;
+      animation: streamInwardRight 0.8s linear infinite;
+    }
+
+    @keyframes streamInwardLeft {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(48px); }
+    }
+
+    @keyframes streamInwardRight {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-48px); }
     }
 
     /* ── Mode 4: PAUSED (Yellow Background + Frozen Motion) ── */
@@ -426,15 +463,10 @@
       letter-spacing: 2.5px;
     }
 
-    .command-banner.mode-paused .runway-side,
-    #card.paused .command-banner .runway-side {
-      color: #000000 !important;
-    }
-
     .command-banner.mode-paused .runway-svg,
     #card.paused .command-banner .runway-svg {
+      fill: rgba(0, 0, 0, 0.22) !important;
       animation-play-state: paused !important; /* Arrows frozen in place */
-      opacity: 0.65;
     }
 
     /* ── Mode 5: NO ARROWS (PREPARATION & COMPLETE) ── */
@@ -853,29 +885,21 @@
     </div>
   </div>
 
-  <!-- Red Command Action Bar -->
+  <!-- Red Command Action Bar (Figma Node 84-151: 375 × 84 px) -->
   <div class="command-banner mode-outward" id="command-banner" role="status" aria-live="polite">
     <div class="runway-side left" id="runway-left" aria-hidden="true">
-      <svg class="runway-svg" viewBox="0 0 216 36" preserveAspectRatio="none">
-        <path d="M18 4L0 18L18 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M54 4L36 18L54 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M90 4L72 18L90 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M126 4L108 18L126 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M162 4L144 18L162 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M198 4L180 18L198 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+      <svg class="runway-svg" viewBox="0 0 576 84" preserveAspectRatio="none">
+        <path class="arrow-outward" d="M -74 0 L -96 42 L -74 84 L -52 84 L -74 42 L -52 0 Z M -26 0 L -48 42 L -26 84 L -4 84 L -26 42 L -4 0 Z M 22 0 L 0 42 L 22 84 L 44 84 L 22 42 L 44 0 Z M 70 0 L 48 42 L 70 84 L 92 84 L 70 42 L 92 0 Z M 118 0 L 96 42 L 118 84 L 140 84 L 118 42 L 140 0 Z M 166 0 L 144 42 L 166 84 L 188 84 L 166 42 L 188 0 Z M 214 0 L 192 42 L 214 84 L 236 84 L 214 42 L 236 0 Z M 262 0 L 240 42 L 262 84 L 284 84 L 262 42 L 284 0 Z M 310 0 L 288 42 L 310 84 L 332 84 L 310 42 L 332 0 Z M 358 0 L 336 42 L 358 84 L 380 84 L 358 42 L 380 0 Z M 406 0 L 384 42 L 406 84 L 428 84 L 406 42 L 428 0 Z M 454 0 L 432 42 L 454 84 L 476 84 L 454 42 L 476 0 Z M 502 0 L 480 42 L 502 84 L 524 84 L 502 42 L 524 0 Z M 550 0 L 528 42 L 550 84 L 572 84 L 550 42 L 572 0 Z M 598 0 L 576 42 L 598 84 L 620 84 L 598 42 L 620 0 Z M 646 0 L 624 42 L 646 84 L 668 84 L 646 42 L 668 0 Z" />
+        <path class="arrow-inward" d="M -96 0 L -74 42 L -96 84 L -74 84 L -52 42 L -74 0 Z M -48 0 L -26 42 L -48 84 L -26 84 L -4 42 L -26 0 Z M 0 0 L 22 42 L 0 84 L 22 84 L 44 42 L 22 0 Z M 48 0 L 70 42 L 48 84 L 70 84 L 92 42 L 70 0 Z M 96 0 L 118 42 L 96 84 L 118 84 L 140 42 L 118 0 Z M 144 0 L 166 42 L 144 84 L 166 84 L 188 42 L 166 0 Z M 192 0 L 214 42 L 192 84 L 214 84 L 236 42 L 214 0 Z M 240 0 L 262 42 L 240 84 L 262 84 L 284 42 L 262 0 Z M 288 0 L 310 42 L 288 84 L 310 84 L 332 42 L 310 0 Z M 336 0 L 358 42 L 336 84 L 358 84 L 380 42 L 358 0 Z M 384 0 L 406 42 L 384 84 L 406 84 L 428 42 L 406 0 Z M 432 0 L 454 42 L 432 84 L 454 84 L 476 42 L 454 0 Z M 480 0 L 502 42 L 480 84 L 502 84 L 524 42 L 502 0 Z M 528 0 L 550 42 L 528 84 L 550 84 L 572 42 L 550 0 Z M 576 0 L 598 42 L 576 84 L 598 84 L 620 42 L 598 0 Z M 624 0 L 646 42 L 624 84 L 646 84 L 668 42 L 646 0 Z" />
       </svg>
     </div>
     <div class="command-center-wrap">
       <span class="command-badge animate-pop" id="command-badge">GO!</span>
     </div>
     <div class="runway-side right" id="runway-right" aria-hidden="true">
-      <svg class="runway-svg" viewBox="0 0 216 36" preserveAspectRatio="none">
-        <path d="M0 4L18 18L0 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M36 4L54 18L36 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M72 4L90 18L72 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M108 4L126 18L108 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M144 4L162 18L144 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
-        <path d="M180 4L198 18L180 32" stroke="currentColor" stroke-width="5" stroke-linecap="square" fill="none" />
+      <svg class="runway-svg" viewBox="0 0 576 84" preserveAspectRatio="none">
+        <path class="arrow-outward" d="M -96 0 L -74 42 L -96 84 L -74 84 L -52 42 L -74 0 Z M -48 0 L -26 42 L -48 84 L -26 84 L -4 42 L -26 0 Z M 0 0 L 22 42 L 0 84 L 22 84 L 44 42 L 22 0 Z M 48 0 L 70 42 L 48 84 L 70 84 L 92 42 L 70 0 Z M 96 0 L 118 42 L 96 84 L 118 84 L 140 42 L 118 0 Z M 144 0 L 166 42 L 144 84 L 166 84 L 188 42 L 166 0 Z M 192 0 L 214 42 L 192 84 L 214 84 L 236 42 L 214 0 Z M 240 0 L 262 42 L 240 84 L 262 84 L 284 42 L 262 0 Z M 288 0 L 310 42 L 288 84 L 310 84 L 332 42 L 310 0 Z M 336 0 L 358 42 L 336 84 L 358 84 L 380 42 L 358 0 Z M 384 0 L 406 42 L 384 84 L 406 84 L 428 42 L 406 0 Z M 432 0 L 454 42 L 432 84 L 454 84 L 476 42 L 454 0 Z M 480 0 L 502 42 L 480 84 L 502 84 L 524 42 L 502 0 Z M 528 0 L 550 42 L 528 84 L 550 84 L 572 42 L 550 0 Z M 576 0 L 598 42 L 576 84 L 598 84 L 620 42 L 598 0 Z M 624 0 L 646 42 L 624 84 L 646 84 L 668 42 L 646 0 Z" />
+        <path class="arrow-inward" d="M -74 0 L -96 42 L -74 84 L -52 84 L -74 42 L -52 0 Z M -26 0 L -48 42 L -26 84 L -4 84 L -26 42 L -4 0 Z M 22 0 L 0 42 L 22 84 L 44 84 L 22 42 L 44 0 Z M 70 0 L 48 42 L 70 84 L 92 84 L 70 42 L 92 0 Z M 118 0 L 96 42 L 118 84 L 140 84 L 118 42 L 140 0 Z M 166 0 L 144 42 L 166 84 L 188 84 L 166 42 L 188 0 Z M 214 0 L 192 42 L 214 84 L 236 84 L 214 42 L 236 0 Z M 262 0 L 240 42 L 262 84 L 284 84 L 262 42 L 284 0 Z M 310 0 L 288 42 L 310 84 L 332 84 L 310 42 L 332 0 Z M 358 0 L 336 42 L 358 84 L 380 84 L 358 42 L 380 0 Z M 406 0 L 384 42 L 406 84 L 428 84 L 406 42 L 428 0 Z M 454 0 L 432 42 L 454 84 L 476 84 L 454 42 L 476 0 Z M 502 0 L 480 42 L 502 84 L 524 84 L 502 42 L 524 0 Z M 550 0 L 528 42 L 550 84 L 572 84 L 550 42 L 572 0 Z M 598 0 L 576 42 L 598 84 L 620 84 L 598 42 L 620 0 Z M 646 0 L 624 42 L 646 84 L 668 84 L 646 42 L 668 0 Z" />
       </svg>
     </div>
   </div>
