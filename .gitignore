@@ -1,0 +1,12 @@
+# Node dependencies
+node_modules/
+mobile/node_modules/
+
+# Expo
+.expo/
+mobile/.expo/
+dist/
+web-build/
+
+# Temp files
+*.log
